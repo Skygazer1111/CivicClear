@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: civicclear
+      POSTGRES_PASSWORD: civicclear
+      POSTGRES_DB: civicclear
+    ports:
+      - "5432:5432"
+    volumes:
+      - civicclear_pg:/var/lib/postgresql/data
+
+volumes:
+  civicclear_pg:

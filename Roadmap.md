@@ -105,7 +105,7 @@ Each phase ends with something you can click. Do not start the next phase until 
 **Goal:** Empty app that looks like CivicClear, not a Tailwind demo.
 
 - [x] Create Next.js + TypeScript + Tailwind + shadcn-style primitives.
-- [x] Set up Prisma with `User` and `Complaint` stubs (local SQLite until Postgres is available).
+- [x] Set up Prisma with `User` and `Complaint` stubs (PostgreSQL).
 - [x] Configure Auth.js with two roles. Seed one citizen and one official.
 - [x] Implement a **layout shell**: top bar with product name, role, and log out. No mega-nav.
 - [x] Landing page: title, one-line tagline, two actions — “Citizen sign in” and “Official sign in”. Footer with a short privacy note.
@@ -114,7 +114,7 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 **Exit check:** You can log in as citizen or official and land on an empty dashboard that already feels finished.
 
-**How to run:** `cd civicclear` → `npm run db:setup` (first time) → `npm run dev`. Seed logins are in `civicclear/README.md`.
+**How to run:** Put a Postgres `DATABASE_URL` in `civicclear/.env`, then `npm run db:setup` and `npm run dev` from the repo root. Seed logins are in `civicclear/README.md`.
 
 ---
 

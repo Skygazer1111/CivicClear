@@ -2,10 +2,8 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Local Phase 0 uses SQLite so the app runs without Docker.
-// Switch datasource to postgresql + DATABASE_URL when Postgres is available.
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
