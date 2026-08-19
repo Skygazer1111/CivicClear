@@ -1,0 +1,13 @@
+{
+  "name": "civicclear-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix civicclear",
+    "build": "npm run build --prefix civicclear",
+    "start": "npm run start --prefix civicclear",
+    "lint": "npm run lint --prefix civicclear",
+    "db:setup": "npm run db:setup --prefix civicclear",
+    "db:push": "npm run db:push --prefix civicclear",
+    "db:seed": "npm run db:seed --prefix civicclear"
+  }
+}
