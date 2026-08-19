@@ -1,0 +1,70 @@
+# Added by code-review-graph
+.code-review-graph/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+.project-check
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+injection
+
+# misc
+.DS_Store
+*.pem
+.vscode
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.runtime/
+CRITICALGAPS
+
+# local env files
+.env*.local
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# prisma generated files
+/src/generated/prisma
+
+# ad-hoc generated reports (e.g. from local Excel export testing)
+/compus_analysis_*.xlsx
+
+# code-review-graph (local graph DB + IDE/agent install artifacts)
+.code-review-graph/
+.cursor/
+.claude/
+.gemini/
+.kiro/
+.qoder/
+.cursorrules
+.windsurfrules
+.mcp.json
+.opencode.json
+.github/code-review-graph.instruction.md
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+QODER.md

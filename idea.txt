@@ -1,0 +1,43 @@
+# 🌐 GovConnect - Report, Resolve, Reward
+
+A full-stack web application connecting citizens with government officials for faster civic issue resolution. Citizens can report problems like potholes, garbage, streetlights, and drainage issues, while government officials can track, manage, and resolve these complaints efficiently.
+
+## ✨ Features
+
+### 🏠 Landing Page
+- **Title**: CivicClear– Report, Resolve, Reward
+- **Tagline**: "Connecting citizens with government for faster civic issue resolution"
+- **Dual Login System**: Separate portals for citizens and government officials
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+
+### 👥 Citizen Portal
+- **Registration/Login**: Secure authentication with name, email, mobile, password, and optional Aadhaar
+- **Dashboard**: Overview of complaint statistics and recent reports
+- **Submit Complaints**: Upload photos, add descriptions, and geotag locations using Google Maps API
+- **Track Status**: Monitor complaint progress (Pending → Verified → In Progress → Resolved)
+- **Reward System**: Earn points for valid reports
+- **Profile Management**: Update personal information and view complaint history
+
+### 🏛️ Government Portal
+- **Secure Access**: Protected login for government officials
+- **Complaint Management**: View and filter complaints by type, status, and priority
+- **Map Interface**: Interactive map showing all complaints with Leaflet integration
+- **Status Updates**: Update complaint status and add resolution notes
+- **Analytics Dashboard**: 
+  - Complaint trends over time
+  - Area-wise heatmaps
+  - Resolution statistics and performance metrics
+- **Data Export**: Download complaint data in CSV and PDF formats
+
+### 🔧 Technical Features
+- **Frontend**: React.js with Tailwind CSS for modern, responsive UI with glassmorphism design
+- **Backend**: Node.js with Express.js REST API
+- **Database**: SQLite with Sequelize ORM (ready for production PostgreSQL)
+- **Image Storage**: Cloudinary integration for photo uploads
+- **Maps**: Google Maps API and Leaflet for geolocation
+- **Authentication**: JWT-based secure login system
+- **Security**: Rate limiting, CORS, helmet, and input validation
+- **Responsive**: Mobile-first design with modern animations and micro-interactions
+- **UI/UX**: Advanced glassmorphism effects, animated components, and smooth transitions
+- **Animations**: Floating elements, staggered animations, and interactive hover effects
+

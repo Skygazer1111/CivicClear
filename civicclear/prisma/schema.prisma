@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Local Phase 0 uses SQLite so the app runs without Docker.
+// Switch datasource to postgresql + DATABASE_URL when Postgres is available.
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  citizen
+  official
+  admin
+}
+
+enum ComplaintType {
+  pothole
+  garbage
+  streetlight
+  drainage
+  other
+}
+
+enum ComplaintStatus {
+  submitted
+  verified
+  in_progress
+  resolved
+  rejected
+}
+
+enum Priority {
+  low
+  medium
+  high
+}
+
+model User {
+  id           String   @id @default(cuid())
+  role         Role     @default(citizen)
+  name         String
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  aadhaarHash  String?
+  points       Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  complaints Complaint[]       @relation("CitizenComplaints")
+  assigned   Complaint[]       @relation("AssignedOfficial")
+  events     ComplaintEvent[]
+}
+
+model Complaint {
+  id                 String          @id @default(cuid())
+  publicRef          String          @unique
+  citizenId          String
+  citizen            User            @relation("CitizenComplaints", fields: [citizenId], references: [id])
+  type               ComplaintType
+  title              String
+  description        String
+  lat                Float?
+  lng                Float?
+  addressText        String?
+  status             ComplaintStatus @default(submitted)
+  priority           Priority        @default(medium)
+  assignedOfficialId String?
+  assignedOfficial   User?           @relation("AssignedOfficial", fields: [assignedOfficialId], references: [id])
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  resolvedAt         DateTime?
+
+  photos ComplaintPhoto[]
+  events ComplaintEvent[]
+}
+
+model ComplaintPhoto {
+  id          String    @id @default(cuid())
+  complaintId String
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  url         String
+  width       Int?
+  height      Int?
+}
+
+model ComplaintEvent {
+  id          String           @id @default(cuid())
+  complaintId String
+  complaint   Complaint        @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  actorId     String
+  actor       User             @relation(fields: [actorId], references: [id])
+  fromStatus  ComplaintStatus?
+  toStatus    ComplaintStatus
+  note        String?
+  createdAt   DateTime         @default(now())
+}

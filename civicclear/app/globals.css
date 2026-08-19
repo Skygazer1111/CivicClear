@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+:root {
+  --canvas: #fafafa;
+  --ink: #171717;
+  --ink-muted: #525252;
+  --line: #e5e5e5;
+  --accent: #0f766e;
+  --accent-hover: #0d5f59;
+  --status-pending: #d97706;
+  --status-progress: #2563eb;
+  --status-resolved: #15803d;
+  --status-rejected: #b91c1c;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-status-pending: var(--status-pending);
+  --color-status-progress: var(--status-progress);
+  --color-status-resolved: var(--status-resolved);
+  --color-status-rejected: var(--status-rejected);
+  --font-sans: var(--font-sans);
+  --max-width-page: 70rem;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+}
