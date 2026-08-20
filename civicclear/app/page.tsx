@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
-import { AmbientBackground } from "@/components/ambient-background";
-import { Button } from "@/components/ui/button";
+import { auth } from "@/features/auth/auth";
+import { AmbientBackground } from "@/shared/layout/ambient-background";
+import { Button } from "@/shared/ui/button";
 
 export default async function HomePage() {
   const session = await auth();

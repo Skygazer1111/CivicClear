@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ComplaintForm } from "@/components/complaint-form";
+import { ComplaintForm } from "@/features/complaints/components/complaint-form";
 
 export default function NewComplaintPage() {
   return (

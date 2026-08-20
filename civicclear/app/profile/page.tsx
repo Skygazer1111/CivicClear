@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { ProfileForm } from "@/components/profile-form";
+import { auth } from "@/features/auth/auth";
+import { prisma } from "@/shared/db/prisma";
+import { ProfileForm } from "@/features/profile/components/profile-form";
 
 export default async function ProfilePage() {
   const session = await auth();

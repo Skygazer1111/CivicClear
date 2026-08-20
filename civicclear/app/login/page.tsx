@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { AmbientBackground } from "@/components/ambient-background";
-import { LoginForm } from "@/components/login-form";
+import { auth } from "@/features/auth/auth";
+import { AmbientBackground } from "@/shared/layout/ambient-background";
+import { LoginForm } from "@/features/auth/components/login-form";
 
 type SearchParams = Promise<{ portal?: string }>;
 

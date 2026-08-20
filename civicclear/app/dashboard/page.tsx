@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
+import { auth } from "@/features/auth/auth";
+import { prisma } from "@/shared/db/prisma";
+import { StatusBadge } from "@/features/complaints/components/status-badge";
+import { Button } from "@/shared/ui/button";
 import {
   COMPLAINT_TYPE_LABELS,
-} from "@/lib/labels";
+} from "@/features/complaints/labels";
 
 export default async function CitizenDashboardPage() {
   const session = await auth();

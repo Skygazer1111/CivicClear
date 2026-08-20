@@ -3,34 +3,35 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/features/auth/auth";
 import { prisma } from "@/shared/db/prisma";
-import { AutoRefresh } from "@/shared/layout/auto-refresh";
 import { ComplaintMapPin } from "@/features/complaints/components/complaint-map-pin-dynamic";
+import { OfficialComplaintActions } from "@/features/official/components/complaint-actions";
 import { StatusBadge } from "@/features/complaints/components/status-badge";
-import { Button } from "@/shared/ui/button";
 import {
   COMPLAINT_STATUS_LABELS,
   COMPLAINT_TYPE_LABELS,
 } from "@/features/complaints/labels";
+import { PRIORITY_LABELS } from "@/features/official/workflow";
 
 type Params = Promise<{ id: string }>;
-type SearchParams = Promise<{ created?: string }>;
 
-export default async function ComplaintDetailPage({
+export default async function OfficialComplaintDetailPage({
   params,
-  searchParams,
 }: {
   params: Params;
-  searchParams: SearchParams;
 }) {
   const session = await auth();
-  if (!session?.user?.id) redirect("/login?portal=citizen");
+  if (
+    !session?.user?.id ||
+    (session.user.role !== "official" && session.user.role !== "admin")
+  ) {
+    redirect("/login?portal=official");
+  }
 
   const { id } = await params;
-  const { created } = await searchParams;
-
   const complaint = await prisma.complaint.findUnique({
     where: { id },
     include: {
+      citizen: { select: { name: true, email: true, phone: true } },
       photos: true,
       events: {
         include: { actor: { select: { name: true, role: true } } },
@@ -39,32 +40,16 @@ export default async function ComplaintDetailPage({
     },
   });
 
-  if (!complaint || complaint.citizenId !== session.user.id) {
-    notFound();
-  }
+  if (!complaint) notFound();
 
   return (
     <div className="rise-in mx-auto max-w-3xl space-y-6">
-      <AutoRefresh seconds={20} />
       <Link
-        href="/dashboard"
+        href="/queue"
         className="text-sm font-medium text-accent hover:underline"
       >
-        ← Back to dashboard
+        ← Back to queue
       </Link>
-
-      {created === "1" ? (
-        <div className="glass-panel rounded-[1.5rem] border border-emerald-200/70 bg-emerald-50/70 p-5">
-          <p className="text-sm font-semibold text-status-resolved">
-            Report submitted
-          </p>
-          <p className="mt-1 text-ink">
-            Your reference number is{" "}
-            <span className="font-semibold">{complaint.publicRef}</span>. Keep it
-            to track this issue.
-          </p>
-        </div>
-      ) : null}
 
       <div className="glass-panel rounded-[1.75rem] p-6 sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -76,8 +61,13 @@ export default async function ComplaintDetailPage({
               {complaint.title}
             </h1>
             <p className="mt-2 text-sm text-ink-muted">
-              {COMPLAINT_TYPE_LABELS[complaint.type]} · Filed{" "}
+              {COMPLAINT_TYPE_LABELS[complaint.type]} ·{" "}
+              {PRIORITY_LABELS[complaint.priority]} priority · Filed{" "}
               {complaint.createdAt.toLocaleString()}
+            </p>
+            <p className="mt-1 text-sm text-ink-muted">
+              Citizen: {complaint.citizen.name}
+              {complaint.citizen.phone ? ` · ${complaint.citizen.phone}` : ""}
             </p>
           </div>
           <StatusBadge status={complaint.status} />
@@ -121,18 +111,27 @@ export default async function ComplaintDetailPage({
       </div>
 
       <section className="glass-panel rounded-[1.75rem] p-6 sm:p-8">
+        <h2 className="font-display text-xl font-semibold">Workbench</h2>
+        <div className="mt-5">
+          <OfficialComplaintActions
+            complaintId={complaint.id}
+            status={complaint.status}
+            priority={complaint.priority}
+          />
+        </div>
+      </section>
+
+      <section className="glass-panel rounded-[1.75rem] p-6 sm:p-8">
         <h2 className="font-display text-xl font-semibold">Timeline</h2>
         <ol className="mt-5 space-y-4">
           {complaint.events.map((event) => (
-            <li
-              key={event.id}
-              className="border-l-2 border-accent/30 pl-4"
-            >
+            <li key={event.id} className="border-l-2 border-accent/30 pl-4">
               <p className="text-sm font-semibold text-ink">
                 {COMPLAINT_STATUS_LABELS[event.toStatus]}
               </p>
               <p className="text-xs text-ink-muted">
-                {event.createdAt.toLocaleString()} · {event.actor.name}
+                {event.createdAt.toLocaleString()} · {event.actor.name} (
+                {event.actor.role})
               </p>
               {event.note ? (
                 <p className="mt-1 text-sm text-ink-muted">{event.note}</p>
@@ -141,10 +140,6 @@ export default async function ComplaintDetailPage({
           ))}
         </ol>
       </section>
-
-      <Button asChild variant="outline">
-        <Link href="/complaints/new">File another report</Link>
-      </Button>
     </div>
   );
 }

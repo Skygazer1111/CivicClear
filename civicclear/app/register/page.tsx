@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { AmbientBackground } from "@/components/ambient-background";
-import { RegisterForm } from "@/components/register-form";
+import { auth } from "@/features/auth/auth";
+import { AmbientBackground } from "@/shared/layout/ambient-background";
+import { RegisterForm } from "@/features/auth/components/register-form";
 
 export default async function RegisterPage() {
   const session = await auth();

@@ -139,19 +139,21 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 ---
 
-### Phase 2 — Official workbench (1–1.5 weeks)
+### Phase 2 — Official workbench ✅ Done
 
 **Goal:** Officials can actually work a queue.
 
-- Official home: filterable table (type, status, priority, date range, search by ref). Default sort: oldest unverified first.
-- Map view: all filtered complaints as pins, color by status. Click pin → side panel with summary, not a modal circus.
-- Complaint detail (official): same facts as citizen, plus:
+- [x] Official home: filterable table (type, status, priority, date range, search by ref). Default sort: oldest unverified first.
+- [x] Map view: all filtered complaints as pins, color by status. Click pin → side panel with summary, not a modal circus.
+- [x] Complaint detail (official): same facts as citizen, plus:
   - Change status (restricted transitions)
   - Required note on reject / resolve
   - Set priority
-- Audit timeline visible to both sides (notes may be official-only if you add a `visibility` flag later; start with all notes visible for trust).
+- [x] Audit timeline visible to both sides (notes may be official-only if you add a `visibility` flag later; start with all notes visible for trust).
 
 **Exit check:** Official verifies a report, marks in progress, then resolved. Citizen sees the same timeline without refresh tricks (polling every 15–30s is enough; skip websockets).
+
+**How to try it:** Official login → `/queue` → open a complaint → Verified → In progress → Resolved (note required). Citizen detail page auto-refreshes every 20s. Map: `/map`.
 
 ---
 

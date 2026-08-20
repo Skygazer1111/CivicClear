@@ -2,6 +2,25 @@
 
 Next.js app for civic issue reporting. Visual rules: `docs/ui.md` in the repo root.
 
+## Architecture
+
+```
+app/                 # Routes only (thin pages + layouts)
+features/
+  auth/              # Login, register, NextAuth, session
+  complaints/        # Citizen filing, photos, labels, shared complaint UI
+  official/          # Queue, map, status workflow
+  profile/           # Citizen profile updates
+shared/
+  ui/                # Button, input, label
+  layout/            # Shell, header, ambient background
+  db/                # Prisma client
+  lib/               # Small cross-cutting helpers (cn)
+prisma/              # Schema + seed
+```
+
+Feature modules own their `actions`, `schemas`, `components`, and domain logic. `app/` only wires routes.
+
 ## Run locally
 
 1. Copy `civicclear/.env.example` to `civicclear/.env`.
