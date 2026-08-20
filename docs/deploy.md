@@ -22,9 +22,10 @@ Set these in Project → Settings → Environment Variables (Production + Previe
 | `BREVO_API_KEY` | Brevo API key |
 | `BREVO_FROM_EMAIL` | Verified sender |
 | `BREVO_FROM_NAME` | `CivicClear` |
-| `CLOUDINARY_CLOUD_NAME` | Optional but recommended |
-| `CLOUDINARY_API_KEY` | Optional |
-| `CLOUDINARY_API_SECRET` | Optional |
+| `CLOUDINARY_CLOUD_NAME` | Recommended for photos |
+| `CLOUDINARY_API_KEY` | Must allow uploads |
+| `CLOUDINARY_API_SECRET` | |
+| `BLOB_READ_WRITE_TOKEN` | Optional Vercel Blob fallback (Storage → Blob) |
 
 **Root Directory:** set to `civicclear` if the Git repo root is the parent folder.
 
@@ -60,8 +61,8 @@ In Vercel → Domains, add your domain and point DNS as instructed. Update `AUTH
 
 ## 6. Checklist before launch
 
+- [ ] Cloudinary env vars set on Vercel (`CLOUDINARY_*`) so report photos upload
 - [ ] Brevo sender verified; test citizen OTP on a real inbox
-- [ ] Cloudinary uploads work (not falling back to ephemeral disk)
 - [ ] `AUTH_URL` matches the live site
 - [ ] Admin password rotated
 - [ ] Privacy / Terms reviewed for your municipality

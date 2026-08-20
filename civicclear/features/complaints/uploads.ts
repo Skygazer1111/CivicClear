@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { put } from "@vercel/blob";
 import { sanitizeComplaintImage } from "@/features/complaints/image-hygiene";
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -20,13 +21,26 @@ function cloudinaryReady() {
   );
 }
 
+function vercelBlobReady() {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
+}
+
+/** Vercel/Lambda filesystem is read-only — local public/ uploads cannot work there. */
+function isServerlessReadonlyFs() {
+  return Boolean(
+    process.env.VERCEL ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME ||
+      process.env.FUNCTION_TARGET,
+  );
+}
+
 async function uploadToCloudinary(
   buffer: Buffer,
   filename: string,
 ): Promise<UploadedPhoto> {
-  const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
-  const apiKey = process.env.CLOUDINARY_API_KEY!;
-  const apiSecret = process.env.CLOUDINARY_API_SECRET!;
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME!.trim();
+  const apiKey = process.env.CLOUDINARY_API_KEY!.trim();
+  const apiSecret = process.env.CLOUDINARY_API_SECRET!.trim();
   const timestamp = Math.floor(Date.now() / 1000).toString();
   const folder = "civicclear/complaints";
 
@@ -47,7 +61,15 @@ async function uploadToCloudinary(
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Cloudinary upload failed: ${text.slice(0, 180)}`);
+    console.error("[cloudinary]", res.status, text);
+    let detail = text.slice(0, 200);
+    try {
+      const parsed = JSON.parse(text) as { error?: { message?: string } };
+      if (parsed.error?.message) detail = parsed.error.message;
+    } catch {
+      // keep raw slice
+    }
+    throw new Error(`Cloudinary: ${detail}`);
   }
 
   const json = (await res.json()) as {
@@ -63,6 +85,21 @@ async function uploadToCloudinary(
   };
 }
 
+async function uploadToVercelBlob(
+  buffer: Buffer,
+  mime: string,
+): Promise<UploadedPhoto> {
+  const ext =
+    mime === "image/png" ? "png" : mime === "image/webp" ? "webp" : "jpg";
+  const filename = `complaints/${randomUUID()}.${ext}`;
+  const blob = await put(filename, buffer, {
+    access: "public",
+    contentType: mime,
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+  });
+  return { url: blob.url };
+}
+
 async function uploadLocally(
   buffer: Buffer,
   mime: string,
@@ -74,6 +111,37 @@ async function uploadLocally(
   const filename = `${randomUUID()}.${ext}`;
   await writeFile(path.join(dir, filename), buffer);
   return { url: `/uploads/complaints/${filename}` };
+}
+
+async function uploadOne(buffer: Buffer, mime: string, filename: string) {
+  // Prefer Cloudinary when configured.
+  if (cloudinaryReady()) {
+    try {
+      return await uploadToCloudinary(buffer, filename);
+    } catch (error) {
+      console.error("Cloudinary upload failed:", error);
+      // Fall through to Blob / local when possible.
+      if (!vercelBlobReady() && isServerlessReadonlyFs()) {
+        throw new Error(
+          error instanceof Error
+            ? `Photo upload failed (${error.message}). Fix Cloudinary upload permissions, or add a Vercel Blob store (BLOB_READ_WRITE_TOKEN).`
+            : "Photo upload failed. Configure Cloudinary or Vercel Blob.",
+        );
+      }
+    }
+  }
+
+  if (vercelBlobReady()) {
+    return uploadToVercelBlob(buffer, mime);
+  }
+
+  if (isServerlessReadonlyFs()) {
+    throw new Error(
+      "Photo hosting is not configured. On Vercel, add Cloudinary env vars or create a Blob store (BLOB_READ_WRITE_TOKEN), then redeploy.",
+    );
+  }
+
+  return uploadLocally(buffer, mime);
 }
 
 export async function uploadComplaintPhotos(files: File[]) {
@@ -100,16 +168,7 @@ export async function uploadComplaintPhotos(files: File[]) {
       file.name?.replace(/\.[^.]+$/, "") || `photo-${randomUUID()}`;
     const withExt = `${filename}.${cleaned.mime.split("/")[1]}`;
 
-    if (cloudinaryReady()) {
-      try {
-        uploads.push(await uploadToCloudinary(cleaned.buffer, withExt));
-        continue;
-      } catch (error) {
-        console.error("Cloudinary upload failed, using local storage:", error);
-      }
-    }
-
-    uploads.push(await uploadLocally(cleaned.buffer, cleaned.mime));
+    uploads.push(await uploadOne(cleaned.buffer, cleaned.mime, withExt));
   }
 
   return uploads;
