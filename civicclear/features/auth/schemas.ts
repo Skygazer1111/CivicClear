@@ -15,7 +15,7 @@ export const citizenOtpVerifySchema = z.object({
   email: z.string().email("Enter a valid email"),
   code: z
     .string()
-    .transform((v) => v.replace(/\s+/g, "").trim())
+    .transform((v) => v.replace(/\D/g, "").trim())
     .pipe(z.string().regex(/^\d{6}$/, "Enter the 6-digit code from your email")),
   name: z.preprocess(
     emptyToUndefined,

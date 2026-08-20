@@ -109,23 +109,44 @@ function CitizenOtpLogin() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  async function requestCode(formData: FormData) {
-    setError(null);
-    setPending(true);
+  async function sendCode(targetEmail: string) {
+    const formData = new FormData();
+    formData.set("email", targetEmail);
     const result = await requestCitizenOtpAction(undefined, formData);
-    setPending(false);
 
     if (result && "error" in result && result.error) {
       setError(result.error);
-      return;
+      return false;
     }
 
-    setEmail(String(formData.get("email") ?? "").toLowerCase().trim());
     setNeedsProfile(
       Boolean(result && "needsProfile" in result && result.needsProfile),
     );
     setDevCode(result && "devCode" in result ? result.devCode : undefined);
+    return true;
+  }
+
+  async function requestCode(formData: FormData) {
+    setError(null);
+    setPending(true);
+    const nextEmail = String(formData.get("email") ?? "")
+      .toLowerCase()
+      .trim();
+    const ok = await sendCode(nextEmail);
+    setPending(false);
+    if (!ok) return;
+    setEmail(nextEmail);
     setStep("code");
+  }
+
+  async function resendCode() {
+    setError(null);
+    setPending(true);
+    const ok = await sendCode(email);
+    setPending(false);
+    if (ok) {
+      setError(null);
+    }
   }
 
   async function verifyCode(event: React.FormEvent<HTMLFormElement>) {
@@ -139,6 +160,9 @@ function CitizenOtpLogin() {
     try {
       const verified = await verifyCitizenOtpAction(undefined, formData);
       if (verified && "error" in verified && verified.error) {
+        if ("needsProfile" in verified && verified.needsProfile) {
+          setNeedsProfile(true);
+        }
         setError(verified.error);
         setPending(false);
         return;
@@ -158,7 +182,9 @@ function CitizenOtpLogin() {
       });
 
       if (!result || result.error) {
-        setError("Code verified, but sign-in failed. Please try again.");
+        setError(
+          "Code was accepted, but creating the session failed. Request a new code and try once more.",
+        );
         setPending(false);
         return;
       }
@@ -219,7 +245,8 @@ function CitizenOtpLogin() {
     <form onSubmit={verifyCode} className="space-y-5" noValidate>
       <p className="rounded-2xl bg-accent-soft/70 px-3.5 py-3 text-sm text-ink-muted">
         We sent a 6-digit code to{" "}
-        <span className="font-semibold text-ink">{email}</span>.
+        <span className="font-semibold text-ink">{email}</span>. Use the
+        latest email if you requested more than once.
         {devCode ? (
           <>
             {" "}
@@ -274,18 +301,29 @@ function CitizenOtpLogin() {
       >
         {pending ? "Verifying…" : "Verify and continue"}
       </Button>
-      <button
-        type="button"
-        className="w-full text-center text-sm font-medium text-accent hover:underline"
-        disabled={pending}
-        onClick={() => {
-          setStep("email");
-          setError(null);
-          setDevCode(undefined);
-        }}
-      >
-        Use a different email
-      </button>
+      <div className="flex flex-col gap-2 text-center text-sm">
+        <button
+          type="button"
+          className="font-medium text-accent hover:underline disabled:opacity-50"
+          disabled={pending}
+          onClick={() => void resendCode()}
+        >
+          Resend code
+        </button>
+        <button
+          type="button"
+          className="font-medium text-ink-muted hover:text-ink hover:underline disabled:opacity-50"
+          disabled={pending}
+          onClick={() => {
+            setStep("email");
+            setError(null);
+            setDevCode(undefined);
+            setNeedsProfile(false);
+          }}
+        >
+          Use a different email
+        </button>
+      </div>
     </form>
   );
 }

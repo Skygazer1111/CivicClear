@@ -12,6 +12,7 @@ import {
   createCitizenLoginProof,
   generateOtpCode,
   hashOtpCode,
+  normalizeOtpInput,
   otpExpiresAt,
 } from "@/features/auth/otp";
 import { sendCitizenOtpEmail } from "@/shared/lib/mail";
@@ -145,6 +146,8 @@ export async function verifyCitizenOtpAction(
   }
 
   const email = parsed.data.email.toLowerCase().trim();
+  const code = normalizeOtpInput(parsed.data.code);
+
   const otp = await prisma.loginOtp.findFirst({
     where: { email },
     orderBy: { createdAt: "desc" },
@@ -161,22 +164,21 @@ export async function verifyCitizenOtpAction(
     return { error: "Too many incorrect attempts. Request a new code." };
   }
 
-  const matches = otp.codeHash === hashOtpCode(parsed.data.code);
+  const matches = otp.codeHash === hashOtpCode(code);
   if (!matches) {
     await prisma.loginOtp.update({
       where: { id: otp.id },
       data: { attempts: { increment: 1 } },
     });
-    return { error: "That code is incorrect. Check the email and try again." };
+    return { error: "That code is incorrect. Check the latest email and try again." };
   }
-
-  await prisma.loginOtp.deleteMany({ where: { email } });
 
   let user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     if (!parsed.data.name || !parsed.data.phone) {
       return {
         error: "New accounts need your name and 10-digit mobile number.",
+        needsProfile: true as const,
       };
     }
     user = await prisma.user.create({
@@ -196,6 +198,9 @@ export async function verifyCitizenOtpAction(
   if (user.role !== "citizen") {
     return { error: "Use Official sign in for staff accounts." };
   }
+
+  // Only consume the OTP after the account is ready.
+  await prisma.loginOtp.deleteMany({ where: { email } });
 
   return {
     ok: true as const,
