@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/features/auth/auth";
 import { AmbientBackground } from "@/shared/layout/ambient-background";
+import { SiteFooter } from "@/shared/layout/site-footer";
 import { LoginForm } from "@/features/auth/components/login-form";
 
 type SearchParams = Promise<{ portal?: string }>;
@@ -55,6 +56,8 @@ export default async function LoginPage({
           </div>
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

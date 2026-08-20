@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/features/auth/auth";
 import { AmbientBackground } from "@/shared/layout/ambient-background";
+import { SiteFooter } from "@/shared/layout/site-footer";
 import { Button } from "@/shared/ui/button";
 
 export default async function HomePage() {
@@ -47,12 +48,7 @@ export default async function HomePage() {
         </div>
       </main>
 
-      <footer className="relative z-10">
-        <p className="mx-auto max-w-page px-4 py-8 text-sm text-ink-muted sm:px-6">
-          Location and photos you submit are used only to investigate civic
-          reports.
-        </p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

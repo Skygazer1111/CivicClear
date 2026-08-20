@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/features/auth/auth";
 import { AmbientBackground } from "@/shared/layout/ambient-background";
+import { SiteFooter } from "@/shared/layout/site-footer";
 import { RegisterForm } from "@/features/auth/components/register-form";
 
 export default async function RegisterPage() {
@@ -39,6 +40,8 @@ export default async function RegisterPage() {
           </div>
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }
