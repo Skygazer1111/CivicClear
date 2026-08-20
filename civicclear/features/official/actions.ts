@@ -7,6 +7,7 @@ import {
   updateComplaintPrioritySchema,
   updateComplaintStatusSchema,
 } from "@/features/official/schemas";
+import { awardComplaintPoints } from "@/features/rewards/service";
 import { prisma } from "@/shared/db/prisma";
 
 async function requireOfficial() {
@@ -48,8 +49,8 @@ export async function updateComplaintStatusAction(
     };
   }
 
-  await prisma.$transaction([
-    prisma.complaint.update({
+  await prisma.$transaction(async (tx) => {
+    await tx.complaint.update({
       where: { id: complaint.id },
       data: {
         status: parsed.data.toStatus,
@@ -58,8 +59,9 @@ export async function updateComplaintStatusAction(
           ? { resolvedAt: new Date() }
           : {}),
       },
-    }),
-    prisma.complaintEvent.create({
+    });
+
+    await tx.complaintEvent.create({
       data: {
         complaintId: complaint.id,
         actorId: session.user.id,
@@ -67,14 +69,32 @@ export async function updateComplaintStatusAction(
         toStatus: parsed.data.toStatus,
         note: parsed.data.note?.trim() || null,
       },
-    }),
-  ]);
+    });
+
+    // Points only on verify (anti-spam). Small bonus on resolve. Nothing on reject.
+    if (parsed.data.toStatus === "verified") {
+      await awardComplaintPoints(tx, {
+        userId: complaint.citizenId,
+        complaintId: complaint.id,
+        reason: "verified",
+      });
+    }
+
+    if (parsed.data.toStatus === "resolved") {
+      await awardComplaintPoints(tx, {
+        userId: complaint.citizenId,
+        complaintId: complaint.id,
+        reason: "resolved",
+      });
+    }
+  });
 
   revalidatePath("/queue");
   revalidatePath("/map");
   revalidatePath(`/queue/${complaint.id}`);
   revalidatePath(`/complaints/${complaint.id}`);
   revalidatePath("/dashboard");
+  revalidatePath("/profile");
   return { ok: true };
 }
 

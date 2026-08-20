@@ -175,16 +175,18 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 ---
 
-### Phase 4 — Rewards (4–6 days)
+### Phase 4 — Rewards ✅ Done
 
 **Goal:** Points that mean something, without turning the app into a game.
 
-- Award points only when an official marks a complaint **verified** (not on submit — kills spam).
-- Deduct or award nothing on reject. Optional small bonus on resolve if the original report was accurate.
-- Citizen profile: current points, simple history list (“+10 — complaint CC-2026-00412 verified”).
-- No leaderboards, badges, confetti, or progress rings in v1.
+- [x] Award points only when an official marks a complaint **verified** (not on submit — kills spam).
+- [x] Deduct or award nothing on reject. Optional small bonus on resolve if the original report was accurate.
+- [x] Citizen profile: current points, simple history list (“+10 — complaint CC-2026-00412 verified”).
+- [x] No leaderboards, badges, confetti, or progress rings in v1.
 
 **Exit check:** Points appear only after verification and match the ledger.
+
+**How it works:** +10 on verify, +5 on resolve (`RewardLedger` + `User.points`). Idempotent via unique `(complaintId, reason)`. Profile shows balance and history; dashboard links the balance.
 
 ---
 

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/features/auth/auth";
-import { prisma } from "@/shared/db/prisma";
+import { formatRewardLine } from "@/features/rewards/service";
 import { ProfileForm } from "@/features/profile/components/profile-form";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { prisma } from "@/shared/db/prisma";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -10,26 +12,77 @@ export default async function ProfilePage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
+    include: {
+      rewards: {
+        include: { complaint: { select: { publicRef: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      },
+    },
   });
   if (!user) redirect("/login?portal=citizen");
 
   return (
-    <div className="rise-in mx-auto max-w-xl">
-      <Link
-        href="/dashboard"
-        className="text-sm font-medium text-accent hover:underline"
-      >
-        ← Back to dashboard
-      </Link>
-      <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight">
-        Profile
-      </h1>
-      <p className="mt-2 text-ink-muted">
-        Update your contact details. Optional Aadhaar is hashed, never shown
-        in full.
-      </p>
+    <div className="rise-in mx-auto max-w-xl space-y-8">
+      <div>
+        <Link
+          href="/dashboard"
+          className="text-sm font-medium text-accent hover:underline"
+        >
+          ← Back to dashboard
+        </Link>
+        <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight">
+          Profile
+        </h1>
+        <p className="mt-2 text-ink-muted">
+          Update your contact details. Points are earned when reports are
+          verified.
+        </p>
+      </div>
 
-      <div className="glass-panel mt-8 rounded-[1.75rem] p-6 sm:p-8">
+      <section className="glass-panel rounded-[1.75rem] p-6 sm:p-8">
+        <p className="text-sm text-ink-muted">Reward points</p>
+        <p className="mt-1 font-display text-4xl font-semibold tracking-tight">
+          {user.points}
+        </p>
+        <p className="mt-2 text-sm text-ink-muted">
+          +10 when an official verifies a report. +5 when it is resolved.
+          Rejected reports earn nothing.
+        </p>
+      </section>
+
+      <section className="glass-panel rounded-[1.75rem] p-6 sm:p-8">
+        <h2 className="font-display text-xl font-semibold">Points history</h2>
+        {user.rewards.length === 0 ? (
+          <div className="mt-4">
+            <EmptyState
+              title="No points yet"
+              description="Submit a valid report. Points appear after an official verifies it."
+            />
+          </div>
+        ) : (
+          <ul className="mt-5 divide-y divide-line/70">
+            {user.rewards.map((entry) => (
+              <li
+                key={entry.id}
+                className="flex items-start justify-between gap-3 py-3 text-sm"
+              >
+                <div>
+                  <p className="font-medium text-ink">
+                    {formatRewardLine(entry)}
+                  </p>
+                  <p className="mt-0.5 text-xs text-ink-muted">
+                    {entry.createdAt.toLocaleString()}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <div className="glass-panel rounded-[1.75rem] p-6 sm:p-8">
+        <h2 className="mb-5 font-display text-xl font-semibold">Account</h2>
         <ProfileForm
           name={user.name}
           phone={user.phone ?? ""}

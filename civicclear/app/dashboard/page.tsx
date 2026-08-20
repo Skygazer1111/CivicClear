@@ -10,10 +10,16 @@ export default async function CitizenDashboardPage() {
   const session = await auth();
   const userId = session!.user!.id;
 
-  const complaints = await prisma.complaint.findMany({
-    where: { citizenId: userId },
-    orderBy: { createdAt: "desc" },
-  });
+  const [complaints, user] = await Promise.all([
+    prisma.complaint.findMany({
+      where: { citizenId: userId },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { points: true },
+    }),
+  ]);
 
   const open = complaints.filter(
     (c) => c.status === "submitted" || c.status === "verified",
@@ -30,6 +36,15 @@ export default async function CitizenDashboardPage() {
           </h1>
           <p className="mt-2 text-ink-muted">
             Welcome, {session?.user?.name}. Track and file civic reports here.
+          </p>
+          <p className="mt-1 text-sm text-ink-muted">
+            Points balance:{" "}
+            <Link
+              href="/profile"
+              className="font-semibold text-accent hover:underline"
+            >
+              {user?.points ?? 0}
+            </Link>
           </p>
         </div>
         <Button asChild size="lg" className="w-full sm:w-auto">

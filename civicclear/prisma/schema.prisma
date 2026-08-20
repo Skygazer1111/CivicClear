@@ -49,6 +49,7 @@ model User {
   complaints Complaint[]       @relation("CitizenComplaints")
   assigned   Complaint[]       @relation("AssignedOfficial")
   events     ComplaintEvent[]
+  rewards    RewardLedger[]
 }
 
 model Complaint {
@@ -70,8 +71,23 @@ model Complaint {
   updatedAt          DateTime        @updatedAt
   resolvedAt         DateTime?
 
-  photos ComplaintPhoto[]
-  events ComplaintEvent[]
+  photos  ComplaintPhoto[]
+  events  ComplaintEvent[]
+  rewards RewardLedger[]
+}
+
+model RewardLedger {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  complaintId String?
+  complaint   Complaint? @relation(fields: [complaintId], references: [id], onDelete: SetNull)
+  delta       Int
+  reason      String
+  createdAt   DateTime   @default(now())
+
+  @@index([userId, createdAt])
+  @@unique([complaintId, reason])
 }
 
 model ComplaintPhoto {
