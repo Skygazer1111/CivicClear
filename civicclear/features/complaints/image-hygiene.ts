@@ -1,6 +1,6 @@
 /**
  * Validate image magic bytes and strip JPEG EXIF / PNG textual metadata.
- * Does not decode pixels — keeps the stack light while blocking renamed binaries.
+ * Avoids Array#push(...hugeBuffer) which overflows the call stack on phone photos.
  */
 
 export type DetectedImage = {
@@ -38,45 +38,47 @@ function isWebp(buf: Buffer) {
 function stripJpegExif(buf: Buffer): Buffer {
   if (!isJpeg(buf)) return buf;
 
-  const out: number[] = [0xff, 0xd8];
+  const parts: Buffer[] = [Buffer.from([0xff, 0xd8])];
   let i = 2;
 
   while (i < buf.length) {
     if (buf[i] !== 0xff) {
-      out.push(...buf.subarray(i));
+      parts.push(buf.subarray(i));
       break;
     }
 
     const marker = buf[i + 1];
     if (marker === 0xd9) {
-      out.push(0xff, 0xd9);
+      parts.push(Buffer.from([0xff, 0xd9]));
       break;
     }
     if (marker === 0xda) {
-      out.push(...buf.subarray(i));
+      parts.push(buf.subarray(i));
       break;
     }
 
     // Standalone markers
     if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) {
-      out.push(0xff, marker);
+      parts.push(Buffer.from([0xff, marker]));
       i += 2;
       continue;
     }
 
     if (i + 3 >= buf.length) break;
     const size = (buf[i + 2] << 8) + buf[i + 3];
+    if (size < 2) break;
     const next = i + 2 + size;
+    if (next > buf.length) break;
 
-    // Keep SOF, DHT, DQT, DRI, SOS-related; drop APP0–APP15 and COM
+    // Keep SOF, DHT, DQT, DRI, etc.; drop APP0–APP15 and COM
     const drop = (marker >= 0xe0 && marker <= 0xef) || marker === 0xfe;
     if (!drop) {
-      out.push(...buf.subarray(i, next));
+      parts.push(buf.subarray(i, next));
     }
     i = next;
   }
 
-  return Buffer.from(out);
+  return Buffer.concat(parts);
 }
 
 /** Drop tEXt / iTXt / zTXt chunks that may hold GPS/camera notes. */
@@ -108,7 +110,6 @@ export function sanitizeComplaintImage(buffer: Buffer): DetectedImage {
     return { mime: "image/png", buffer: stripPngTextChunks(buffer) };
   }
   if (isWebp(buffer)) {
-    // WebP EXIF is uncommon in phone uploads; magic-byte check is enough here.
     return { mime: "image/webp", buffer };
   }
   throw new Error("File is not a valid JPG, PNG, or WebP image");
