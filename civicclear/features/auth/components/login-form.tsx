@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -107,7 +107,15 @@ function CitizenOtpLogin() {
   const [needsProfile, setNeedsProfile] = useState(false);
   const [devCode, setDevCode] = useState<string | undefined>();
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [resendIn, setResendIn] = useState(0);
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const id = window.setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => window.clearTimeout(id);
+  }, [resendIn]);
 
   async function sendCode(targetEmail: string) {
     const formData = new FormData();
@@ -116,6 +124,7 @@ function CitizenOtpLogin() {
 
     if (result && "error" in result && result.error) {
       setError(result.error);
+      setInfo(null);
       return false;
     }
 
@@ -123,11 +132,13 @@ function CitizenOtpLogin() {
       Boolean(result && "needsProfile" in result && result.needsProfile),
     );
     setDevCode(result && "devCode" in result ? result.devCode : undefined);
+    setResendIn(30);
     return true;
   }
 
   async function requestCode(formData: FormData) {
     setError(null);
+    setInfo(null);
     setPending(true);
     const nextEmail = String(formData.get("email") ?? "")
       .toLowerCase()
@@ -140,18 +151,21 @@ function CitizenOtpLogin() {
   }
 
   async function resendCode() {
+    if (resendIn > 0 || pending) return;
     setError(null);
+    setInfo(null);
     setPending(true);
     const ok = await sendCode(email);
     setPending(false);
     if (ok) {
-      setError(null);
+      setInfo("A new code was sent. Use the latest email.");
     }
   }
 
   async function verifyCode(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+    setInfo(null);
     setPending(true);
 
     const formData = new FormData(event.currentTarget);
@@ -292,6 +306,14 @@ function CitizenOtpLogin() {
         />
       </div>
       <FormErrorBanner message={error} />
+      {info ? (
+        <p
+          role="status"
+          className="rounded-xl bg-accent-soft/80 px-3 py-2 text-sm text-accent"
+        >
+          {info}
+        </p>
+      ) : null}
       <Button
         type="submit"
         className="w-full"
@@ -301,29 +323,31 @@ function CitizenOtpLogin() {
       >
         {pending ? "Verifying…" : "Verify and continue"}
       </Button>
-      <div className="flex flex-col gap-2 text-center text-sm">
-        <button
-          type="button"
-          className="font-medium text-accent hover:underline disabled:opacity-50"
-          disabled={pending}
-          onClick={() => void resendCode()}
-        >
-          Resend code
-        </button>
-        <button
-          type="button"
-          className="font-medium text-ink-muted hover:text-ink hover:underline disabled:opacity-50"
-          disabled={pending}
-          onClick={() => {
-            setStep("email");
-            setError(null);
-            setDevCode(undefined);
-            setNeedsProfile(false);
-          }}
-        >
-          Use a different email
-        </button>
-      </div>
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        size="lg"
+        disabled={pending || resendIn > 0}
+        onClick={() => void resendCode()}
+      >
+        {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
+      </Button>
+      <button
+        type="button"
+        className="w-full text-center text-sm font-medium text-ink-muted hover:text-ink hover:underline disabled:opacity-50"
+        disabled={pending}
+        onClick={() => {
+          setStep("email");
+          setError(null);
+          setInfo(null);
+          setDevCode(undefined);
+          setNeedsProfile(false);
+          setResendIn(0);
+        }}
+      >
+        Use a different email
+      </button>
     </form>
   );
 }
