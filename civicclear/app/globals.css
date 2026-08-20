@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --canvas: #fafafa;
-  --ink: #171717;
-  --ink-muted: #525252;
-  --line: #e5e5e5;
-  --accent: #0f766e;
-  --accent-hover: #0d5f59;
-  --status-pending: #d97706;
-  --status-progress: #2563eb;
-  --status-resolved: #15803d;
-  --status-rejected: #b91c1c;
+  --canvas: #f3f8f6;
+  --ink: #1a2e28;
+  --ink-muted: #5a7268;
+  --line: #d5e4dc;
+  --accent: #1f8a70;
+  --accent-hover: #176b57;
+  --sky-soft: #d9eef5;
+  --mint-soft: #d8f0e4;
+  --sand-soft: #f3ebe2;
+  --panel: rgba(255, 255, 255, 0.72);
+  --status-pending: #c27803;
+  --status-progress: #2f6fed;
+  --status-resolved: #1a7f4b;
+  --status-rejected: #c0392b;
 }
 
 @theme inline {
@@ -20,11 +24,16 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-sky-soft: var(--sky-soft);
+  --color-mint-soft: var(--mint-soft);
+  --color-sand-soft: var(--sand-soft);
+  --color-panel: var(--panel);
   --color-status-pending: var(--status-pending);
   --color-status-progress: var(--status-progress);
   --color-status-resolved: var(--status-resolved);
   --color-status-rejected: var(--status-rejected);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
   --max-width-page: 70rem;
 }
 
@@ -32,5 +41,115 @@ body {
   background: var(--canvas);
   color: var(--ink);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.55;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+}
+
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(24px, -18px, 0) scale(1.05);
+  }
+}
+
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-20px, 16px, 0) scale(1.08);
+  }
+}
+
+@keyframes float-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(14px, 22px, 0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(48px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.ambient-blob-a {
+  animation: float-a 14s ease-in-out infinite, soft-pulse 8s ease-in-out infinite;
+}
+
+.ambient-blob-b {
+  animation: float-b 18s ease-in-out infinite, soft-pulse 10s ease-in-out infinite;
+}
+
+.ambient-blob-c {
+  animation: float-c 16s ease-in-out infinite, soft-pulse 9s ease-in-out infinite;
+}
+
+.rise-in {
+  animation: rise-in 0.7s ease-out both;
+}
+
+.rise-in-delay-1 {
+  animation: rise-in 0.7s ease-out 0.12s both;
+}
+
+.rise-in-delay-2 {
+  animation: rise-in 0.7s ease-out 0.24s both;
+}
+
+.rise-in-delay-3 {
+  animation: rise-in 0.7s ease-out 0.36s both;
+}
+
+.glass-panel {
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 18px 50px rgba(31, 80, 64, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-blob-a,
+  .ambient-blob-b,
+  .ambient-blob-c,
+  .rise-in,
+  .rise-in-delay-1,
+  .rise-in-delay-2,
+  .rise-in-delay-3 {
+    animation: none;
+  }
 }

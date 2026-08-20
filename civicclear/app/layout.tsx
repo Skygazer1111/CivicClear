@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Fraunces, Nunito_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const nunito = Nunito_Sans({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-body",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -14,7 +19,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${nunito.variable} ${fraunces.variable} h-full antialiased`}
+    >
       <body className="min-h-full bg-canvas font-sans text-ink">{children}</body>
     </html>
   );

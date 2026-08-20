@@ -118,22 +118,24 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 ---
 
-### Phase 1 — Citizen report flow (1–1.5 weeks)
+### Phase 1 — Citizen report flow ✅ Done
 
 **Goal:** The core loop exists without rewards or analytics.
 
-- Citizen dashboard: counts (open / in progress / resolved) and a table of *their* complaints. Empty state: “No reports yet” + button.
-- New report form:
+- [x] Citizen dashboard: counts (open / in progress / resolved) and a table of *their* complaints. Empty state: “No reports yet” + button.
+- [x] New report form:
   - Type (select)
   - Short title
   - Description
   - Photo (1–3 images, compressed, 5MB cap)
   - Location: map click + reverse-geocode to a readable address; fallback to typed address if GPS fails
-- After submit: success screen with public reference number (`CC-2026-xxxxx`).
-- Complaint detail: status badge, timeline of events, photos, map pin.
-- Profile: name, phone, password change. Optional Aadhaar as a hashed field — never display full number.
+- [x] After submit: success screen with public reference number (`CC-2026-xxxxx`).
+- [x] Complaint detail: status badge, timeline of events, photos, map pin.
+- [x] Profile: name, phone, password change. Optional Aadhaar as a hashed field — never display full number.
 
 **Exit check:** A citizen files a geotagged, photographed complaint and sees it as `Submitted`.
+
+**How to try it:** Sign in as citizen → **Report an issue** → photo + map pin → submit → see `CC-YYYY-xxxxx` and status **Submitted**. Photos use Cloudinary when configured; otherwise they save under `public/uploads`.
 
 ---
 

@@ -27,7 +27,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!valid) return null;
 
         if (portal === "citizen" && user.role !== "citizen") return null;
-        if (portal === "official" && user.role !== "official" && user.role !== "admin") {
+        if (
+          portal === "official" &&
+          user.role !== "official" &&
+          user.role !== "admin"
+        ) {
           return null;
         }
 
@@ -40,21 +44,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    ...authConfig.callbacks,
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id!;
-        token.role = user.role;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
-      }
-      return session;
-    },
-  },
 });

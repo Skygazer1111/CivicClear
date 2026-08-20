@@ -1,15 +1,13 @@
 import type { ReactNode } from "react";
+import { AmbientBackground } from "@/components/ambient-background";
 import { AppHeader } from "@/components/app-header";
 
-export default function OfficialLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function OfficialLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-full flex-col">
+    <div className="relative flex min-h-full flex-col overflow-hidden">
+      <AmbientBackground />
       <AppHeader />
-      <main className="mx-auto w-full max-w-page flex-1 px-4 py-8 sm:px-6">
+      <main className="relative z-10 mx-auto w-full max-w-page flex-1 px-4 py-8 sm:px-6">
         {children}
       </main>
     </div>

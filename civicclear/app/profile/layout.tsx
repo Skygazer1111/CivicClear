@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { AmbientBackground } from "@/components/ambient-background";
 import { AppHeader } from "@/components/app-header";
 
-export default function CitizenLayout({ children }: { children: ReactNode }) {
+export default function ProfileLayout({ children }: { children: ReactNode }) {
   return (
     <div className="relative flex min-h-full flex-col overflow-hidden">
       <AmbientBackground />

@@ -1,56 +1,41 @@
 # CivicClear UI
 
-Every screen is judged against this page. If a choice is not listed here, prefer less.
+Light, soft, and a little motion — not dark, not sterile.
 
 ## Type
 
-- Font: Inter
-- Body: 16px, line-height 1.5
-- Page titles: ~20–24px, semibold, tight tracking
-- No oversized hero type
+- Display: Fraunces (brand + page titles)
+- Body: Nunito Sans
+- Brand name should feel like the hero, not a tiny nav label
 
 ## Color
 
 | Token | Hex | Use |
 |---|---|---|
-| Canvas | `#FAFAFA` | Page background |
-| White | `#FFFFFF` | Cards, header, forms |
-| Ink | `#171717` | Text |
-| Ink muted | `#525252` | Secondary text |
-| Line | `#E5E5E5` | Borders |
-| Accent | `#0F766E` | Primary actions, links |
-| Accent hover | `#0D5F59` | Primary hover |
-| Pending | `#D97706` | Submitted / pending |
-| In progress | `#2563EB` | In progress |
-| Resolved | `#15803D` | Resolved |
-| Rejected | `#B91C1C` | Rejected / errors |
+| Canvas | `#F3F8F6` | Soft mint-tinted base |
+| Ink | `#1A2E28` | Text |
+| Ink muted | `#5A7268` | Secondary text |
+| Line | `#D5E4DC` | Soft borders |
+| Accent | `#1F8A70` | Primary actions |
+| Sky soft | `#D9EEF5` | Ambient blob |
+| Mint soft | `#D8F0E4` | Ambient blob |
+| Sand soft | `#F3EBE2` | Ambient blob |
 
-## Layout
-
-- Max content width: 1120px (`max-w-page`)
-- Header height: 56px
-- Form radius: 6px
-- Borders: 1px `#E5E5E5`
-- No drop shadows on cards. Dropdowns may use a 1px border only.
+No dark theme. No purple neon. Soft daylight palette only.
 
 ## Motion
 
-- 150ms color/opacity at most
-- No stagger, float, scale-on-hover, or page-load choreography
+- Floating ambient blobs (slow, ~14–18s)
+- Rise-in on first paint (~0.7s)
+- Soft button lift on hover
+- Respect `prefers-reduced-motion`
 
-## Copy
+## Surfaces
 
-- Short. “Citizen sign in”, not “Empowering communities”.
-- Errors under the field or above the submit button. One sentence.
+- Frosted light panels (`glass-panel`): translucent white, soft blur, gentle shadow
+- Large soft radii (~1.5–1.75rem)
+- Avoid heavy stacked shadows and dark glassmorphism
 
-## Do
+## Tone
 
-- Tables for official density
-- Empty states with one sentence
-- Visible labels on every input
-
-## Don’t
-
-- Glassmorphism, gradients, mesh backgrounds
-- Illustration-heavy icons
-- Confetti, badges, or game UI
+Short and calm. “Welcome back”, not corporate slogans.

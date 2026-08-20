@@ -9,34 +9,59 @@ export const authConfig = {
   },
   providers: [],
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id!;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as
+          | "citizen"
+          | "official"
+          | "admin";
+      }
+      return session;
+    },
+    authorized({ auth, request: { nextUrl, headers } }) {
+      // Never intercept Server Action POSTs.
+      if (headers.get("next-action")) {
+        return true;
+      }
+
       const isLoggedIn = Boolean(auth?.user);
       const role = auth?.user?.role;
       const path = nextUrl.pathname;
 
-      const isCitizenArea = path.startsWith("/dashboard") || path.startsWith("/profile");
-      const isOfficialArea = path.startsWith("/queue") || path.startsWith("/map");
-      const isAuthPage = path.startsWith("/login") || path.startsWith("/register");
+      const isCitizenArea =
+        path.startsWith("/dashboard") ||
+        path.startsWith("/profile") ||
+        path.startsWith("/complaints");
+      const isOfficialArea =
+        path.startsWith("/queue") || path.startsWith("/map");
 
       if (isCitizenArea) {
-        if (!isLoggedIn) return false;
-        if (role !== "citizen") {
+        if (!isLoggedIn) {
+          return Response.redirect(new URL("/login?portal=citizen", nextUrl));
+        }
+        // If role is missing, do not bounce — avoid redirect loops.
+        if (role && role !== "citizen") {
           return Response.redirect(new URL("/queue", nextUrl));
         }
         return true;
       }
 
       if (isOfficialArea) {
-        if (!isLoggedIn) return false;
-        if (role !== "official" && role !== "admin") {
+        if (!isLoggedIn) {
+          return Response.redirect(new URL("/login?portal=official", nextUrl));
+        }
+        if (role && role !== "official" && role !== "admin") {
           return Response.redirect(new URL("/dashboard", nextUrl));
         }
         return true;
-      }
-
-      if (isAuthPage && isLoggedIn) {
-        const home = role === "citizen" ? "/dashboard" : "/queue";
-        return Response.redirect(new URL(home, nextUrl));
       }
 
       return true;

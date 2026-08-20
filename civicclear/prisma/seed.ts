@@ -1,9 +1,19 @@
+import { config } from "dotenv";
+import { resolve } from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcryptjs";
+
+config({ path: resolve(__dirname, "../.env") });
 
 const prisma = new PrismaClient();
 
 async function main() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error(
+      "DATABASE_URL is missing. Put your Neon URL in civicclear/.env",
+    );
+  }
+
   const citizenHash = await hash("citizen123", 12);
   const officialHash = await hash("official123", 12);
 
@@ -30,6 +40,8 @@ async function main() {
       role: "official",
     },
   });
+
+  console.log("Seeded citizen@civicclear.local and official@civicclear.local");
 }
 
 main()

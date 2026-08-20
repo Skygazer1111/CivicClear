@@ -38,6 +38,10 @@ yarn-error.log*
 /prisma/*.db
 /prisma/*.db-journal
 
+# local complaint photo uploads (fallback when Cloudinary is unset)
+/public/uploads
+
+
 # vercel
 .vercel
 
