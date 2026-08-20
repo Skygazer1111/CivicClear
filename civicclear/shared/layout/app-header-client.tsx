@@ -13,10 +13,12 @@ function NavItem({
   href,
   children,
   onClick,
+  className,
 }: {
   href: string;
   children: React.ReactNode;
   onClick?: () => void;
+  className?: string;
 }) {
   const pathname = usePathname();
   const active =
@@ -26,7 +28,11 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={cn("nav-link text-sm font-medium", active && "nav-link-active")}
+      className={cn(
+        "nav-link text-sm font-medium",
+        active && "nav-link-active",
+        className,
+      )}
     >
       {children}
     </Link>
@@ -48,20 +54,23 @@ export function AppHeaderClient({
   const isAdmin = role === "admin";
 
   return (
-    <header className="relative z-10 border-b border-white/60 bg-white/50 shadow-[0_10px_40px_rgba(16,56,46,0.05)] backdrop-blur-xl">
-      <div className="mx-auto flex h-[4.25rem] max-w-page items-center justify-between gap-4 px-4 sm:px-6">
-        <div className="flex items-center gap-4 sm:gap-6">
-          <Link href={home} className="group flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1bb291] to-accent text-sm font-bold text-white shadow-[0_8px_20px_rgba(15,143,120,0.35)] transition-transform duration-300 group-hover:scale-105">
+    <header
+      className="sticky top-0 z-30 border-b border-white/60 bg-white/80 shadow-[0_10px_40px_rgba(16,56,46,0.05)] backdrop-blur-xl"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
+      <div className="mx-auto flex h-14 max-w-page items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:gap-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-6">
+          <Link href={home} className="group flex min-w-0 items-center gap-2">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1bb291] to-accent text-xs font-bold text-white shadow-[0_8px_20px_rgba(15,143,120,0.35)] sm:h-9 sm:w-9 sm:rounded-2xl sm:text-sm">
               CC
             </span>
-            <span className="font-display text-xl font-semibold tracking-tight text-ink">
+            <span className="truncate font-display text-lg font-semibold tracking-tight text-ink sm:text-xl">
               CivicClear
             </span>
           </Link>
           {isCitizen ? (
             <nav
-              className="hidden items-center gap-1 text-sm sm:flex"
+              className="hidden items-center gap-1 text-sm md:flex"
               aria-label="Citizen"
             >
               <NavItem href="/dashboard">Dashboard</NavItem>
@@ -82,7 +91,7 @@ export function AppHeaderClient({
           ) : null}
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           {name ? (
             <div className="hidden rounded-full border border-white/70 bg-white/55 px-3.5 py-1.5 text-sm shadow-sm sm:block">
               <span className="font-semibold text-ink">{name}</span>
@@ -91,74 +100,68 @@ export function AppHeaderClient({
               ) : null}
             </div>
           ) : null}
-          {(isCitizen || isOfficial) && (
+          {/* Citizens use bottom tabs on mobile — skip hamburger clutter. */}
+          {isOfficial ? (
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="sm:hidden"
+              className="min-h-10 min-w-10 sm:hidden"
               aria-expanded={open}
               aria-controls="mobile-nav"
               onClick={() => setOpen((v) => !v)}
             >
               Menu
             </Button>
-          )}
+          ) : null}
           <LogoutButton />
         </div>
       </div>
 
-      {open ? (
+      {open && isOfficial ? (
         <nav
           id="mobile-nav"
-          className="border-t border-line/50 bg-white/55 px-4 py-4 backdrop-blur-xl sm:hidden"
+          className="border-t border-line/50 bg-white/70 px-4 py-3 backdrop-blur-xl sm:hidden"
           aria-label="Mobile"
         >
-          <ul className="flex flex-col gap-1 text-sm">
-            {isCitizen ? (
-              <>
-                <li>
-                  <NavItem href="/dashboard" onClick={() => setOpen(false)}>
-                    Dashboard
-                  </NavItem>
-                </li>
-                <li>
-                  <NavItem href="/complaints/new" onClick={() => setOpen(false)}>
-                    Report an issue
-                  </NavItem>
-                </li>
-                <li>
-                  <NavItem href="/profile" onClick={() => setOpen(false)}>
-                    Profile
-                  </NavItem>
-                </li>
-              </>
-            ) : null}
-            {isOfficial ? (
-              <>
-                <li>
-                  <NavItem href="/queue" onClick={() => setOpen(false)}>
-                    Queue
-                  </NavItem>
-                </li>
-                <li>
-                  <NavItem href="/map" onClick={() => setOpen(false)}>
-                    Map
-                  </NavItem>
-                </li>
-                <li>
-                  <NavItem href="/analytics" onClick={() => setOpen(false)}>
-                    Analytics
-                  </NavItem>
-                </li>
-                {isAdmin ? (
-                  <li>
-                    <NavItem href="/admin" onClick={() => setOpen(false)}>
-                      Admin
-                    </NavItem>
-                  </li>
-                ) : null}
-              </>
+          <ul className="flex flex-col gap-1">
+            <li>
+              <NavItem
+                href="/queue"
+                className="block min-h-11 px-3 py-3"
+                onClick={() => setOpen(false)}
+              >
+                Queue
+              </NavItem>
+            </li>
+            <li>
+              <NavItem
+                href="/map"
+                className="block min-h-11 px-3 py-3"
+                onClick={() => setOpen(false)}
+              >
+                Map
+              </NavItem>
+            </li>
+            <li>
+              <NavItem
+                href="/analytics"
+                className="block min-h-11 px-3 py-3"
+                onClick={() => setOpen(false)}
+              >
+                Analytics
+              </NavItem>
+            </li>
+            {isAdmin ? (
+              <li>
+                <NavItem
+                  href="/admin"
+                  className="block min-h-11 px-3 py-3"
+                  onClick={() => setOpen(false)}
+                >
+                  Admin
+                </NavItem>
+              </li>
             ) : null}
           </ul>
         </nav>

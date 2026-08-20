@@ -23,27 +23,27 @@ export default async function ProfilePage() {
   if (!user) redirect("/login?portal=citizen");
 
   return (
-    <div className="rise-in mx-auto max-w-xl space-y-8">
+    <div className="rise-in mx-auto max-w-xl space-y-6 sm:space-y-8">
       <div>
         <Link
           href="/dashboard"
-          className="text-sm font-medium text-accent hover:underline"
+          className="hidden text-sm font-medium text-accent hover:underline md:inline"
         >
           ← Back to dashboard
         </Link>
-        <p className="page-kicker mt-5">Citizen</p>
-        <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+        <p className="page-kicker md:mt-5">Citizen</p>
+        <h1 className="mt-2 font-display text-[2rem] font-semibold tracking-tight sm:text-4xl">
           Profile
         </h1>
-        <p className="mt-2 text-ink-muted">
+        <p className="mt-2 text-sm text-ink-muted sm:text-base">
           Update your contact details. Points are earned when reports are
           verified.
         </p>
       </div>
 
-      <section className="glass-panel stat-tile rounded-[1.75rem] p-6 sm:p-8">
+      <section className="glass-panel stat-tile rounded-[1.5rem] p-5 sm:rounded-[1.75rem] sm:p-8">
         <p className="text-sm font-medium text-ink-muted">Reward points</p>
-        <p className="mt-1 font-display text-5xl font-semibold tracking-tight">
+        <p className="mt-1 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
           {user.points}
         </p>
         <p className="mt-2 text-sm text-ink-muted">

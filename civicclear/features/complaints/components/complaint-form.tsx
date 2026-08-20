@@ -73,15 +73,17 @@ export function ComplaintForm() {
         <FormErrorBanner message={state?.error} />
       </div>
 
-      <Button
-        type="submit"
-        size="lg"
-        className="w-full sm:w-auto"
-        disabled={pending}
-        aria-busy={pending}
-      >
-        {pending ? "Submitting…" : "Submit report"}
-      </Button>
+      <div className="sticky bottom-20 z-20 -mx-1 bg-gradient-to-t from-white/95 via-white/90 to-transparent pb-2 pt-4 md:static md:bottom-auto md:mx-0 md:bg-transparent md:p-0">
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full sm:w-auto"
+          disabled={pending}
+          aria-busy={pending}
+        >
+          {pending ? "Submitting…" : "Submit report"}
+        </Button>
+      </div>
     </form>
   );
 }

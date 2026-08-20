@@ -254,13 +254,14 @@ body {
 
 .field {
   display: flex;
-  height: 2.85rem;
+  height: 3rem;
   width: 100%;
   border-radius: 1rem;
   border: 1px solid color-mix(in oklab, var(--line) 85%, white);
   background: rgba(255, 255, 255, 0.86);
   padding: 0 0.95rem;
-  font-size: 0.925rem;
+  /* 16px prevents iOS Safari zoom-on-focus */
+  font-size: 16px;
   color: var(--ink);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
   transition:
@@ -268,6 +269,13 @@ body {
     box-shadow 0.25s ease,
     background 0.25s ease,
     transform 0.25s var(--ease-out-soft);
+}
+
+@media (min-width: 640px) {
+  .field {
+    height: 2.85rem;
+    font-size: 0.925rem;
+  }
 }
 
 .field::placeholder {
@@ -347,6 +355,22 @@ body {
     color-mix(in oklab, var(--line) 80%, white),
     transparent
   );
+}
+
+/* Mobile-first comfort for thumbs and notched phones */
+@media (max-width: 767px) {
+  .glass-panel-interactive:hover {
+    transform: none;
+  }
+
+  .page-title-mobile {
+    font-size: 1.85rem;
+    line-height: 1.15;
+  }
+
+  .tap-row {
+    min-height: 3.5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

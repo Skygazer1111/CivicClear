@@ -32,13 +32,13 @@ export default async function CitizenDashboardPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="page-kicker">Citizen</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
+          <h1 className="mt-2 font-display text-[2rem] font-semibold tracking-tight sm:text-4xl">
             Dashboard
           </h1>
-          <p className="mt-2 text-ink-muted">
+          <p className="mt-2 text-sm text-ink-muted sm:text-base">
             Welcome, {session?.user?.name}. Track and file civic reports here.
           </p>
-          <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/55 px-3 py-1 text-sm shadow-sm backdrop-blur-sm">
+          <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/55 px-3 py-1.5 text-sm shadow-sm backdrop-blur-sm">
             <span className="text-ink-muted">Points</span>
             <Link
               href="/profile"
@@ -48,20 +48,22 @@ export default async function CitizenDashboardPage() {
             </Link>
           </p>
         </div>
-        <Button asChild size="lg" className="w-full sm:w-auto">
+        <Button asChild size="lg" className="hidden w-full sm:flex sm:w-auto">
           <Link href="/complaints/new">Report an issue</Link>
         </Button>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="mt-6 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-4">
         <Stat label="Open" value={String(open)} />
         <Stat label="In progress" value={String(inProgress)} />
         <Stat label="Resolved" value={String(resolved)} />
       </div>
 
-      <section className="glass-panel mt-8 overflow-hidden rounded-[1.75rem]">
-        <div className="flex items-center justify-between border-b border-line/50 px-5 py-4">
-          <h2 className="font-display text-xl font-semibold">Your reports</h2>
+      <section className="glass-panel mt-6 overflow-hidden rounded-[1.5rem] sm:mt-8 sm:rounded-[1.75rem]">
+        <div className="flex items-center justify-between border-b border-line/50 px-4 py-3.5 sm:px-5 sm:py-4">
+          <h2 className="font-display text-lg font-semibold sm:text-xl">
+            Your reports
+          </h2>
         </div>
 
         {complaints.length === 0 ? (
@@ -78,7 +80,7 @@ export default async function CitizenDashboardPage() {
                 <li key={complaint.id}>
                   <Link
                     href={`/complaints/${complaint.id}`}
-                    className="block px-5 py-4 hover:bg-white/40"
+                    className="tap-row block px-4 py-4 active:bg-white/50 sm:px-5"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -147,9 +149,11 @@ export default async function CitizenDashboardPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="glass-panel stat-tile rounded-[1.5rem] px-5 py-5">
-      <p className="text-sm font-medium text-ink-muted">{label}</p>
-      <p className="mt-2 font-display text-4xl font-semibold tracking-tight">
+    <div className="glass-panel stat-tile rounded-[1.15rem] px-3 py-3 sm:rounded-[1.5rem] sm:px-5 sm:py-5">
+      <p className="text-[0.7rem] font-medium leading-tight text-ink-muted sm:text-sm">
+        {label}
+      </p>
+      <p className="mt-1 font-display text-2xl font-semibold tracking-tight sm:mt-2 sm:text-4xl">
         {value}
       </p>
     </div>

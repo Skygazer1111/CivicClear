@@ -113,19 +113,24 @@ export function LocationPicker({ lat, lng, addressText }: Props) {
       <input type="hidden" name="lat" value={position?.lat ?? ""} />
       <input type="hidden" name="lng" value={position?.lng ?? ""} />
 
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <Label>Location</Label>
-        <Button type="button" variant="outline" size="sm" onClick={useMyLocation}>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full sm:w-auto"
+          onClick={useMyLocation}
+        >
           Use my location
         </Button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-line/80">
+      <div className="-mx-1 overflow-hidden rounded-2xl border border-line/80 sm:mx-0">
         <MapContainer
           center={[center.lat, center.lng]}
           zoom={13}
           scrollWheelZoom={false}
-          className="h-64 w-full"
+          className="h-72 w-full touch-manipulation sm:h-64"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

@@ -37,6 +37,9 @@ No dark theme. No purple neon. Soft daylight palette only.
 - Large soft radii (~1.5–2rem)
 - Subtle film grain over the ambient field
 
-## Tone
+## Mobile (citizens first)
 
-Short and calm. “Welcome back”, not corporate slogans. Official pages use a small “Official” kicker; citizen pages use “Citizen”.
+- Sticky bottom tabs: Home · Report · Profile (`md+` keeps top nav)
+- 44px+ tap targets, 16px inputs (no iOS zoom), safe-area insets
+- Camera-first photo picker, taller map, sticky submit above the tab bar
+- Compact titles/stats; footer hidden on small citizen screens
