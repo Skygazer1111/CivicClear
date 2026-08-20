@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  CircleMarker,
-  MapContainer,
-  TileLayer,
-  useMap,
-} from "react-leaflet";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import type { ComplaintStatus, ComplaintType, Priority } from "@prisma/client";
 import { COMPLAINT_TYPE_LABELS } from "@/features/complaints/labels";
 import { PRIORITY_LABELS, statusPinColor } from "@/features/official/workflow";
@@ -44,6 +42,42 @@ function FitBounds({ points }: { points: { lat: number; lng: number }[] }) {
   return null;
 }
 
+function ClusteredPins({
+  complaints,
+  onSelect,
+}: {
+  complaints: MapComplaint[];
+  onSelect: (id: string) => void;
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    const group = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      maxClusterRadius: 48,
+    });
+
+    for (const complaint of complaints) {
+      const marker = L.circleMarker([complaint.lat, complaint.lng], {
+        radius: 8,
+        color: "#fff",
+        weight: 2,
+        fillColor: statusPinColor(complaint.status),
+        fillOpacity: 0.95,
+      });
+      marker.on("click", () => onSelect(complaint.id));
+      group.addLayer(marker);
+    }
+
+    map.addLayer(group);
+    return () => {
+      map.removeLayer(group);
+    };
+  }, [map, complaints, onSelect]);
+
+  return null;
+}
+
 export function OfficialComplaintsMap({
   complaints,
 }: {
@@ -73,22 +107,10 @@ export function OfficialComplaintsMap({
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <FitBounds points={complaints} />
-          {complaints.map((complaint) => (
-            <CircleMarker
-              key={complaint.id}
-              center={[complaint.lat, complaint.lng]}
-              radius={selected?.id === complaint.id ? 11 : 8}
-              pathOptions={{
-                color: "#fff",
-                weight: 2,
-                fillColor: statusPinColor(complaint.status),
-                fillOpacity: 0.95,
-              }}
-              eventHandlers={{
-                click: () => setSelectedId(complaint.id),
-              }}
-            />
-          ))}
+          <ClusteredPins
+            complaints={complaints}
+            onSelect={setSelectedId}
+          />
         </MapContainer>
       </div>
 

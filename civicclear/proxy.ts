@@ -12,5 +12,6 @@ export const config = {
     "/complaints/:path*",
     "/queue/:path*",
     "/map/:path*",
+    "/analytics/:path*",
   ],
 };

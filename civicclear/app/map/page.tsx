@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { ComplaintStatus, ComplaintType, Priority } from "@prisma/client";
 import { auth } from "@/features/auth/auth";
 import { listComplaintsForOfficials } from "@/features/official/queue";
 import {
@@ -7,6 +6,7 @@ import {
   type MapComplaint,
 } from "@/features/official/components/complaints-map-dynamic";
 import { QueueFilters } from "@/features/official/components/queue-filters";
+import { parseQueueFilters } from "@/features/official/parse-filters";
 import { Button } from "@/shared/ui/button";
 
 type SearchParams = Promise<{
@@ -18,30 +18,6 @@ type SearchParams = Promise<{
   to?: string;
 }>;
 
-function asType(value?: string): ComplaintType | "all" | undefined {
-  if (!value || value === "all") return value as "all" | undefined;
-  const allowed = ["pothole", "garbage", "streetlight", "drainage", "other"];
-  return allowed.includes(value) ? (value as ComplaintType) : "all";
-}
-
-function asStatus(value?: string): ComplaintStatus | "all" | undefined {
-  if (!value || value === "all") return value as "all" | undefined;
-  const allowed = [
-    "submitted",
-    "verified",
-    "in_progress",
-    "resolved",
-    "rejected",
-  ];
-  return allowed.includes(value) ? (value as ComplaintStatus) : "all";
-}
-
-function asPriority(value?: string): Priority | "all" | undefined {
-  if (!value || value === "all") return value as "all" | undefined;
-  const allowed = ["low", "medium", "high"];
-  return allowed.includes(value) ? (value as Priority) : "all";
-}
-
 export default async function OfficialMapPage({
   searchParams,
 }: {
@@ -49,14 +25,7 @@ export default async function OfficialMapPage({
 }) {
   const session = await auth();
   const params = await searchParams;
-  const filters = {
-    q: params.q,
-    type: asType(params.type),
-    status: asStatus(params.status),
-    priority: asPriority(params.priority),
-    from: params.from,
-    to: params.to,
-  };
+  const filters = parseQueueFilters(params);
 
   const complaints = await listComplaintsForOfficials(filters);
   const mapped: MapComplaint[] = complaints
@@ -81,12 +50,18 @@ export default async function OfficialMapPage({
             Complaint map
           </h1>
           <p className="mt-2 text-ink-muted">
-            Signed in as {session?.user?.name}. Click a pin for a summary.
+            Signed in as {session?.user?.name}. Nearby pins cluster at wider
+            zoom.
           </p>
         </div>
-        <Button asChild variant="outline">
-          <Link href="/queue">Queue view</Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <Link href="/queue">Queue view</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/analytics">Analytics</Link>
+          </Button>
+        </div>
       </div>
 
       <QueueFilters filters={params} action="/map" />

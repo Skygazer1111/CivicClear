@@ -1,10 +1,13 @@
 import Link from "next/link";
-import type { ComplaintStatus, ComplaintType, Priority } from "@prisma/client";
 import { auth } from "@/features/auth/auth";
 import { COMPLAINT_TYPE_LABELS } from "@/features/complaints/labels";
 import { formatAge, PRIORITY_LABELS } from "@/features/official/workflow";
 import { listComplaintsForOfficials } from "@/features/official/queue";
 import { QueueFilters } from "@/features/official/components/queue-filters";
+import {
+  filtersToSearchParams,
+  parseQueueFilters,
+} from "@/features/official/parse-filters";
 import { StatusBadge } from "@/features/complaints/components/status-badge";
 import { Button } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
@@ -18,30 +21,6 @@ type SearchParams = Promise<{
   to?: string;
 }>;
 
-function asType(value?: string): ComplaintType | "all" | undefined {
-  if (!value || value === "all") return value as "all" | undefined;
-  const allowed = ["pothole", "garbage", "streetlight", "drainage", "other"];
-  return allowed.includes(value) ? (value as ComplaintType) : "all";
-}
-
-function asStatus(value?: string): ComplaintStatus | "all" | undefined {
-  if (!value || value === "all") return value as "all" | undefined;
-  const allowed = [
-    "submitted",
-    "verified",
-    "in_progress",
-    "resolved",
-    "rejected",
-  ];
-  return allowed.includes(value) ? (value as ComplaintStatus) : "all";
-}
-
-function asPriority(value?: string): Priority | "all" | undefined {
-  if (!value || value === "all") return value as "all" | undefined;
-  const allowed = ["low", "medium", "high"];
-  return allowed.includes(value) ? (value as Priority) : "all";
-}
-
 export default async function OfficialQueuePage({
   searchParams,
 }: {
@@ -49,16 +28,9 @@ export default async function OfficialQueuePage({
 }) {
   const session = await auth();
   const params = await searchParams;
-  const filters = {
-    q: params.q,
-    type: asType(params.type),
-    status: asStatus(params.status),
-    priority: asPriority(params.priority),
-    from: params.from,
-    to: params.to,
-  };
-
+  const filters = parseQueueFilters(params);
   const complaints = await listComplaintsForOfficials(filters);
+  const exportQuery = filtersToSearchParams(filters).toString();
 
   return (
     <div className="rise-in space-y-6">
@@ -72,9 +44,21 @@ export default async function OfficialQueuePage({
             first.
           </p>
         </div>
-        <Button asChild variant="outline">
-          <Link href="/map">Map view</Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <Link href="/map">Map view</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/analytics">Analytics</Link>
+          </Button>
+          <Button asChild>
+            <a
+              href={`/api/official/export${exportQuery ? `?${exportQuery}` : ""}`}
+            >
+              Download CSV
+            </a>
+          </Button>
+        </div>
       </div>
 
       <QueueFilters filters={params} />
@@ -88,7 +72,6 @@ export default async function OfficialQueuePage({
         </div>
       ) : (
         <>
-          {/* Mobile stacked list */}
           <ul className="space-y-3 md:hidden">
             {complaints.map((complaint) => (
               <li key={complaint.id}>
@@ -117,7 +100,6 @@ export default async function OfficialQueuePage({
             ))}
           </ul>
 
-          {/* Desktop table */}
           <div className="glass-panel hidden overflow-hidden rounded-[1.5rem] md:block">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-line/70 bg-white/40 text-ink-muted">

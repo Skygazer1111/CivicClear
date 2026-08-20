@@ -41,7 +41,9 @@ export const authConfig = {
         path.startsWith("/profile") ||
         path.startsWith("/complaints");
       const isOfficialArea =
-        path.startsWith("/queue") || path.startsWith("/map");
+        path.startsWith("/queue") ||
+        path.startsWith("/map") ||
+        path.startsWith("/analytics");
 
       if (isCitizenArea) {
         if (!isLoggedIn) {

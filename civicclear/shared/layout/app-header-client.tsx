@@ -60,6 +60,12 @@ export function AppHeaderClient({
               <Link href="/map" className="text-ink-muted hover:text-ink">
                 Map
               </Link>
+              <Link
+                href="/analytics"
+                className="text-ink-muted hover:text-ink"
+              >
+                Analytics
+              </Link>
             </nav>
           ) : null}
         </div>
@@ -124,6 +130,11 @@ export function AppHeaderClient({
                 <li>
                   <Link href="/map" onClick={() => setOpen(false)}>
                     Map
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/analytics" onClick={() => setOpen(false)}>
+                    Analytics
                   </Link>
                 </li>
               </>

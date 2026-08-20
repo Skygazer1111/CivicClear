@@ -70,7 +70,15 @@ export default async function OfficialComplaintDetailPage({
               {complaint.citizen.phone ? ` · ${complaint.citizen.phone}` : ""}
             </p>
           </div>
-          <StatusBadge status={complaint.status} />
+          <div className="flex flex-col items-end gap-2">
+            <StatusBadge status={complaint.status} />
+            <a
+              href={`/api/official/complaints/${complaint.id}/pdf`}
+              className="text-sm font-medium text-accent hover:underline"
+            >
+              Download PDF
+            </a>
+          </div>
         </div>
 
         <p className="mt-6 whitespace-pre-wrap text-ink">

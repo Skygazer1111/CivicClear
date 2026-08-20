@@ -190,19 +190,21 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 ---
 
-### Phase 5 — Official analytics and export (1 week)
+### Phase 5 — Official analytics and export ✅ Done
 
 **Goal:** Department-level usefulness.
 
-- Analytics page with 3 charts max:
+- [x] Analytics page with 3 charts max:
   - Complaints over time (line)
   - By type (bar)
   - Resolution time average (single stat + by type)
-- Area view: reuse the map; optional simple heatmap only if Leaflet.heat stays unobtrusive. Prefer clustered pins first.
-- CSV export of the current filter.
-- PDF export of a single complaint (ref, photos, timeline) — useful for files. Skip fancy branded PDFs.
+- [x] Area view: reuse the map; clustered pins (no heatmap).
+- [x] CSV export of the current filter.
+- [x] PDF export of a single complaint (ref, photos, timeline) — plain file, not branded.
 
 **Exit check:** An official filters last 30 days, downloads CSV, and understands volume without a slide deck.
+
+**How it works:** `/analytics` defaults to the last 30 days. Queue/Analytics share filter CSV via `/api/official/export`. Complaint workbench offers `/api/official/complaints/[id]/pdf`. Map uses Leaflet.markercluster.
 
 ---
 
