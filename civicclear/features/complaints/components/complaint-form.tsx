@@ -30,7 +30,7 @@ export function ComplaintForm() {
           id="type"
           name="type"
           required
-          className="flex h-11 w-full rounded-2xl border border-line/80 bg-white/80 px-3.5 text-sm text-ink focus-visible:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20"
+          className="field"
           defaultValue="pothole"
         >
           {Object.entries(COMPLAINT_TYPE_LABELS).map(([value, label]) => (
@@ -62,7 +62,7 @@ export function ComplaintForm() {
           rows={5}
           maxLength={2000}
           placeholder="What is wrong, how long it has been there, and any nearby landmark."
-          className="w-full rounded-2xl border border-line/80 bg-white/80 px-3.5 py-3 text-sm text-ink placeholder:text-ink-muted/60 focus-visible:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20"
+          className="field h-auto min-h-[8rem] py-3"
         />
       </div>
 

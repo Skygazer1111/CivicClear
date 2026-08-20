@@ -31,7 +31,8 @@ export default async function ProfilePage() {
         >
           ← Back to dashboard
         </Link>
-        <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight">
+        <p className="page-kicker mt-5">Citizen</p>
+        <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
           Profile
         </h1>
         <p className="mt-2 text-ink-muted">
@@ -40,9 +41,9 @@ export default async function ProfilePage() {
         </p>
       </div>
 
-      <section className="glass-panel rounded-[1.75rem] p-6 sm:p-8">
-        <p className="text-sm text-ink-muted">Reward points</p>
-        <p className="mt-1 font-display text-4xl font-semibold tracking-tight">
+      <section className="glass-panel stat-tile rounded-[1.75rem] p-6 sm:p-8">
+        <p className="text-sm font-medium text-ink-muted">Reward points</p>
+        <p className="mt-1 font-display text-5xl font-semibold tracking-tight">
           {user.points}
         </p>
         <p className="mt-2 text-sm text-ink-muted">

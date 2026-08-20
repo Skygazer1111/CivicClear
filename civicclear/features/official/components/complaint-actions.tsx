@@ -40,7 +40,7 @@ export function OfficialComplaintActions({
             id="priority"
             name="priority"
             defaultValue={priority}
-            className="h-11 rounded-2xl border border-line/80 bg-white/80 px-3 text-sm"
+            className="field w-auto"
           >
             {(Object.keys(PRIORITY_LABELS) as Priority[]).map((value) => (
               <option key={value} value={value}>
@@ -73,7 +73,7 @@ export function OfficialComplaintActions({
               id="toStatus"
               name="toStatus"
               required
-              className="flex h-11 w-full rounded-2xl border border-line/80 bg-white/80 px-3 text-sm"
+              className="field"
               defaultValue={nextStatuses[0]}
             >
               {nextStatuses.map((value) => (
@@ -89,7 +89,7 @@ export function OfficialComplaintActions({
                 name="note"
                 rows={3}
                 placeholder="Required when rejecting or resolving"
-                className="w-full rounded-2xl border border-line/80 bg-white/80 px-3.5 py-3 text-sm"
+                className="field h-auto min-h-[5.5rem] py-3"
               />
             </div>
             <Button type="submit" disabled={statusPending}>

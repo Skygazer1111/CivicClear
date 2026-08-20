@@ -20,12 +20,12 @@ export function statusBadgeClass(status: ComplaintStatus) {
   switch (status) {
     case "submitted":
     case "verified":
-      return "bg-amber-50 text-status-pending";
+      return "bg-amber-100/90 text-status-pending ring-1 ring-amber-200/80";
     case "in_progress":
-      return "bg-sky-50 text-status-progress";
+      return "bg-sky-100/90 text-status-progress ring-1 ring-sky-200/80";
     case "resolved":
-      return "bg-emerald-50 text-status-resolved";
+      return "bg-emerald-100/90 text-status-resolved ring-1 ring-emerald-200/80";
     case "rejected":
-      return "bg-rose-50 text-status-rejected";
+      return "bg-orange-100/90 text-status-rejected ring-1 ring-orange-200/80";
   }
 }

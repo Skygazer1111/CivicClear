@@ -1,41 +1,42 @@
 # CivicClear UI
 
-Light, soft, and a little motion — not dark, not sterile.
+Luminous lagoon daylight — soft aurora, frosted panels, smooth motion. Not dark, not sterile, not neon purple.
 
 ## Type
 
-- Display: Fraunces (brand + page titles)
-- Body: Nunito Sans
-- Brand name should feel like the hero, not a tiny nav label
+- Display: **Fraunces** (brand + page titles)
+- Body: **Plus Jakarta Sans**
+- Brand mark: gradient “CC” tile + wordmark; brand should read as the hero on the landing page
 
 ## Color
 
 | Token | Hex | Use |
 |---|---|---|
-| Canvas | `#F3F8F6` | Soft mint-tinted base |
-| Ink | `#1A2E28` | Text |
-| Ink muted | `#5A7268` | Secondary text |
-| Line | `#D5E4DC` | Soft borders |
-| Accent | `#1F8A70` | Primary actions |
-| Sky soft | `#D9EEF5` | Ambient blob |
-| Mint soft | `#D8F0E4` | Ambient blob |
-| Sand soft | `#F3EBE2` | Ambient blob |
+| Canvas | `#EEF6F3` | Soft mint base |
+| Ink | `#10241F` | Primary text |
+| Ink muted | `#4D675E` | Secondary text |
+| Line | `#C9DDD4` | Soft borders |
+| Accent | `#0F8F78` | Primary actions / links |
+| Accent soft | `#D4F3EA` | Active nav, chips |
+| Sky / mint / sand / coral soft | ambient aurora blobs |
 
 No dark theme. No purple neon. Soft daylight palette only.
 
 ## Motion
 
-- Floating ambient blobs (slow, ~14–18s)
-- Rise-in on first paint (~0.7s)
-- Soft button lift on hover
+- Floating ambient blobs + slow aurora meshes (~14–22s)
+- Rise-in on first paint (~0.85s, slight blur → clear)
+- Button lift / press scale; interactive glass sheen on hover
+- Active nav pills
 - Respect `prefers-reduced-motion`
 
 ## Surfaces
 
-- Frosted light panels (`glass-panel`): translucent white, soft blur, gentle shadow
-- Large soft radii (~1.5–1.75rem)
-- Avoid heavy stacked shadows and dark glassmorphism
+- Frosted panels (`glass-panel`): translucent white, blur + saturate, inset highlight
+- Shared form control class: `.field`
+- Large soft radii (~1.5–2rem)
+- Subtle film grain over the ambient field
 
 ## Tone
 
-Short and calm. “Welcome back”, not corporate slogans.
+Short and calm. “Welcome back”, not corporate slogans. Official pages use a small “Official” kicker; citizen pages use “Citizen”.

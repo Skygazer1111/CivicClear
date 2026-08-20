@@ -9,7 +9,7 @@ export function StatusBadge({ status }: { status: ComplaintStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold",
+        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold tracking-tight shadow-[0_1px_0_rgba(255,255,255,0.7)_inset]",
         statusBadgeClass(status),
       )}
     >

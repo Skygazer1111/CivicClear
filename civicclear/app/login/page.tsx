@@ -28,32 +28,33 @@ export default async function LoginPage({
       <AmbientBackground />
 
       <header className="relative z-10">
-        <div className="mx-auto flex h-16 max-w-page items-center px-4 sm:px-6">
-          <Link
-            href="/"
-            className="font-display text-lg font-semibold tracking-tight"
-          >
-            CivicClear
+        <div className="mx-auto flex h-[4.25rem] max-w-page items-center px-4 sm:px-6">
+          <Link href="/" className="group flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1bb291] to-accent text-sm font-bold text-white shadow-[0_8px_20px_rgba(15,143,120,0.35)] transition-transform group-hover:scale-105">
+              CC
+            </span>
+            <span className="font-display text-xl font-semibold tracking-tight">
+              CivicClear
+            </span>
           </Link>
         </div>
       </header>
 
       <main className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10 sm:px-6">
-        <div className="rise-in glass-panel rounded-[1.75rem] p-7 sm:p-8">
-          <p className="text-sm font-semibold text-accent">
+        <div className="rise-in glass-panel rounded-[2rem] p-7 sm:p-9">
+          <p className="page-kicker">
             {portal === "citizen" ? "Citizen portal" : "Official portal"}
           </p>
-          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">
+          <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             Welcome back
           </h1>
-          <p className="mt-2 text-sm text-ink-muted">
+          <p className="mt-2 text-sm leading-relaxed text-ink-muted">
             {portal === "citizen"
               ? "Sign in to report and track civic issues."
               : "Department access for complaint handling."}
           </p>
-          <div className="mt-7">
-            <LoginForm portal={portal} />
-          </div>
+          <div className="soft-divider my-7" />
+          <LoginForm portal={portal} />
         </div>
       </main>
 

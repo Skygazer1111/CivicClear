@@ -54,9 +54,10 @@ export function AnalyticsCharts({ data }: { data: AnalyticsPayload }) {
                     type="monotone"
                     dataKey="count"
                     name="Complaints"
-                    stroke="#0f766e"
-                    strokeWidth={2}
+                    stroke="#0f8f78"
+                    strokeWidth={2.5}
                     dot={false}
+                    activeDot={{ r: 5, fill: "#0f8f78" }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -91,8 +92,8 @@ export function AnalyticsCharts({ data }: { data: AnalyticsPayload }) {
                   <Bar
                     dataKey="count"
                     name="Complaints"
-                    fill="#0f766e"
-                    radius={[6, 6, 0, 0]}
+                    fill="#0f8f78"
+                    radius={[8, 8, 0, 0]}
                   />
                 </BarChart>
               </ResponsiveContainer>

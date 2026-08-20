@@ -36,7 +36,8 @@ export default async function OfficialQueuePage({
     <div className="rise-in space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">
+          <p className="page-kicker">Official</p>
+          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
             Complaint queue
           </h1>
           <p className="mt-2 text-ink-muted">
@@ -77,7 +78,7 @@ export default async function OfficialQueuePage({
               <li key={complaint.id}>
                 <Link
                   href={`/queue/${complaint.id}`}
-                  className="glass-panel block rounded-[1.25rem] p-4 transition-colors hover:bg-white/70"
+                  className="glass-panel glass-panel-interactive block rounded-[1.35rem] p-4"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>

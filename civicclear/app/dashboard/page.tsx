@@ -31,14 +31,15 @@ export default async function CitizenDashboardPage() {
     <div className="rise-in">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">
+          <p className="page-kicker">Citizen</p>
+          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
             Dashboard
           </h1>
           <p className="mt-2 text-ink-muted">
             Welcome, {session?.user?.name}. Track and file civic reports here.
           </p>
-          <p className="mt-1 text-sm text-ink-muted">
-            Points balance:{" "}
+          <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/55 px-3 py-1 text-sm shadow-sm backdrop-blur-sm">
+            <span className="text-ink-muted">Points</span>
             <Link
               href="/profile"
               className="font-semibold text-accent hover:underline"
@@ -58,8 +59,8 @@ export default async function CitizenDashboardPage() {
         <Stat label="Resolved" value={String(resolved)} />
       </div>
 
-      <section className="glass-panel mt-8 overflow-hidden rounded-[1.5rem]">
-        <div className="flex items-center justify-between border-b border-line/70 px-5 py-4">
+      <section className="glass-panel mt-8 overflow-hidden rounded-[1.75rem]">
+        <div className="flex items-center justify-between border-b border-line/50 px-5 py-4">
           <h2 className="font-display text-xl font-semibold">Your reports</h2>
         </div>
 
@@ -146,9 +147,9 @@ export default async function CitizenDashboardPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="glass-panel rounded-[1.35rem] px-5 py-4">
-      <p className="text-sm text-ink-muted">{label}</p>
-      <p className="mt-1 font-display text-3xl font-semibold tracking-tight">
+    <div className="glass-panel stat-tile rounded-[1.5rem] px-5 py-5">
+      <p className="text-sm font-medium text-ink-muted">{label}</p>
+      <p className="mt-2 font-display text-4xl font-semibold tracking-tight">
         {value}
       </p>
     </div>

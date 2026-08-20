@@ -24,24 +24,28 @@ export function QueueFilters({
     <form
       method="get"
       action={action}
-      className="glass-panel grid gap-3 rounded-[1.5rem] p-4 sm:grid-cols-2 lg:grid-cols-6"
+      className="glass-panel grid gap-3 rounded-[1.75rem] p-4 sm:grid-cols-2 sm:p-5 lg:grid-cols-6"
     >
       <label className="block text-sm lg:col-span-2">
-        <span className="mb-1.5 block font-semibold text-ink">Search</span>
+        <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-ink-muted">
+          Search
+        </span>
         <input
           name="q"
           defaultValue={filters.q ?? ""}
           placeholder="Reference or title"
-          className="flex h-11 w-full rounded-2xl border border-line/80 bg-white/80 px-3.5 text-sm"
+          className="field"
         />
       </label>
 
       <label className="block text-sm">
-        <span className="mb-1.5 block font-semibold text-ink">Type</span>
+        <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-ink-muted">
+          Type
+        </span>
         <select
           name="type"
           defaultValue={filters.type ?? "all"}
-          className="flex h-11 w-full rounded-2xl border border-line/80 bg-white/80 px-3 text-sm"
+          className="field"
         >
           <option value="all">All</option>
           {(Object.keys(COMPLAINT_TYPE_LABELS) as ComplaintType[]).map(
@@ -55,11 +59,13 @@ export function QueueFilters({
       </label>
 
       <label className="block text-sm">
-        <span className="mb-1.5 block font-semibold text-ink">Status</span>
+        <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-ink-muted">
+          Status
+        </span>
         <select
           name="status"
           defaultValue={filters.status ?? "all"}
-          className="flex h-11 w-full rounded-2xl border border-line/80 bg-white/80 px-3 text-sm"
+          className="field"
         >
           <option value="all">All</option>
           {(Object.keys(COMPLAINT_STATUS_LABELS) as ComplaintStatus[]).map(
@@ -73,11 +79,13 @@ export function QueueFilters({
       </label>
 
       <label className="block text-sm">
-        <span className="mb-1.5 block font-semibold text-ink">Priority</span>
+        <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-ink-muted">
+          Priority
+        </span>
         <select
           name="priority"
           defaultValue={filters.priority ?? "all"}
-          className="flex h-11 w-full rounded-2xl border border-line/80 bg-white/80 px-3 text-sm"
+          className="field"
         >
           <option value="all">All</option>
           {(Object.keys(PRIORITY_LABELS) as Priority[]).map((value) => (
@@ -89,22 +97,26 @@ export function QueueFilters({
       </label>
 
       <label className="block text-sm">
-        <span className="mb-1.5 block font-semibold text-ink">From</span>
+        <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-ink-muted">
+          From
+        </span>
         <input
           type="date"
           name="from"
           defaultValue={filters.from ?? ""}
-          className="flex h-11 w-full rounded-2xl border border-line/80 bg-white/80 px-3 text-sm"
+          className="field"
         />
       </label>
 
       <label className="block text-sm">
-        <span className="mb-1.5 block font-semibold text-ink">To</span>
+        <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-ink-muted">
+          To
+        </span>
         <input
           type="date"
           name="to"
           defaultValue={filters.to ?? ""}
-          className="flex h-11 w-full rounded-2xl border border-line/80 bg-white/80 px-3 text-sm"
+          className="field"
         />
       </label>
 

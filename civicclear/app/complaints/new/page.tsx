@@ -10,14 +10,15 @@ export default function NewComplaintPage() {
       >
         ← Back to dashboard
       </Link>
-      <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight">
+      <p className="page-kicker mt-5">Citizen</p>
+      <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
         Report an issue
       </h1>
       <p className="mt-2 text-ink-muted">
         Add a photo and location so officials can find and fix it faster.
       </p>
 
-      <div className="glass-panel mt-8 rounded-[1.75rem] p-6 sm:p-8">
+      <div className="glass-panel mt-8 rounded-[2rem] p-6 sm:p-8">
         <ComplaintForm />
       </div>
     </div>
