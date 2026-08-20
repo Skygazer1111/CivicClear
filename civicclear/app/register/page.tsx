@@ -38,8 +38,8 @@ export default async function RegisterPage() {
             Create an account
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-            No password needed — we’ll email you a one-time code. Officials are
-            added by an admin.
+            Choose a password, then verify your email once with a code. Officials
+            are added by an admin.
           </p>
           <div className="soft-divider my-5 sm:my-7" />
           <RegisterForm />

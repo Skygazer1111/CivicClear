@@ -45,13 +45,13 @@ Seed creates:
 |---|---|---|
 | Admin | `admin@civicclear.local` | Password `admin123` on Official portal |
 | Official | `official@civicclear.local` | Password `official123` |
-| Citizen | `citizen@civicclear.local` | Email OTP (no password) |
+| Citizen | `citizen@civicclear.local` | Password `citizen123` (email code still available) |
 
 Change admin/official passwords after first login in production, or create new users and deactivate seeds.
 
 ## 4. Auth model in production
 
-- **Citizens:** email → Brevo OTP → session. Register collects name + phone, then OTP.
+- **Citizens:** register with email + password, verify email once with OTP, then sign in with password (OTP remains as backup).
 - **Officials:** created only by an **admin** at `/admin`. They sign in with email + password.
 - **Admins:** seed one admin (or promote a user in the DB). Only admins see `/admin`.
 

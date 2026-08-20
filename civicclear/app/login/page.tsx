@@ -53,7 +53,7 @@ export default async function LoginPage({
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-ink-muted">
             {portal === "citizen"
-              ? "Enter your email and we’ll send a one-time sign-in code."
+              ? "Sign in with your email and password. You can still use an email code if needed."
               : "Department access. Accounts are created by an admin."}
           </p>
           <div className="soft-divider my-7" />

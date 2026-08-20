@@ -94,6 +94,8 @@ export async function registerCitizenWithOtpAction(
     name: formData.get("name"),
     email: formData.get("email"),
     phone: formData.get("phone"),
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid details" };
@@ -103,7 +105,7 @@ export async function registerCitizenWithOtpAction(
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return {
-      error: "An account with this email already exists. Sign in with OTP.",
+      error: "An account with this email already exists. Sign in with your password.",
     };
   }
 
@@ -139,6 +141,7 @@ export async function verifyCitizenOtpAction(
     code: formData.get("code"),
     name: formData.get("name"),
     phone: formData.get("phone"),
+    password: formData.get("password"),
   });
 
   if (!parsed.success) {
@@ -173,6 +176,10 @@ export async function verifyCitizenOtpAction(
     return { error: "That code is incorrect. Check the latest email and try again." };
   }
 
+  const passwordHash = parsed.data.password
+    ? await hash(parsed.data.password, 12)
+    : null;
+
   let user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
     if (!parsed.data.name || !parsed.data.phone) {
@@ -181,14 +188,25 @@ export async function verifyCitizenOtpAction(
         needsProfile: true as const,
       };
     }
+    if (!passwordHash) {
+      return {
+        error: "New accounts need a password (at least 8 characters).",
+      };
+    }
     user = await prisma.user.create({
       data: {
         email,
         name: parsed.data.name,
         phone: parsed.data.phone,
         role: "citizen",
-        passwordHash: null,
+        passwordHash,
       },
+    });
+  } else if (passwordHash && !user.passwordHash) {
+    // Let OTP-only accounts set a password when signing in via code.
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash },
     });
   }
 

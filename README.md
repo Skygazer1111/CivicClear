@@ -50,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000).
 |---|---|---|
 | Admin | `admin@civicclear.local` | Password `admin123` → Official sign in → `/admin` |
 | Official | `official@civicclear.local` | Password `official123` |
-| Citizen | `citizen@civicclear.local` | Request OTP on Citizen sign in |
+| Citizen | `citizen@civicclear.local` | Password `citizen123` (email code still available) |
 
 ## Deploy
 

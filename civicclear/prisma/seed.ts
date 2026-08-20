@@ -16,6 +16,7 @@ async function main() {
 
   const officialHash = await hash("official123", 12);
   const adminHash = await hash("admin123", 12);
+  const citizenHash = await hash("citizen123", 12);
 
   await prisma.user.upsert({
     where: { email: "admin@civicclear.local" },
@@ -49,27 +50,26 @@ async function main() {
     },
   });
 
-  // Citizens use OTP — keep a sample profile without a password for demos.
   await prisma.user.upsert({
     where: { email: "citizen@civicclear.local" },
     update: {
       role: "citizen",
-      passwordHash: null,
+      passwordHash: citizenHash,
       active: true,
     },
     create: {
       name: "Asha Patel",
       email: "citizen@civicclear.local",
       phone: "9876543210",
-      passwordHash: null,
+      passwordHash: citizenHash,
       role: "citizen",
     },
   });
 
   console.log("Seeded:");
-  console.log("  admin@civicclear.local / admin123  (creates officials)");
+  console.log("  admin@civicclear.local / admin123  (creates officials at /admin)");
   console.log("  official@civicclear.local / official123");
-  console.log("  citizen@civicclear.local  (OTP login — no password)");
+  console.log("  citizen@civicclear.local / citizen123");
 }
 
 main()

@@ -19,7 +19,7 @@ export function LoginForm({ portal }: { portal: Portal }) {
   if (portal === "official") {
     return <OfficialPasswordLogin />;
   }
-  return <CitizenOtpLogin />;
+  return <CitizenLogin />;
 }
 
 function OfficialPasswordLogin() {
@@ -100,7 +100,110 @@ function OfficialPasswordLogin() {
   );
 }
 
-function CitizenOtpLogin() {
+function CitizenLogin() {
+  const [mode, setMode] = useState<"password" | "otp">("password");
+
+  if (mode === "otp") {
+    return <CitizenOtpLogin onUsePassword={() => setMode("password")} />;
+  }
+
+  return <CitizenPasswordLogin onUseOtp={() => setMode("otp")} />;
+}
+
+function CitizenPasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setPending(true);
+
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "");
+    const password = String(formData.get("password") ?? "");
+
+    try {
+      const result = await signIn("citizen-password", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/dashboard",
+      });
+
+      if (!result || result.error) {
+        setError(
+          "Email or password is incorrect. If you signed up with email only, use a sign-in code once and set a password on your profile.",
+        );
+        setPending(false);
+        return;
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Could not sign in. Please try again.");
+      setPending(false);
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-5" noValidate>
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@email.com"
+          required
+        />
+      </div>
+      <div>
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          required
+          minLength={8}
+        />
+      </div>
+      <FormErrorBanner message={error} />
+      <Button
+        type="submit"
+        className="w-full"
+        size="lg"
+        disabled={pending}
+        aria-busy={pending}
+      >
+        {pending ? "Signing in…" : "Sign in"}
+      </Button>
+      <button
+        type="button"
+        className="w-full text-center text-sm font-medium text-accent hover:underline disabled:opacity-50"
+        disabled={pending}
+        onClick={onUseOtp}
+      >
+        Use email code instead
+      </button>
+      <p className="text-center text-sm text-ink-muted">
+        New here?{" "}
+        <Link
+          href="/register"
+          className="font-medium text-accent hover:underline"
+        >
+          Create a citizen account
+        </Link>
+      </p>
+    </form>
+  );
+}
+
+function CitizenOtpLogin({ onUsePassword }: { onUsePassword: () => void }) {
   const router = useRouter();
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
@@ -242,6 +345,14 @@ function CitizenOtpLogin() {
         >
           {pending ? "Sending code…" : "Email me a sign-in code"}
         </Button>
+        <button
+          type="button"
+          className="w-full text-center text-sm font-medium text-accent hover:underline disabled:opacity-50"
+          disabled={pending}
+          onClick={onUsePassword}
+        >
+          Sign in with password instead
+        </button>
         <p className="text-center text-sm text-ink-muted">
           New here?{" "}
           <Link
@@ -289,8 +400,38 @@ function CitizenOtpLogin() {
               maxLength={10}
             />
           </div>
+          <div>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              required
+              minLength={8}
+            />
+            <p className="mt-1.5 text-xs text-ink-muted">
+              Use this password next time so you do not need a code every visit.
+            </p>
+          </div>
         </>
-      ) : null}
+      ) : (
+        <div>
+          <Label htmlFor="password">Set a password (optional)</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            minLength={8}
+            placeholder="At least 8 characters"
+          />
+          <p className="mt-1.5 text-xs text-ink-muted">
+            If you do not have a password yet, set one here to skip codes next
+            time.
+          </p>
+        </div>
+      )}
 
       <div>
         <Label htmlFor="code">Sign-in code</Label>

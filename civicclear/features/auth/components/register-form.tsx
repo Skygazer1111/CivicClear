@@ -21,6 +21,7 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
   const [devCode, setDevCode] = useState<string | undefined>();
 
   async function onDetails(event: React.FormEvent<HTMLFormElement>) {
@@ -40,6 +41,7 @@ export function RegisterForm() {
     setEmail(String(formData.get("email") ?? "").toLowerCase().trim());
     setName(String(formData.get("name") ?? ""));
     setPhone(String(formData.get("phone") ?? ""));
+    setPassword(String(formData.get("password") ?? ""));
     setDevCode(result && "devCode" in result ? result.devCode : undefined);
     setStep("code");
   }
@@ -53,6 +55,7 @@ export function RegisterForm() {
     formData.set("email", email);
     formData.set("name", name);
     formData.set("phone", phone);
+    formData.set("password", password);
 
     try {
       const verified = await verifyCitizenOtpAction(undefined, formData);
@@ -76,7 +79,9 @@ export function RegisterForm() {
       });
 
       if (!result || result.error) {
-        setError("Account ready, but sign-in failed. Try signing in with OTP.");
+        setError(
+          "Account ready, but sign-in failed. Try signing in with your password.",
+        );
         setPending(false);
         router.push("/login?portal=citizen");
         return;
@@ -95,7 +100,8 @@ export function RegisterForm() {
       <form onSubmit={onVerify} className="space-y-5" noValidate>
         <p className="rounded-2xl bg-accent-soft/70 px-3.5 py-3 text-sm text-ink-muted">
           Enter the code sent to{" "}
-          <span className="font-semibold text-ink">{email}</span>.
+          <span className="font-semibold text-ink">{email}</span> to verify
+          your email. After that you can sign in with your password.
           {devCode ? (
             <>
               {" "}
@@ -104,7 +110,7 @@ export function RegisterForm() {
           ) : null}
         </p>
         <div>
-          <Label htmlFor="code">Sign-in code</Label>
+          <Label htmlFor="code">Email verification code</Label>
           <Input
             id="code"
             name="code"
@@ -172,6 +178,32 @@ export function RegisterForm() {
           maxLength={10}
         />
       </div>
+      <div>
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={8}
+        />
+        <p className="mt-1.5 text-xs text-ink-muted">
+          At least 8 characters. You will use this to sign in after email
+          verification.
+        </p>
+      </div>
+      <div>
+        <Label htmlFor="confirmPassword">Confirm password</Label>
+        <Input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={8}
+        />
+      </div>
       <FormErrorBanner message={error} />
       <Button
         type="submit"
@@ -180,7 +212,7 @@ export function RegisterForm() {
         disabled={pending}
         aria-busy={pending}
       >
-        {pending ? "Sending code…" : "Continue with email code"}
+        {pending ? "Sending code…" : "Continue — verify email"}
       </Button>
       <p className="text-center text-sm text-ink-muted">
         Already registered?{" "}
@@ -188,7 +220,7 @@ export function RegisterForm() {
           href="/login?portal=citizen"
           className="font-medium text-accent hover:underline"
         >
-          Sign in with OTP
+          Sign in
         </Link>
       </p>
     </form>
