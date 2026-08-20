@@ -3,9 +3,8 @@ import { auth } from "@/features/auth/auth";
 import { prisma } from "@/shared/db/prisma";
 import { StatusBadge } from "@/features/complaints/components/status-badge";
 import { Button } from "@/shared/ui/button";
-import {
-  COMPLAINT_TYPE_LABELS,
-} from "@/features/complaints/labels";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { COMPLAINT_TYPE_LABELS } from "@/features/complaints/labels";
 
 export default async function CitizenDashboardPage() {
   const session = await auth();
@@ -33,7 +32,7 @@ export default async function CitizenDashboardPage() {
             Welcome, {session?.user?.name}. Track and file civic reports here.
           </p>
         </div>
-        <Button asChild size="lg">
+        <Button asChild size="lg" className="w-full sm:w-auto">
           <Link href="/complaints/new">Report an issue</Link>
         </Button>
       </div>
@@ -50,55 +49,80 @@ export default async function CitizenDashboardPage() {
         </div>
 
         {complaints.length === 0 ? (
-          <div className="px-5 py-14 text-center">
-            <p className="text-ink-muted">No reports yet</p>
-            <div className="mt-4">
-              <Button asChild>
-                <Link href="/complaints/new">Report an issue</Link>
-              </Button>
-            </div>
-          </div>
+          <EmptyState
+            title="No reports yet"
+            description="File a civic issue with a photo and location."
+            actionHref="/complaints/new"
+            actionLabel="Report an issue"
+          />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left text-sm">
-              <thead className="bg-white/40 text-ink-muted">
-                <tr>
-                  <th className="px-5 py-3 font-semibold">Reference</th>
-                  <th className="px-5 py-3 font-semibold">Title</th>
-                  <th className="px-5 py-3 font-semibold">Type</th>
-                  <th className="px-5 py-3 font-semibold">Status</th>
-                  <th className="px-5 py-3 font-semibold">Filed</th>
-                </tr>
-              </thead>
-              <tbody>
-                {complaints.map((complaint) => (
-                  <tr
-                    key={complaint.id}
-                    className="border-t border-line/60 hover:bg-white/35"
+          <>
+            <ul className="divide-y divide-line/60 md:hidden">
+              {complaints.map((complaint) => (
+                <li key={complaint.id}>
+                  <Link
+                    href={`/complaints/${complaint.id}`}
+                    className="block px-5 py-4 hover:bg-white/40"
                   >
-                    <td className="px-5 py-3">
-                      <Link
-                        href={`/complaints/${complaint.id}`}
-                        className="font-medium text-accent hover:underline"
-                      >
-                        {complaint.publicRef}
-                      </Link>
-                    </td>
-                    <td className="px-5 py-3 text-ink">{complaint.title}</td>
-                    <td className="px-5 py-3 text-ink-muted">
-                      {COMPLAINT_TYPE_LABELS[complaint.type]}
-                    </td>
-                    <td className="px-5 py-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-accent">
+                          {complaint.publicRef}
+                        </p>
+                        <p className="mt-1 font-medium">{complaint.title}</p>
+                        <p className="mt-1 text-sm text-ink-muted">
+                          {COMPLAINT_TYPE_LABELS[complaint.type]} ·{" "}
+                          {complaint.createdAt.toLocaleDateString()}
+                        </p>
+                      </div>
                       <StatusBadge status={complaint.status} />
-                    </td>
-                    <td className="px-5 py-3 text-ink-muted">
-                      {complaint.createdAt.toLocaleDateString()}
-                    </td>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="hidden overflow-x-auto md:block">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-white/40 text-ink-muted">
+                  <tr>
+                    <th className="px-5 py-3 font-semibold">Reference</th>
+                    <th className="px-5 py-3 font-semibold">Title</th>
+                    <th className="px-5 py-3 font-semibold">Type</th>
+                    <th className="px-5 py-3 font-semibold">Status</th>
+                    <th className="px-5 py-3 font-semibold">Filed</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {complaints.map((complaint) => (
+                    <tr
+                      key={complaint.id}
+                      className="border-t border-line/60 hover:bg-white/35"
+                    >
+                      <td className="px-5 py-3">
+                        <Link
+                          href={`/complaints/${complaint.id}`}
+                          className="font-medium text-accent hover:underline"
+                        >
+                          {complaint.publicRef}
+                        </Link>
+                      </td>
+                      <td className="px-5 py-3 text-ink">{complaint.title}</td>
+                      <td className="px-5 py-3 text-ink-muted">
+                        {COMPLAINT_TYPE_LABELS[complaint.type]}
+                      </td>
+                      <td className="px-5 py-3">
+                        <StatusBadge status={complaint.status} />
+                      </td>
+                      <td className="px-5 py-3 text-ink-muted">
+                        {complaint.createdAt.toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </section>
     </div>

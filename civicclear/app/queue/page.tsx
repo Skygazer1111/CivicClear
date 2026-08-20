@@ -7,6 +7,7 @@ import { listComplaintsForOfficials } from "@/features/official/queue";
 import { QueueFilters } from "@/features/official/components/queue-filters";
 import { StatusBadge } from "@/features/complaints/components/status-badge";
 import { Button } from "@/shared/ui/button";
+import { EmptyState } from "@/shared/ui/empty-state";
 
 type SearchParams = Promise<{
   q?: string;
@@ -78,61 +79,91 @@ export default async function OfficialQueuePage({
 
       <QueueFilters filters={params} />
 
-      <div className="glass-panel overflow-hidden rounded-[1.5rem]">
-        <table className="w-full min-w-[720px] text-left text-sm">
-          <thead className="border-b border-line/70 bg-white/40 text-ink-muted">
-            <tr>
-              <th className="px-5 py-3 font-semibold">Reference</th>
-              <th className="px-5 py-3 font-semibold">Title</th>
-              <th className="px-5 py-3 font-semibold">Type</th>
-              <th className="px-5 py-3 font-semibold">Priority</th>
-              <th className="px-5 py-3 font-semibold">Status</th>
-              <th className="px-5 py-3 font-semibold">Age</th>
-            </tr>
-          </thead>
-          <tbody>
-            {complaints.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="px-5 py-14 text-center text-ink-muted"
+      {complaints.length === 0 ? (
+        <div className="glass-panel rounded-[1.5rem]">
+          <EmptyState
+            title="No complaints match these filters"
+            description="Clear filters or wait for new citizen reports."
+          />
+        </div>
+      ) : (
+        <>
+          {/* Mobile stacked list */}
+          <ul className="space-y-3 md:hidden">
+            {complaints.map((complaint) => (
+              <li key={complaint.id}>
+                <Link
+                  href={`/queue/${complaint.id}`}
+                  className="glass-panel block rounded-[1.25rem] p-4 transition-colors hover:bg-white/70"
                 >
-                  No complaints match these filters.
-                </td>
-              </tr>
-            ) : (
-              complaints.map((complaint) => (
-                <tr
-                  key={complaint.id}
-                  className="border-t border-line/60 hover:bg-white/35"
-                >
-                  <td className="px-5 py-3">
-                    <Link
-                      href={`/queue/${complaint.id}`}
-                      className="font-medium text-accent hover:underline"
-                    >
-                      {complaint.publicRef}
-                    </Link>
-                  </td>
-                  <td className="px-5 py-3 text-ink">{complaint.title}</td>
-                  <td className="px-5 py-3 text-ink-muted">
-                    {COMPLAINT_TYPE_LABELS[complaint.type]}
-                  </td>
-                  <td className="px-5 py-3 text-ink-muted">
-                    {PRIORITY_LABELS[complaint.priority]}
-                  </td>
-                  <td className="px-5 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-accent">
+                        {complaint.publicRef}
+                      </p>
+                      <p className="mt-1 font-medium text-ink">
+                        {complaint.title}
+                      </p>
+                      <p className="mt-1 text-sm text-ink-muted">
+                        {COMPLAINT_TYPE_LABELS[complaint.type]} ·{" "}
+                        {PRIORITY_LABELS[complaint.priority]} ·{" "}
+                        {formatAge(complaint.createdAt)}
+                      </p>
+                    </div>
                     <StatusBadge status={complaint.status} />
-                  </td>
-                  <td className="px-5 py-3 text-ink-muted">
-                    {formatAge(complaint.createdAt)}
-                  </td>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {/* Desktop table */}
+          <div className="glass-panel hidden overflow-hidden rounded-[1.5rem] md:block">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-line/70 bg-white/40 text-ink-muted">
+                <tr>
+                  <th className="px-5 py-3 font-semibold">Reference</th>
+                  <th className="px-5 py-3 font-semibold">Title</th>
+                  <th className="px-5 py-3 font-semibold">Type</th>
+                  <th className="px-5 py-3 font-semibold">Priority</th>
+                  <th className="px-5 py-3 font-semibold">Status</th>
+                  <th className="px-5 py-3 font-semibold">Age</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {complaints.map((complaint) => (
+                  <tr
+                    key={complaint.id}
+                    className="border-t border-line/60 hover:bg-white/35"
+                  >
+                    <td className="px-5 py-3">
+                      <Link
+                        href={`/queue/${complaint.id}`}
+                        className="font-medium text-accent hover:underline"
+                      >
+                        {complaint.publicRef}
+                      </Link>
+                    </td>
+                    <td className="px-5 py-3 text-ink">{complaint.title}</td>
+                    <td className="px-5 py-3 text-ink-muted">
+                      {COMPLAINT_TYPE_LABELS[complaint.type]}
+                    </td>
+                    <td className="px-5 py-3 text-ink-muted">
+                      {PRIORITY_LABELS[complaint.priority]}
+                    </td>
+                    <td className="px-5 py-3">
+                      <StatusBadge status={complaint.status} />
+                    </td>
+                    <td className="px-5 py-3 text-ink-muted">
+                      {formatAge(complaint.createdAt)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
 }

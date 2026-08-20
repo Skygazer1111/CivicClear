@@ -1,22 +1,29 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useId } from "react";
 import { createComplaintAction } from "@/features/complaints/actions";
 import { LocationPicker } from "@/features/complaints/components/location-picker-dynamic";
 import { PhotoPicker } from "@/features/complaints/components/photo-picker";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { FormErrorBanner } from "@/shared/ui/field-error";
 import { COMPLAINT_TYPE_LABELS } from "@/features/complaints/labels";
 
 export function ComplaintForm() {
+  const formErrorId = useId();
   const [state, formAction, pending] = useActionState(
     createComplaintAction,
     undefined,
   );
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form
+      action={formAction}
+      className="space-y-6"
+      aria-describedby={state?.error ? formErrorId : undefined}
+      noValidate
+    >
       <div>
         <Label htmlFor="type">Issue type</Label>
         <select
@@ -42,6 +49,7 @@ export function ComplaintForm() {
           placeholder="e.g. Deep pothole near the bus stop"
           required
           maxLength={100}
+          autoComplete="off"
         />
       </div>
 
@@ -61,13 +69,17 @@ export function ComplaintForm() {
       <PhotoPicker />
       <LocationPicker />
 
-      {state?.error ? (
-        <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-status-rejected">
-          {state.error}
-        </p>
-      ) : null}
+      <div id={formErrorId}>
+        <FormErrorBanner message={state?.error} />
+      </div>
 
-      <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={pending}>
+      <Button
+        type="submit"
+        size="lg"
+        className="w-full sm:w-auto"
+        disabled={pending}
+        aria-busy={pending}
+      >
         {pending ? "Submitting…" : "Submit report"}
       </Button>
     </form>

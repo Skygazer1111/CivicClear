@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/features/auth/auth";
 import { createPublicRef } from "@/features/complaints/service";
+import { assertComplaintRateLimit } from "@/features/complaints/rate-limit";
 import { createComplaintSchema } from "@/features/complaints/schemas";
 import { uploadComplaintPhotos } from "@/features/complaints/uploads";
 import { prisma } from "@/shared/db/prisma";
@@ -15,6 +16,14 @@ export async function createComplaintAction(
   const session = await auth();
   if (!session?.user?.id || session.user.role !== "citizen") {
     return { error: "You must be signed in as a citizen." };
+  }
+
+  try {
+    await assertComplaintRateLimit(session.user.id);
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Rate limit exceeded",
+    };
   }
 
   const latRaw = String(formData.get("lat") ?? "").trim();

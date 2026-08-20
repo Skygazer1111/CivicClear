@@ -60,13 +60,13 @@ export function OfficialComplaintsMap({
     : { lat: 28.6139, lng: 77.209 };
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_20rem]">
-      <div className="overflow-hidden rounded-[1.5rem] border border-line/80">
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="-mx-4 overflow-hidden border-y border-line/80 sm:mx-0 sm:rounded-[1.5rem] sm:border">
         <MapContainer
           center={[center.lat, center.lng]}
           zoom={12}
           scrollWheelZoom
-          className="h-[28rem] w-full"
+          className="h-[70vh] min-h-[22rem] w-full sm:h-[28rem]"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

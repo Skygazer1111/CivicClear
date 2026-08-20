@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState } from "react";
 import { updateProfileAction } from "@/features/profile/actions";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { FormErrorBanner } from "@/shared/ui/field-error";
 
 type Props = {
   name: string;
@@ -19,14 +20,8 @@ export function ProfileForm({ name, phone, email, hasAadhaar }: Props) {
     undefined,
   );
 
-  useEffect(() => {
-    if (state?.ok) {
-      // no-op; message shown below
-    }
-  }, [state]);
-
   return (
-    <form action={formAction} className="space-y-5">
+    <form action={formAction} className="space-y-5" noValidate>
       <div>
         <Label htmlFor="email">Email</Label>
         <Input id="email" value={email} disabled />
@@ -86,18 +81,17 @@ export function ProfileForm({ name, phone, email, hasAadhaar }: Props) {
         </div>
       </div>
 
-      {state?.error ? (
-        <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-status-rejected">
-          {state.error}
-        </p>
-      ) : null}
+      <FormErrorBanner message={state?.error} />
       {state?.ok ? (
-        <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-status-resolved">
+        <p
+          role="status"
+          className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-status-resolved"
+        >
           Profile updated.
         </p>
       ) : null}
 
-      <Button type="submit" size="lg" disabled={pending}>
+      <Button type="submit" size="lg" disabled={pending} aria-busy={pending}>
         {pending ? "Saving…" : "Save changes"}
       </Button>
     </form>

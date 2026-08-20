@@ -157,19 +157,21 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 ---
 
-### Phase 3 — Polish the product surface (4–6 days)
+### Phase 3 — Polish the product surface ✅ Done
 
 **Goal:** It feels complete even if features are still missing.
 
-- Responsive layouts: citizen form and detail work on a phone; official table becomes a stacked list under 768px, map full-width.
-- Accessible forms: labels, errors under fields, keyboard-only submit.
-- Loading and empty states for every list.
-- Error pages (404, 500) in the same visual language.
-- Rate-limit report creation (e.g. 5 per hour per user).
-- Helmet-equivalent headers, CORS not needed if same origin, Zod on every mutation.
-- Image malware-ish hygiene: type check, size check, strip EXIF if you can.
+- [x] Responsive layouts: citizen form and detail work on a phone; official table becomes a stacked list under 768px, map full-width.
+- [x] Accessible forms: labels, errors under fields, keyboard-only submit.
+- [x] Loading and empty states for every list.
+- [x] Error pages (404, 500) in the same visual language.
+- [x] Rate-limit report creation (e.g. 5 per hour per user).
+- [x] Helmet-equivalent headers, CORS not needed if same origin, Zod on every mutation.
+- [x] Image malware-ish hygiene: type check, size check, strip EXIF if you can.
 
 **Exit check:** You can demo the full loop on a phone without apologizing for the UI.
+
+**What shipped:** mobile nav + stacked lists, `loading.tsx` / `EmptyState`, `not-found` + `error` pages, 5/hour complaint rate limit, security headers, magic-byte image checks + JPEG/PNG metadata stripping.
 
 ---
 

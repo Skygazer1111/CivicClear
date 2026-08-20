@@ -8,6 +8,7 @@ import { registerAction } from "@/features/auth/actions";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { FormErrorBanner } from "@/shared/ui/field-error";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -89,12 +90,8 @@ export function RegisterForm() {
           minLength={8}
         />
       </div>
-      {error ? (
-        <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-status-rejected">
-          {error}
-        </p>
-      ) : null}
-      <Button type="submit" className="w-full" size="lg" disabled={pending}>
+      <FormErrorBanner message={error} />
+      <Button type="submit" className="w-full" size="lg" disabled={pending} aria-busy={pending}>
         {pending ? "Creating account…" : "Create citizen account"}
       </Button>
       <p className="text-center text-sm text-ink-muted">

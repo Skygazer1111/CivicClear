@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { sanitizeComplaintImage } from "@/features/complaints/image-hygiene";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/jpg"]);
@@ -33,11 +34,7 @@ async function uploadToCloudinary(
   const signature = createHash("sha1").update(toSign).digest("hex");
 
   const body = new FormData();
-  body.append(
-    "file",
-    new Blob([new Uint8Array(buffer)]),
-    filename,
-  );
+  body.append("file", new Blob([new Uint8Array(buffer)]), filename);
   body.append("api_key", apiKey);
   body.append("timestamp", timestamp);
   body.append("signature", signature);
@@ -66,7 +63,10 @@ async function uploadToCloudinary(
   };
 }
 
-async function uploadLocally(buffer: Buffer, mime: string): Promise<UploadedPhoto> {
+async function uploadLocally(
+  buffer: Buffer,
+  mime: string,
+): Promise<UploadedPhoto> {
   const dir = path.join(process.cwd(), "public", "uploads", "complaints");
   await mkdir(dir, { recursive: true });
   const ext =
@@ -94,19 +94,22 @@ export async function uploadComplaintPhotos(files: File[]) {
       throw new Error("Each photo must be 5MB or smaller");
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = file.name || `photo-${randomUUID()}.jpg`;
+    const raw = Buffer.from(await file.arrayBuffer());
+    const cleaned = sanitizeComplaintImage(raw);
+    const filename =
+      file.name?.replace(/\.[^.]+$/, "") || `photo-${randomUUID()}`;
+    const withExt = `${filename}.${cleaned.mime.split("/")[1]}`;
 
     if (cloudinaryReady()) {
       try {
-        uploads.push(await uploadToCloudinary(buffer, filename));
+        uploads.push(await uploadToCloudinary(cleaned.buffer, withExt));
         continue;
       } catch (error) {
         console.error("Cloudinary upload failed, using local storage:", error);
       }
     }
 
-    uploads.push(await uploadLocally(buffer, file.type));
+    uploads.push(await uploadLocally(cleaned.buffer, cleaned.mime));
   }
 
   return uploads;

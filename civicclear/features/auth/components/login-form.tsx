@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { FormErrorBanner } from "@/shared/ui/field-error";
 
 type Portal = "citizen" | "official";
 
@@ -49,7 +50,7 @@ export function LoginForm({ portal }: { portal: Portal }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form onSubmit={onSubmit} className="space-y-5" noValidate>
       <div>
         <Label htmlFor="email">Email</Label>
         <Input
@@ -59,6 +60,7 @@ export function LoginForm({ portal }: { portal: Portal }) {
           autoComplete="email"
           placeholder="you@email.com"
           required
+          aria-invalid={Boolean(error)}
         />
       </div>
       <div>
@@ -70,14 +72,11 @@ export function LoginForm({ portal }: { portal: Portal }) {
           autoComplete="current-password"
           required
           minLength={8}
+          aria-invalid={Boolean(error)}
         />
       </div>
-      {error ? (
-        <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-status-rejected">
-          {error}
-        </p>
-      ) : null}
-      <Button type="submit" className="w-full" size="lg" disabled={pending}>
+      <FormErrorBanner message={error} />
+      <Button type="submit" className="w-full" size="lg" disabled={pending} aria-busy={pending}>
         {pending ? "Signing in…" : "Sign in"}
       </Button>
       {portal === "citizen" ? (
