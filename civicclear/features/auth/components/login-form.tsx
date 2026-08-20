@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { requestCitizenOtpAction } from "@/features/auth/actions";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -12,6 +13,13 @@ import { FormErrorBanner } from "@/shared/ui/field-error";
 type Portal = "citizen" | "official";
 
 export function LoginForm({ portal }: { portal: Portal }) {
+  if (portal === "official") {
+    return <OfficialPasswordLogin />;
+  }
+  return <CitizenOtpLogin />;
+}
+
+function OfficialPasswordLogin() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -24,24 +32,23 @@ export function LoginForm({ portal }: { portal: Portal }) {
     const formData = new FormData(event.currentTarget);
     const email = String(formData.get("email") ?? "");
     const password = String(formData.get("password") ?? "");
-    const callbackUrl = portal === "citizen" ? "/dashboard" : "/queue";
 
     try {
-      const result = await signIn("credentials", {
+      const result = await signIn("official-password", {
         email,
         password,
-        portal,
+        portal: "official",
         redirect: false,
-        callbackUrl,
+        callbackUrl: "/queue",
       });
 
       if (!result || result.error) {
-        setError("Email or password is incorrect for this portal.");
+        setError("Email or password is incorrect.");
         setPending(false);
         return;
       }
 
-      router.push(callbackUrl);
+      router.push("/queue");
       router.refresh();
     } catch {
       setError("Could not sign in. Please try again.");
@@ -52,15 +59,14 @@ export function LoginForm({ portal }: { portal: Portal }) {
   return (
     <form onSubmit={onSubmit} className="space-y-5" noValidate>
       <div>
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Work email</Label>
         <Input
           id="email"
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="you@email.com"
+          placeholder="you@department.gov"
           required
-          aria-invalid={Boolean(error)}
         />
       </div>
       <div>
@@ -72,31 +78,200 @@ export function LoginForm({ portal }: { portal: Portal }) {
           autoComplete="current-password"
           required
           minLength={8}
-          aria-invalid={Boolean(error)}
         />
       </div>
       <FormErrorBanner message={error} />
-      <Button type="submit" className="w-full" size="lg" disabled={pending} aria-busy={pending}>
+      <Button
+        type="submit"
+        className="w-full"
+        size="lg"
+        disabled={pending}
+        aria-busy={pending}
+      >
         {pending ? "Signing in…" : "Sign in"}
       </Button>
-      {portal === "citizen" ? (
+      <p className="text-center text-sm text-ink-muted">
+        Official accounts are created by an admin — they are not self-registered.
+      </p>
+    </form>
+  );
+}
+
+function CitizenOtpLogin() {
+  const router = useRouter();
+  const [step, setStep] = useState<"email" | "code">("email");
+  const [email, setEmail] = useState("");
+  const [needsProfile, setNeedsProfile] = useState(false);
+  const [devCode, setDevCode] = useState<string | undefined>();
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  async function requestCode(formData: FormData) {
+    setError(null);
+    setPending(true);
+    const result = await requestCitizenOtpAction(undefined, formData);
+    setPending(false);
+
+    if (result && "error" in result && result.error) {
+      setError(result.error);
+      return;
+    }
+
+    setEmail(String(formData.get("email") ?? "").toLowerCase());
+    setNeedsProfile(Boolean(result && "needsProfile" in result && result.needsProfile));
+    setDevCode(result && "devCode" in result ? result.devCode : undefined);
+    setStep("code");
+  }
+
+  async function verifyCode(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setPending(true);
+
+    const formData = new FormData(event.currentTarget);
+    const code = String(formData.get("code") ?? "");
+    const name = String(formData.get("name") ?? "");
+    const phone = String(formData.get("phone") ?? "");
+
+    try {
+      const result = await signIn("citizen-otp", {
+        email,
+        code,
+        name: needsProfile ? name : undefined,
+        phone: needsProfile ? phone : undefined,
+        redirect: false,
+        callbackUrl: "/dashboard",
+      });
+
+      if (!result || result.error) {
+        setError(
+          needsProfile
+            ? "Invalid or expired code, or missing name/phone for new accounts."
+            : "Invalid or expired code. Request a new one.",
+        );
+        setPending(false);
+        return;
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Could not verify the code. Please try again.");
+      setPending(false);
+    }
+  }
+
+  if (step === "email") {
+    return (
+      <form
+        className="space-y-5"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          void requestCode(new FormData(event.currentTarget));
+        }}
+      >
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@email.com"
+            required
+          />
+        </div>
+        <FormErrorBanner message={error} />
+        <Button
+          type="submit"
+          className="w-full"
+          size="lg"
+          disabled={pending}
+          aria-busy={pending}
+        >
+          {pending ? "Sending code…" : "Email me a sign-in code"}
+        </Button>
         <p className="text-center text-sm text-ink-muted">
-          No account?{" "}
-          <Link href="/register" className="font-medium text-accent hover:underline">
-            Register
+          New here?{" "}
+          <Link
+            href="/register"
+            className="font-medium text-accent hover:underline"
+          >
+            Create a citizen account
           </Link>
         </p>
-      ) : (
-        <p className="text-center text-sm text-ink-muted">
-          Official accounts are issued by the department.
-        </p>
-      )}
-      <p className="rounded-xl bg-sky-soft/60 px-3 py-2 text-center text-xs text-ink-muted">
-        Demo:{" "}
-        {portal === "citizen"
-          ? "citizen@civicclear.local / citizen123"
-          : "official@civicclear.local / official123"}
+      </form>
+    );
+  }
+
+  return (
+    <form onSubmit={verifyCode} className="space-y-5" noValidate>
+      <p className="rounded-2xl bg-accent-soft/70 px-3.5 py-3 text-sm text-ink-muted">
+        We sent a 6-digit code to <span className="font-semibold text-ink">{email}</span>.
+        {devCode ? (
+          <>
+            {" "}
+            <span className="font-semibold text-accent">Dev code: {devCode}</span>
+          </>
+        ) : null}
       </p>
+
+      {needsProfile ? (
+        <>
+          <div>
+            <Label htmlFor="name">Full name</Label>
+            <Input id="name" name="name" autoComplete="name" required />
+          </div>
+          <div>
+            <Label htmlFor="phone">Mobile</Label>
+            <Input
+              id="phone"
+              name="phone"
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel"
+              placeholder="10-digit number"
+              required
+            />
+          </div>
+        </>
+      ) : null}
+
+      <div>
+        <Label htmlFor="code">Sign-in code</Label>
+        <Input
+          id="code"
+          name="code"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          placeholder="6-digit code"
+          required
+          pattern="\d{6}"
+          maxLength={6}
+        />
+      </div>
+      <FormErrorBanner message={error} />
+      <Button
+        type="submit"
+        className="w-full"
+        size="lg"
+        disabled={pending}
+        aria-busy={pending}
+      >
+        {pending ? "Verifying…" : "Verify and continue"}
+      </Button>
+      <button
+        type="button"
+        className="w-full text-center text-sm font-medium text-accent hover:underline"
+        onClick={() => {
+          setStep("email");
+          setError(null);
+          setDevCode(undefined);
+        }}
+      >
+        Use a different email
+      </button>
     </form>
   );
 }

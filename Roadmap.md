@@ -210,7 +210,8 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 ### Phase 6 — Hardening and launch (ongoing)
 
-- Admin role: create official accounts, deactivate users, merge duplicate complaints (nice-to-have).
+- Admin role: create official accounts at `/admin`, deactivate users, merge duplicate complaints (nice-to-have).
+- Citizen auth: email OTP (Brevo). Officials are admin-created with password login.
 - Duplicate detection: same type + ~50m + 7 days → “possible duplicate” flag. Do not auto-merge in v1.
 - Privacy: public landing does not list personal data. Maps for officials; citizens see only their pins.
 - Legal copy: terms, what you do with photos and location.

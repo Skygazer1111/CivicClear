@@ -41,15 +41,28 @@ model User {
   name         String
   email        String   @unique
   phone        String?
-  passwordHash String
+  /// Officials/admins use passwords. Citizens sign in with email OTP.
+  passwordHash String?
   aadhaarHash  String?
   points       Int      @default(0)
+  active       Boolean  @default(true)
   createdAt    DateTime @default(now())
 
   complaints Complaint[]       @relation("CitizenComplaints")
   assigned   Complaint[]       @relation("AssignedOfficial")
   events     ComplaintEvent[]
   rewards    RewardLedger[]
+}
+
+model LoginOtp {
+  id        String   @id @default(cuid())
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
 }
 
 model Complaint {

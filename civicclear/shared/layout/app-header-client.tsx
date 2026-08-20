@@ -45,6 +45,7 @@ export function AppHeaderClient({
   const [open, setOpen] = useState(false);
   const isCitizen = role === "citizen";
   const isOfficial = role === "official" || role === "admin";
+  const isAdmin = role === "admin";
 
   return (
     <header className="relative z-10 border-b border-white/60 bg-white/50 shadow-[0_10px_40px_rgba(16,56,46,0.05)] backdrop-blur-xl">
@@ -76,6 +77,7 @@ export function AppHeaderClient({
               <NavItem href="/queue">Queue</NavItem>
               <NavItem href="/map">Map</NavItem>
               <NavItem href="/analytics">Analytics</NavItem>
+              {isAdmin ? <NavItem href="/admin">Admin</NavItem> : null}
             </nav>
           ) : null}
         </div>
@@ -149,6 +151,13 @@ export function AppHeaderClient({
                     Analytics
                   </NavItem>
                 </li>
+                {isAdmin ? (
+                  <li>
+                    <NavItem href="/admin" onClick={() => setOpen(false)}>
+                      Admin
+                    </NavItem>
+                  </li>
+                ) : null}
               </>
             ) : null}
           </ul>

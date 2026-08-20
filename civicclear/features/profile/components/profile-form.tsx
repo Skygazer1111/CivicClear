@@ -25,6 +25,9 @@ export function ProfileForm({ name, phone, email, hasAadhaar }: Props) {
       <div>
         <Label htmlFor="email">Email</Label>
         <Input id="email" value={email} disabled />
+        <p className="mt-1.5 text-xs text-ink-muted">
+          Sign-in uses a one-time code emailed to this address.
+        </p>
       </div>
       <div>
         <Label htmlFor="name">Full name</Label>
@@ -47,38 +50,17 @@ export function ProfileForm({ name, phone, email, hasAadhaar }: Props) {
           id="aadhaar"
           name="aadhaar"
           inputMode="numeric"
-          placeholder={hasAadhaar ? "Aadhaar on file — enter to replace" : "12-digit number"}
+          placeholder={
+            hasAadhaar
+              ? "Aadhaar on file — enter to replace"
+              : "12-digit number"
+          }
           autoComplete="off"
         />
         <p className="mt-1 text-xs text-ink-muted">
           Stored as a one-way hash only. The full number is never shown again.
           {hasAadhaar ? " Status: on file." : ""}
         </p>
-      </div>
-
-      <div className="border-t border-line/70 pt-5">
-        <p className="mb-3 text-sm font-semibold text-ink">Change password</p>
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="currentPassword">Current password</Label>
-            <Input
-              id="currentPassword"
-              name="currentPassword"
-              type="password"
-              autoComplete="current-password"
-            />
-          </div>
-          <div>
-            <Label htmlFor="newPassword">New password</Label>
-            <Input
-              id="newPassword"
-              name="newPassword"
-              type="password"
-              autoComplete="new-password"
-              minLength={8}
-            />
-          </div>
-        </div>
       </div>
 
       <FormErrorBanner message={state?.error} />

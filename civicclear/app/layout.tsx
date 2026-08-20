@@ -1,5 +1,6 @@
-import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
+import { AuthSessionProvider } from "@/features/auth/components/session-provider";
 import "./globals.css";
 
 const body = Plus_Jakarta_Sans({
@@ -24,7 +25,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${body.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-canvas font-sans text-ink">{children}</body>
+      <body className="min-h-full bg-canvas font-sans text-ink">
+        <AuthSessionProvider>{children}</AuthSessionProvider>
+      </body>
     </html>
   );
 }

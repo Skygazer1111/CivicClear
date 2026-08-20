@@ -11,8 +11,6 @@ export const updateProfileSchema = z
       .string()
       .optional()
       .transform((v) => v?.replace(/\s/g, "") ?? ""),
-    currentPassword: z.string().optional(),
-    newPassword: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.aadhaar && !/^\d{12}$/.test(data.aadhaar)) {
@@ -21,22 +19,6 @@ export const updateProfileSchema = z
         message: "Aadhaar must be 12 digits",
         path: ["aadhaar"],
       });
-    }
-    if (data.newPassword) {
-      if (data.newPassword.length < 8) {
-        ctx.addIssue({
-          code: "custom",
-          message: "New password must be at least 8 characters",
-          path: ["newPassword"],
-        });
-      }
-      if (!data.currentPassword) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Enter your current password to change it",
-          path: ["currentPassword"],
-        });
-      }
     }
   });
 

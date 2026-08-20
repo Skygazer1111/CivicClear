@@ -43,7 +43,8 @@ export const authConfig = {
       const isOfficialArea =
         path.startsWith("/queue") ||
         path.startsWith("/map") ||
-        path.startsWith("/analytics");
+        path.startsWith("/analytics") ||
+        path.startsWith("/admin");
 
       if (isCitizenArea) {
         if (!isLoggedIn) {
@@ -62,6 +63,9 @@ export const authConfig = {
         }
         if (role && role !== "official" && role !== "admin") {
           return Response.redirect(new URL("/dashboard", nextUrl));
+        }
+        if (path.startsWith("/admin") && role && role !== "admin") {
+          return Response.redirect(new URL("/queue", nextUrl));
         }
         return true;
       }

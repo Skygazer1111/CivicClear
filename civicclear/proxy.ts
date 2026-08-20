@@ -13,5 +13,6 @@ export const config = {
     "/queue/:path*",
     "/map/:path*",
     "/analytics/:path*",
+    "/admin/:path*",
   ],
 };

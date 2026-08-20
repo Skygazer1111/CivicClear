@@ -50,8 +50,8 @@ export default async function LoginPage({
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-ink-muted">
             {portal === "citizen"
-              ? "Sign in to report and track civic issues."
-              : "Department access for complaint handling."}
+              ? "Enter your email and we’ll send a one-time sign-in code."
+              : "Department access. Accounts are created by an admin."}
           </p>
           <div className="soft-divider my-7" />
           <LoginForm portal={portal} />

@@ -1,32 +1,38 @@
 # CivicClear
 
-Next.js app for civic issue reporting. Visual rules: `docs/ui.md` in the repo root.
+Next.js app for civic issue reporting. Visual rules: [`docs/ui.md`](../docs/ui.md). Deploy guide: [`docs/deploy.md`](../docs/deploy.md).
 
 ## Architecture
 
 ```
 app/                 # Routes only (thin pages + layouts)
 features/
-  auth/              # Login, register, NextAuth, session
-  complaints/        # Citizen filing, photos, labels, shared complaint UI
-  official/          # Queue, map, status workflow
-  profile/           # Citizen profile updates
+  auth/              # OTP citizen login, official password, admin create-official
+  complaints/        # Citizen filing, photos, labels
+  official/          # Queue, map, analytics, export
+  profile/           # Citizen profile
+  rewards/           # Points ledger
 shared/
-  ui/                # Button, input, label
-  layout/            # Shell, header, ambient background
-  db/                # Prisma client
-  lib/               # Small cross-cutting helpers (cn)
+  ui/ layout/ db/ lib/
 prisma/              # Schema + seed
 ```
 
-Feature modules own their `actions`, `schemas`, `components`, and domain logic. `app/` only wires routes.
+## Auth
+
+| Portal | How it works |
+|---|---|
+| Citizen | Email a 6-digit OTP (Brevo). No password. |
+| Official | Email + password. Accounts created by an **admin** at `/admin`. |
+| Admin | Same Official portal login; extra **Admin** nav to create officials. |
+
+Without `BREVO_API_KEY`, OTP codes are printed in the server console and shown in the UI (development only).
 
 ## Run locally
 
 1. Copy `civicclear/.env.example` to `civicclear/.env`.
-2. Set `DATABASE_URL` to your Postgres connection string (Neon, Supabase, or local Docker).
-3. Generate `AUTH_SECRET` if it is empty.
-4. Push the schema and seed:
+2. Set `DATABASE_URL` and `AUTH_SECRET`.
+3. Optionally set Brevo keys for real email.
+4. Push schema and seed:
 
 ```bash
 cd civicclear
@@ -36,25 +42,16 @@ npx prisma db seed
 npm run dev
 ```
 
-Or from the repo root: `npm run db:setup` then `npm run dev`.
-
 Open [http://localhost:3000](http://localhost:3000).
-
-### Local Postgres with Docker
-
-```bash
-docker compose up -d
-```
-
-Then in `civicclear/.env`:
-
-```
-DATABASE_URL="postgresql://civicclear:civicclear@localhost:5432/civicclear"
-```
 
 ### Seed accounts
 
-| Portal | Email | Password |
+| Role | Email | Access |
 |---|---|---|
-| Citizen | citizen@civicclear.local | citizen123 |
-| Official | official@civicclear.local | official123 |
+| Admin | `admin@civicclear.local` | Password `admin123` → Official sign in → `/admin` |
+| Official | `official@civicclear.local` | Password `official123` |
+| Citizen | `citizen@civicclear.local` | Request OTP on Citizen sign in |
+
+## Deploy
+
+See [`docs/deploy.md`](../docs/deploy.md) for Vercel + Neon + Brevo + Cloudinary.
