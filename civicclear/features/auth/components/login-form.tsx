@@ -4,7 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { requestCitizenOtpAction } from "@/features/auth/actions";
+import {
+  requestCitizenOtpAction,
+  verifyCitizenOtpAction,
+} from "@/features/auth/actions";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -117,8 +120,10 @@ function CitizenOtpLogin() {
       return;
     }
 
-    setEmail(String(formData.get("email") ?? "").toLowerCase());
-    setNeedsProfile(Boolean(result && "needsProfile" in result && result.needsProfile));
+    setEmail(String(formData.get("email") ?? "").toLowerCase().trim());
+    setNeedsProfile(
+      Boolean(result && "needsProfile" in result && result.needsProfile),
+    );
     setDevCode(result && "devCode" in result ? result.devCode : undefined);
     setStep("code");
   }
@@ -129,26 +134,31 @@ function CitizenOtpLogin() {
     setPending(true);
 
     const formData = new FormData(event.currentTarget);
-    const code = String(formData.get("code") ?? "");
-    const name = String(formData.get("name") ?? "");
-    const phone = String(formData.get("phone") ?? "");
+    formData.set("email", email);
 
     try {
+      const verified = await verifyCitizenOtpAction(undefined, formData);
+      if (verified && "error" in verified && verified.error) {
+        setError(verified.error);
+        setPending(false);
+        return;
+      }
+
+      if (!verified || !("proof" in verified) || !verified.proof) {
+        setError("Could not verify the code. Please try again.");
+        setPending(false);
+        return;
+      }
+
       const result = await signIn("citizen-otp", {
-        email,
-        code,
-        name: needsProfile ? name : undefined,
-        phone: needsProfile ? phone : undefined,
+        email: verified.email,
+        proof: verified.proof,
         redirect: false,
         callbackUrl: "/dashboard",
       });
 
       if (!result || result.error) {
-        setError(
-          needsProfile
-            ? "Invalid or expired code, or missing name/phone for new accounts."
-            : "Invalid or expired code. Request a new one.",
-        );
+        setError("Code verified, but sign-in failed. Please try again.");
         setPending(false);
         return;
       }
@@ -208,7 +218,8 @@ function CitizenOtpLogin() {
   return (
     <form onSubmit={verifyCode} className="space-y-5" noValidate>
       <p className="rounded-2xl bg-accent-soft/70 px-3.5 py-3 text-sm text-ink-muted">
-        We sent a 6-digit code to <span className="font-semibold text-ink">{email}</span>.
+        We sent a 6-digit code to{" "}
+        <span className="font-semibold text-ink">{email}</span>.
         {devCode ? (
           <>
             {" "}
@@ -233,6 +244,8 @@ function CitizenOtpLogin() {
               autoComplete="tel"
               placeholder="10-digit number"
               required
+              pattern="[0-9]{10}"
+              maxLength={10}
             />
           </div>
         </>
@@ -264,6 +277,7 @@ function CitizenOtpLogin() {
       <button
         type="button"
         className="w-full text-center text-sm font-medium text-accent hover:underline"
+        disabled={pending}
         onClick={() => {
           setStep("email");
           setError(null);

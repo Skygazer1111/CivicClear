@@ -4,7 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { registerCitizenWithOtpAction } from "@/features/auth/actions";
+import {
+  registerCitizenWithOtpAction,
+  verifyCitizenOtpAction,
+} from "@/features/auth/actions";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -34,7 +37,7 @@ export function RegisterForm() {
       return;
     }
 
-    setEmail(String(formData.get("email") ?? "").toLowerCase());
+    setEmail(String(formData.get("email") ?? "").toLowerCase().trim());
     setName(String(formData.get("name") ?? ""));
     setPhone(String(formData.get("phone") ?? ""));
     setDevCode(result && "devCode" in result ? result.devCode : undefined);
@@ -47,21 +50,35 @@ export function RegisterForm() {
     setPending(true);
 
     const formData = new FormData(event.currentTarget);
-    const code = String(formData.get("code") ?? "");
+    formData.set("email", email);
+    formData.set("name", name);
+    formData.set("phone", phone);
 
     try {
+      const verified = await verifyCitizenOtpAction(undefined, formData);
+      if (verified && "error" in verified && verified.error) {
+        setError(verified.error);
+        setPending(false);
+        return;
+      }
+
+      if (!verified || !("proof" in verified) || !verified.proof) {
+        setError("Could not verify the code. Please try again.");
+        setPending(false);
+        return;
+      }
+
       const result = await signIn("citizen-otp", {
-        email,
-        code,
-        name,
-        phone,
+        email: verified.email,
+        proof: verified.proof,
         redirect: false,
         callbackUrl: "/dashboard",
       });
 
       if (!result || result.error) {
-        setError("Invalid or expired code. Go back and request a new one.");
+        setError("Account ready, but sign-in failed. Try signing in with OTP.");
         setPending(false);
+        router.push("/login?portal=citizen");
         return;
       }
 
@@ -112,6 +129,7 @@ export function RegisterForm() {
         <button
           type="button"
           className="w-full text-center text-sm font-medium text-accent hover:underline"
+          disabled={pending}
           onClick={() => {
             setStep("details");
             setError(null);
@@ -150,6 +168,8 @@ export function RegisterForm() {
           autoComplete="tel"
           placeholder="10-digit number"
           required
+          pattern="[0-9]{10}"
+          maxLength={10}
         />
       </div>
       <FormErrorBanner message={error} />

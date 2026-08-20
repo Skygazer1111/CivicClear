@@ -5,14 +5,20 @@ import { auth, signOut } from "@/features/auth/auth";
 import {
   createOfficialSchema,
   citizenEmailSchema,
+  citizenOtpVerifySchema,
   registerCitizenSchema,
 } from "@/features/auth/schemas";
-import { generateOtpCode, hashOtpCode, otpExpiresAt } from "@/features/auth/otp";
+import {
+  createCitizenLoginProof,
+  generateOtpCode,
+  hashOtpCode,
+  otpExpiresAt,
+} from "@/features/auth/otp";
 import { sendCitizenOtpEmail } from "@/shared/lib/mail";
 import { prisma } from "@/shared/db/prisma";
 
 async function issueCitizenOtp(email: string) {
-  const normalized = email.toLowerCase();
+  const normalized = email.toLowerCase().trim();
 
   const existingUser = await prisma.user.findUnique({
     where: { email: normalized },
@@ -51,10 +57,8 @@ async function issueCitizenOtp(email: string) {
     ok: true as const,
     needsProfile,
     // Local testing without Brevo: surface the code in the UI.
-    devCode:
-      sent.mode === "dev" && process.env.NODE_ENV !== "production"
-        ? code
-        : undefined,
+    // Also show on Vercel preview when Brevo is unset (NODE_ENV=production there).
+    devCode: sent.mode === "dev" ? code : undefined,
   };
 }
 
@@ -94,7 +98,7 @@ export async function registerCitizenWithOtpAction(
     return { error: parsed.error.issues[0]?.message ?? "Invalid details" };
   }
 
-  const email = parsed.data.email.toLowerCase();
+  const email = parsed.data.email.toLowerCase().trim();
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return {
@@ -121,6 +125,85 @@ export async function registerCitizenWithOtpAction(
   }
 }
 
+/**
+ * Verify OTP in a server action (clear errors), then return a short-lived
+ * proof the Auth.js provider can exchange for a session.
+ */
+export async function verifyCitizenOtpAction(
+  _prev: unknown,
+  formData: FormData,
+) {
+  const parsed = citizenOtpVerifySchema.safeParse({
+    email: formData.get("email"),
+    code: formData.get("code"),
+    name: formData.get("name"),
+    phone: formData.get("phone"),
+  });
+
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid details" };
+  }
+
+  const email = parsed.data.email.toLowerCase().trim();
+  const otp = await prisma.loginOtp.findFirst({
+    where: { email },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (!otp) {
+    return { error: "No active code for this email. Request a new one." };
+  }
+  if (otp.expiresAt.getTime() < Date.now()) {
+    await prisma.loginOtp.deleteMany({ where: { email } });
+    return { error: "That code has expired. Request a new one." };
+  }
+  if (otp.attempts >= 5) {
+    return { error: "Too many incorrect attempts. Request a new code." };
+  }
+
+  const matches = otp.codeHash === hashOtpCode(parsed.data.code);
+  if (!matches) {
+    await prisma.loginOtp.update({
+      where: { id: otp.id },
+      data: { attempts: { increment: 1 } },
+    });
+    return { error: "That code is incorrect. Check the email and try again." };
+  }
+
+  await prisma.loginOtp.deleteMany({ where: { email } });
+
+  let user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    if (!parsed.data.name || !parsed.data.phone) {
+      return {
+        error: "New accounts need your name and 10-digit mobile number.",
+      };
+    }
+    user = await prisma.user.create({
+      data: {
+        email,
+        name: parsed.data.name,
+        phone: parsed.data.phone,
+        role: "citizen",
+        passwordHash: null,
+      },
+    });
+  }
+
+  if (!user.active) {
+    return { error: "This account is deactivated." };
+  }
+  if (user.role !== "citizen") {
+    return { error: "Use Official sign in for staff accounts." };
+  }
+
+  return {
+    ok: true as const,
+    email,
+    proof: createCitizenLoginProof(email),
+  };
+}
+
 export async function createOfficialAction(
   _prev: { error?: string; ok?: boolean } | undefined,
   formData: FormData,
@@ -140,7 +223,7 @@ export async function createOfficialAction(
     return { error: parsed.error.issues[0]?.message ?? "Invalid details" };
   }
 
-  const email = parsed.data.email.toLowerCase();
+  const email = parsed.data.email.toLowerCase().trim();
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return { error: "An account with this email already exists." };

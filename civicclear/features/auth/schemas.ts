@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { emptyToUndefined } from "@/features/auth/otp";
 
 export const officialLoginSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -10,16 +11,29 @@ export const citizenEmailSchema = z.object({
   email: z.string().email("Enter a valid email"),
 });
 
-export const citizenOtpSchema = z.object({
+export const citizenOtpVerifySchema = z.object({
   email: z.string().email("Enter a valid email"),
   code: z
     .string()
-    .regex(/^\d{6}$/, "Enter the 6-digit code from your email"),
-  name: z.string().min(2, "Enter your full name").max(80).optional(),
-  phone: z
-    .string()
-    .regex(/^[0-9]{10}$/, "Enter a 10-digit mobile number")
-    .optional(),
+    .transform((v) => v.replace(/\s+/g, "").trim())
+    .pipe(z.string().regex(/^\d{6}$/, "Enter the 6-digit code from your email")),
+  name: z.preprocess(
+    emptyToUndefined,
+    z.string().min(2, "Enter your full name").max(80).optional(),
+  ),
+  phone: z.preprocess(
+    emptyToUndefined,
+    z
+      .string()
+      .regex(/^[0-9]{10}$/, "Enter a 10-digit mobile number")
+      .optional(),
+  ),
+});
+
+/** Used by Auth.js after OTP was verified server-side. */
+export const citizenOtpProofSchema = z.object({
+  email: z.string().email("Enter a valid email"),
+  proof: z.string().min(20, "Missing login proof"),
 });
 
 export const registerCitizenSchema = z.object({

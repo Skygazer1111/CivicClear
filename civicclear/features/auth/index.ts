@@ -3,13 +3,15 @@ export { authConfig } from "@/features/auth/auth.config";
 export {
   officialLoginSchema,
   citizenEmailSchema,
-  citizenOtpSchema,
+  citizenOtpVerifySchema,
+  citizenOtpProofSchema,
   registerCitizenSchema,
   createOfficialSchema,
 } from "@/features/auth/schemas";
 export {
   requestCitizenOtpAction,
   registerCitizenWithOtpAction,
+  verifyCitizenOtpAction,
   createOfficialAction,
   logoutAction,
 } from "@/features/auth/actions";
