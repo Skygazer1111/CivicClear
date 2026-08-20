@@ -98,10 +98,15 @@ export async function uploadComplaintPhotos(files: File[]) {
     const filename = file.name || `photo-${randomUUID()}.jpg`;
 
     if (cloudinaryReady()) {
-      uploads.push(await uploadToCloudinary(buffer, filename));
-    } else {
-      uploads.push(await uploadLocally(buffer, file.type));
+      try {
+        uploads.push(await uploadToCloudinary(buffer, filename));
+        continue;
+      } catch (error) {
+        console.error("Cloudinary upload failed, using local storage:", error);
+      }
     }
+
+    uploads.push(await uploadLocally(buffer, file.type));
   }
 
   return uploads;
