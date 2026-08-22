@@ -82,12 +82,7 @@ export function PublicBrandHeader({
       >
         <div className="flex items-start justify-between gap-3 px-3 pt-3 sm:px-5 sm:pt-4">
           <div className={cn(glassChip, "px-2.5 py-2 sm:px-3 sm:py-2.5")}>
-            <AppBrandMark
-              href={homeHref}
-              tone="glass"
-              showName={false}
-              className="gap-0"
-            />
+            <AppBrandMark href={homeHref} tone="glass" />
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
