@@ -64,7 +64,7 @@ type Props = {
 export function LandingExperience({ signedIn, signedInHome }: Props) {
   return (
     <>
-      <section className="landing-campus-hero relative min-h-[calc(100dvh-3.5rem)] overflow-hidden bg-ink text-white sm:min-h-[calc(100dvh-4.25rem)]">
+      <section className="landing-campus-hero relative min-h-dvh overflow-hidden bg-ink text-white">
         <Image
           src="/brand/srm-campus.webp"
           alt="Aerial view of SRM Institute of Science and Technology campus"
@@ -77,23 +77,18 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
         <div aria-hidden className="landing-hero-grain absolute inset-0 opacity-[0.18]" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-canvas to-transparent" />
 
-        <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-3.5rem)] w-full max-w-page items-center justify-center px-4 py-14 text-center sm:min-h-[calc(100dvh-4.25rem)] sm:px-6 sm:py-20">
+        <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-page items-center justify-center px-4 py-20 text-center sm:px-6 sm:py-24">
           <div className="mx-auto max-w-4xl">
-            <div className="rise-in inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#061915]/70 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-emerald-50 shadow-2xl shadow-black/20 backdrop-blur-md sm:text-xs sm:tracking-[0.18em]">
-              <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(110,255,205,0.9)]" />
-              SRM campus, cleaned by students
-            </div>
-
-            <h1 className="rise-in-delay-1 mx-auto mt-5 max-w-4xl font-display text-[2.75rem] font-semibold leading-[0.92] tracking-tight text-white drop-shadow-2xl sm:text-7xl lg:text-8xl">
+            <h1 className="rise-in mx-auto max-w-4xl font-display text-[2.75rem] font-semibold leading-[0.92] tracking-tight text-white drop-shadow-2xl sm:text-7xl lg:text-8xl">
               Make campus problems impossible to ignore.
             </h1>
-            <p className="rise-in-delay-2 mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/82 drop-shadow-lg sm:text-xl">
+            <p className="rise-in-delay-1 mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/82 drop-shadow-lg sm:text-xl">
               {APP_NAME} turns quick student reports into a live campus cleanup
               feed. Snap the issue, choose the SRM block, and track it until a
               coordinator clears it.
             </p>
 
-            <div className="rise-in-delay-3 mx-auto mt-8 flex max-w-md flex-col justify-center gap-3 sm:max-w-none sm:flex-row sm:items-center">
+            <div className="rise-in-delay-2 mx-auto mt-8 flex max-w-md flex-col justify-center gap-3 sm:max-w-none sm:flex-row sm:items-center">
               {signedIn && signedInHome ? (
                 <Button
                   asChild
@@ -123,7 +118,7 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
               )}
             </div>
 
-            <div className="rise-in-delay-4 mx-auto mt-9 grid max-w-sm grid-cols-3 gap-2 sm:max-w-xl sm:gap-3">
+            <div className="rise-in-delay-3 mx-auto mt-9 grid max-w-sm grid-cols-3 gap-2 sm:max-w-xl sm:gap-3">
               {HERO_STATS.map(([value, label]) => (
                 <div
                   key={label}

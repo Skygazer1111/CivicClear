@@ -18,6 +18,7 @@ export default async function HomePage() {
   return (
     <div className="relative flex min-h-dvh flex-col overflow-x-hidden bg-canvas">
       <PublicBrandHeader
+        variant="glass"
         trailing={
           signedIn ? (
             <Button asChild variant="outline" size="sm">
