@@ -9,48 +9,98 @@ import { CAMPUS_LOCATIONS } from "@/features/complaints/campus-locations";
 
 const LIVE_EVENTS = [
   {
-    place: "TP1 (Tech Park 1)",
-    issue: "Elevator",
+    place: "TP1",
+    issue: "Lift stuck near the third floor",
     status: "Verified",
     tone: "pending" as const,
   },
   {
-    place: "UB (University Building)",
-    issue: "Washroom",
-    status: "In progress",
+    place: "University Building",
+    issue: "Washroom needs attention",
+    status: "Coordinator on it",
     tone: "progress" as const,
   },
   {
     place: "Java Canteen",
-    issue: "Waterlogging",
-    status: "Resolved",
+    issue: "Waterlogging after rain",
+    status: "Cleared",
     tone: "resolved" as const,
   },
   {
     place: "Architecture block",
-    issue: "Escalator",
+    issue: "Escalator not moving",
     status: "Submitted",
     tone: "pending" as const,
   },
   {
     place: "Vendhar Square",
-    issue: "Waterlogging",
-    status: "Resolved",
+    issue: "Pathway blocked",
+    status: "Cleared",
     tone: "resolved" as const,
   },
   {
     place: "MBA block",
-    issue: "Washroom",
+    issue: "Washroom refill needed",
     status: "Verified",
     tone: "pending" as const,
   },
 ];
 
 const toneClass = {
-  pending: "text-status-pending",
-  progress: "text-status-progress",
-  resolved: "text-status-resolved",
+  pending: "text-amber-200",
+  progress: "text-sky-200",
+  resolved: "text-emerald-200",
 };
+
+const STUDENT_STEPS = [
+  {
+    step: "01",
+    title: "Spot it",
+    copy: "See waterlogging, a broken lift, or a messy washroom between classes.",
+  },
+  {
+    step: "02",
+    title: "Post it",
+    copy: "Pick the block, add a photo, and send it before your next lecture starts.",
+  },
+  {
+    step: "03",
+    title: "Track it",
+    copy: "Watch coordinators verify, resolve, and keep the campus moving.",
+  },
+];
+
+const HERO_STATS = [
+  ["10", "campus spots"],
+  ["60s", "to report"],
+  ["+15", "clean points"],
+];
+
+const ISSUE_CHIPS = [
+  "Waterlogging",
+  "Elevator",
+  "Escalator",
+  "Washroom",
+  "Campus block",
+  "Photo proof",
+  "Coordinator queue",
+  "Points",
+];
+
+const FEATURE_CARDS = [
+  {
+    title: "Made for the between-class rush",
+    copy: "No long forms. No location confusion. Just the places SRM students already know.",
+  },
+  {
+    title: "Photos make it real",
+    copy: "Every report carries visual proof, so coordinators can decide fast.",
+  },
+  {
+    title: "Clean campus energy",
+    copy: "Earn points for useful reports and see what got fixed around you.",
+  },
+];
 
 type Props = {
   signedIn?: boolean;
@@ -59,7 +109,6 @@ type Props = {
 
 export function LandingExperience({ signedIn, signedInHome }: Props) {
   const [liveIndex, setLiveIndex] = useState(0);
-  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     const reduced =
@@ -69,8 +118,7 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
 
     const id = window.setInterval(() => {
       setLiveIndex((i) => (i + 1) % LIVE_EVENTS.length);
-      setTick((t) => t + 1);
-    }, 2800);
+    }, 2600);
     return () => window.clearInterval(id);
   }, []);
 
@@ -82,144 +130,168 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
 
   return (
     <>
-      {/* Hero — one composition: brand, line, CTAs, full-bleed green field */}
-      <section className="relative flex min-h-[calc(100dvh-3.5rem)] flex-col justify-end overflow-hidden sm:min-h-[calc(100dvh-4.25rem)] sm:justify-center">
-        <div aria-hidden className="landing-hero-field absolute inset-0">
-          <div className="landing-hero-mesh absolute inset-0" />
-          <div className="landing-hero-orb landing-hero-orb-a" />
-          <div className="landing-hero-orb landing-hero-orb-b" />
-          <div className="landing-hero-orb landing-hero-orb-c" />
-          <CampusSilhouette className="landing-skyline absolute inset-x-0 bottom-0 h-[42%] w-full opacity-[0.14] sm:h-[48%] sm:opacity-[0.18]" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#eef6f3] via-[#eef6f3]/80 to-transparent" />
-        </div>
+      <section className="landing-campus-hero relative min-h-[calc(100dvh-3.5rem)] overflow-hidden bg-ink text-white sm:min-h-[calc(100dvh-4.25rem)]">
+        <Image
+          src="/brand/srm-campus.webp"
+          alt="Aerial view of SRM Institute of Science and Technology campus"
+          fill
+          priority
+          sizes="100vw"
+          className="landing-campus-photo object-cover"
+        />
+        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(44,255,203,0.28),transparent_28%),linear-gradient(110deg,rgba(3,12,18,0.92)_0%,rgba(6,26,34,0.82)_38%,rgba(2,20,17,0.52)_70%,rgba(3,12,18,0.74)_100%)]" />
+        <div aria-hidden className="landing-hero-grain absolute inset-0 opacity-[0.18]" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-canvas to-transparent" />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center px-4 pb-16 pt-8 sm:px-6 sm:pb-20 sm:pt-10">
-          <div className="rise-in flex items-center gap-3 sm:gap-4">
-            <Image
-              src="/brand/campusclean-logo.png"
-              alt=""
-              width={72}
-              height={72}
-              className="landing-logo-float h-14 w-14 rounded-[1.15rem] object-cover shadow-[0_16px_40px_rgba(15,143,120,0.28)] sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-[1.35rem]"
-              priority
-            />
-            <h1 className="font-display text-[2.75rem] font-semibold leading-[0.95] tracking-tight text-ink sm:text-7xl md:text-8xl">
-              {APP_NAME}
+        <div className="relative z-10 mx-auto grid min-h-[calc(100dvh-3.5rem)] w-full max-w-page items-center gap-10 px-4 py-12 sm:min-h-[calc(100dvh-4.25rem)] sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-16">
+          <div className="max-w-3xl">
+            <div className="rise-in inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-50 shadow-2xl shadow-black/20 backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(110,255,205,0.9)]" />
+              SRM campus, cleaned by students
+            </div>
+
+            <h1 className="rise-in-delay-1 mt-5 max-w-4xl font-display text-[3.15rem] font-semibold leading-[0.9] tracking-tight text-white drop-shadow-2xl sm:text-7xl lg:text-8xl">
+              Make campus problems impossible to ignore.
             </h1>
-          </div>
+            <p className="rise-in-delay-2 mt-5 max-w-2xl text-base leading-relaxed text-white/78 sm:text-xl">
+              {APP_NAME} turns quick student reports into a live campus cleanup
+              feed. Snap the issue, choose the SRM block, and track it until a
+              coordinator clears it.
+            </p>
 
-          <p className="rise-in-delay-1 mt-5 max-w-xl font-display text-2xl font-medium leading-snug tracking-tight text-ink sm:mt-7 sm:text-3xl">
-            Campus issues, cleared.
-          </p>
-          <p className="rise-in-delay-2 mt-3 max-w-lg text-base leading-relaxed text-ink-muted sm:text-lg">
-            Report waterlogging, elevators, escalators, and washrooms — then
-            watch coordinators verify and resolve them across SRM.
-          </p>
-
-          <div className="rise-in-delay-3 mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
-            {signedIn && signedInHome ? (
-              <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link href={signedInHome}>Go to dashboard</Link>
-              </Button>
-            ) : (
-              <>
-                <Button asChild size="lg" className="w-full sm:min-w-52 sm:w-auto">
-                  <Link href="/login">Sign in</Link>
-                </Button>
+            <div className="rise-in-delay-3 mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              {signedIn && signedInHome ? (
                 <Button
                   asChild
-                  variant="outline"
                   size="lg"
-                  className="w-full sm:min-w-52 sm:w-auto"
+                  className="w-full bg-white text-ink hover:bg-emerald-50 sm:w-auto"
                 >
-                  <Link href="/register">Create student account</Link>
+                  <Link href={signedInHome}>Open my dashboard</Link>
                 </Button>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Live campus pulse */}
-      <section className="relative z-10 border-y border-line/50 bg-white/35 backdrop-blur-md">
-        <div className="mx-auto max-w-page px-4 py-14 sm:px-6 sm:py-20">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-                Live on campus
-              </p>
-              <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                Reports moving in real time
-              </h2>
+              ) : (
+                <>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="w-full bg-white text-ink hover:bg-emerald-50 sm:min-w-52 sm:w-auto"
+                  >
+                    <Link href="/register">Start reporting</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="w-full border-white/35 bg-white/10 text-white hover:bg-white/20 sm:min-w-44 sm:w-auto"
+                  >
+                    <Link href="/login">Sign in</Link>
+                  </Button>
+                </>
+              )}
             </div>
-            <p
-              className="inline-flex items-center gap-2 text-sm font-medium text-ink-muted"
-              aria-live="polite"
-            >
-              <span className="landing-live-dot h-2 w-2 rounded-sm bg-accent" />
-              Pulse {String(tick).padStart(2, "0")}
-            </p>
+
+            <div className="rise-in-delay-4 mt-9 grid max-w-xl grid-cols-3 gap-2 sm:gap-3">
+              {HERO_STATS.map(([value, label]) => (
+                <div
+                  key={label}
+                  className="rounded-2xl border border-white/15 bg-white/10 px-3 py-3 backdrop-blur-md sm:px-4"
+                >
+                  <p className="font-display text-2xl font-semibold leading-none text-white sm:text-3xl">
+                    {value}
+                  </p>
+                  <p className="mt-1 text-[0.7rem] font-medium uppercase tracking-[0.14em] text-white/62">
+                    {label}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <ul className="mt-10 space-y-0">
-            {visible.map((event, i) => (
-              <li
-                key={`${event.place}-${event.status}-${liveIndex}-${i}`}
-                className="landing-live-row flex flex-col gap-1 border-t border-line/60 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
+          <div className="rise-in-delay-2 relative mx-auto w-full max-w-md lg:ml-auto">
+            <div aria-hidden className="landing-phone-glow absolute -inset-10 rounded-full bg-emerald-300/25 blur-3xl" />
+            <div className="landing-phone-card relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/13 p-4 shadow-[0_30px_90px_rgba(0,0,0,0.38)] backdrop-blur-2xl sm:p-5">
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-display text-xl font-semibold tracking-tight text-ink">
-                    {event.place}
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-100">
+                    Live campus pulse
                   </p>
-                  <p className="mt-1 text-sm text-ink-muted">{event.issue}</p>
+                  <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
+                    Reports right now
+                  </h2>
                 </div>
-                <p
-                  className={`text-sm font-semibold tracking-tight ${toneClass[event.tone]}`}
-                >
-                  {event.status}
+                <Image
+                  src="/brand/campusclean-logo.png"
+                  alt=""
+                  width={44}
+                  height={44}
+                  className="rounded-2xl shadow-lg shadow-black/20"
+                />
+              </div>
+
+              <ul className="mt-5 space-y-3" aria-live="polite">
+                {visible.map((event, i) => (
+                  <li
+                    key={`${event.place}-${event.status}-${liveIndex}-${i}`}
+                    className="landing-live-card rounded-2xl border border-white/13 bg-black/22 p-4"
+                    style={{ animationDelay: `${i * 80}ms` }}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="font-semibold text-white">{event.place}</p>
+                        <p className="mt-1 text-sm leading-snug text-white/66">
+                          {event.issue}
+                        </p>
+                      </div>
+                      <p
+                        className={`shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold ${toneClass[event.tone]}`}
+                      >
+                        {event.status}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-4 rounded-2xl bg-emerald-300 px-4 py-3 text-ink shadow-lg shadow-emerald-900/20">
+                <p className="text-xs font-bold uppercase tracking-[0.16em]">
+                  Student streak
                 </p>
-              </li>
-            ))}
-          </ul>
+                <p className="mt-1 font-display text-2xl font-semibold">
+                  12 clean actions this week
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* How it works — one job, no card chrome */}
       <section className="relative z-10 mx-auto max-w-page px-4 py-16 sm:px-6 sm:py-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-          Built for students
-        </p>
-        <h2 className="mt-2 max-w-xl font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-          Three quiet steps from stuck to sorted
-        </h2>
+        <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+          <div>
+            <p className="page-kicker">Built for students</p>
+            <h2 className="mt-3 max-w-xl font-display text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+              Cleaner campus, less admin energy.
+            </h2>
+          </div>
+          <p className="max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg">
+            CampusClean feels like a student app, not a complaint office. Quick
+            posts, visible progress, and a feed that makes every fix feel
+            shared.
+          </p>
+        </div>
 
-        <ol className="mt-12 grid gap-10 sm:grid-cols-3 sm:gap-8">
-          {[
-            {
-              step: "01",
-              title: "Pin the place",
-              copy: "Pick TP1, UB, Java Canteen, or any campus block — no GPS hunt.",
-            },
-            {
-              step: "02",
-              title: "Snap & send",
-              copy: "Add a photo, describe the issue, submit in under a minute.",
-            },
-            {
-              step: "03",
-              title: "Earn on truth",
-              copy: "Points land only after a coordinator verifies a real report.",
-            },
-          ].map((item) => (
-            <li key={item.step} className="landing-step">
-              <p className="font-display text-4xl font-semibold tracking-tight text-accent/35">
+        <ol className="mt-12 grid gap-4 sm:grid-cols-3">
+          {STUDENT_STEPS.map((item) => (
+            <li
+              key={item.step}
+              className="landing-bento-card group rounded-[1.75rem] border border-white/75 bg-white/64 p-6 shadow-[0_18px_55px_rgba(16,56,46,0.08)] backdrop-blur-md"
+            >
+              <p className="font-display text-5xl font-semibold leading-none text-accent/25 transition-colors group-hover:text-accent/45">
                 {item.step}
               </p>
-              <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">
+              <h3 className="mt-8 font-display text-2xl font-semibold tracking-tight">
                 {item.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-muted sm:text-base">
+              <p className="mt-3 text-sm leading-relaxed text-ink-muted">
                 {item.copy}
               </p>
             </li>
@@ -227,16 +299,53 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
         </ol>
       </section>
 
-      {/* Campus locations marquee */}
-      <section className="relative z-10 overflow-hidden pb-20 sm:pb-28">
-        <div className="mx-auto max-w-page px-4 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-            Across campus
-          </p>
-          <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-            Every block you already know
-          </h2>
+      <section className="relative z-10 overflow-hidden bg-ink py-16 text-white sm:py-24">
+        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(15,143,120,0.38),transparent_32%),radial-gradient(circle_at_80%_80%,rgba(207,234,246,0.22),transparent_34%)]" />
+        <div className="relative mx-auto grid max-w-page gap-5 px-4 sm:px-6 lg:grid-cols-3">
+          {FEATURE_CARDS.map((card) => (
+            <article
+              key={card.title}
+              className="rounded-[1.75rem] border border-white/12 bg-white/[0.07] p-6 backdrop-blur-md"
+            >
+              <h3 className="font-display text-2xl font-semibold tracking-tight">
+                {card.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-white/65">
+                {card.copy}
+              </p>
+            </article>
+          ))}
         </div>
+
+        <div className="landing-chip-cloud relative mt-12" aria-hidden>
+          <div className="landing-chip-track">
+            {[...ISSUE_CHIPS, ...ISSUE_CHIPS].map((chip, i) => (
+              <span key={`${chip}-${i}`} className="landing-chip">
+                {chip}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 overflow-hidden py-16 sm:py-24">
+        <div className="mx-auto max-w-page px-4 sm:px-6">
+          <div className="rounded-[2rem] border border-line/60 bg-white/72 p-6 shadow-[0_24px_70px_rgba(16,56,46,0.08)] backdrop-blur-md sm:p-8">
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+              <div>
+                <p className="page-kicker">Across SRM</p>
+                <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Every block students actually say out loud.
+                </h2>
+              </div>
+              <p className="text-sm leading-relaxed text-ink-muted sm:text-base">
+                Pick from known campus locations instead of fighting with GPS.
+                That keeps reports fast and makes coordinator queues clearer.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="landing-marquee mt-10" aria-hidden>
           <div className="landing-marquee-track">
             {[...CAMPUS_LOCATIONS, ...CAMPUS_LOCATIONS].map((place, i) => (
@@ -249,28 +358,11 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
         <div className="mx-auto mt-12 flex max-w-page justify-center px-4 sm:px-6">
           {!signedIn ? (
             <Button asChild size="lg">
-              <Link href="/register">Create a student account</Link>
+              <Link href="/register">Join the campus cleanup</Link>
             </Button>
           ) : null}
         </div>
       </section>
     </>
-  );
-}
-
-function CampusSilhouette({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 1440 320"
-      preserveAspectRatio="xMidYMax slice"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        fill="#0f8f78"
-        d="M0 320V210h48v-72h36v72h40V120h28v-40h36v40h24v90h52V88h44v-28h32v28h40v122h60V140h36v-56h48v56h28v70h72V96h40V64h36v32h44v114h56V160h32v-44h40v44h24v50h80V128h36v-36h44v36h28v82h64V180h40v140H0Z"
-      />
-    </svg>
   );
 }

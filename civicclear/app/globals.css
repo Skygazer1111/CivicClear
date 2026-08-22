@@ -374,6 +374,98 @@ body {
 }
 
 /* —— Landing (CampusClean) —— */
+.landing-campus-photo {
+  transform-origin: center;
+  animation: landing-photo-drift 18s ease-in-out infinite alternate;
+}
+
+.landing-hero-grain {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.22), transparent 18%),
+    radial-gradient(circle at 80% 10%, rgba(15, 143, 120, 0.32), transparent 16%);
+  background-size:
+    54px 54px,
+    54px 54px,
+    720px 720px,
+    640px 640px;
+  mix-blend-mode: screen;
+}
+
+.landing-phone-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.34),
+    transparent 34%,
+    transparent 72%,
+    rgba(110, 255, 205, 0.2)
+  );
+  opacity: 0.78;
+}
+
+.landing-phone-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-phone-glow {
+  animation: landing-phone-glow 5s ease-in-out infinite;
+}
+
+.landing-live-card {
+  animation: landing-card-pop 0.58s var(--ease-out-soft) both;
+}
+
+.landing-bento-card {
+  transition:
+    transform 0.35s var(--ease-out-soft),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.landing-bento-card:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in oklab, var(--accent) 32%, white);
+  box-shadow: 0 26px 70px rgba(16, 56, 46, 0.13);
+}
+
+.landing-chip-cloud {
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 9%,
+    black 91%,
+    transparent
+  );
+}
+
+.landing-chip-track {
+  display: flex;
+  width: max-content;
+  gap: 0.85rem;
+  animation: landing-marquee 36s linear infinite;
+}
+
+.landing-chip {
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.09);
+  padding: 0.7rem 1rem;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+}
+
 .landing-hero-field {
   background:
     radial-gradient(ellipse 90% 70% at 15% 10%, #d4f3ea 0%, transparent 55%),
@@ -497,6 +589,38 @@ body {
   }
 }
 
+@keyframes landing-photo-drift {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.09) translate3d(-1.2%, -1%, 0);
+  }
+}
+
+@keyframes landing-phone-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes landing-card-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @keyframes landing-drift-b {
   0%,
   100% {
@@ -581,6 +705,10 @@ body {
   .landing-hero-orb-a,
   .landing-hero-orb-b,
   .landing-hero-orb-c,
+  .landing-campus-photo,
+  .landing-phone-glow,
+  .landing-live-card,
+  .landing-chip-track,
   .landing-logo-float,
   .landing-skyline,
   .landing-live-dot,
