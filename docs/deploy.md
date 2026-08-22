@@ -18,7 +18,8 @@ Set these in Project → Settings → Environment Variables (Production + Previe
 | `DATABASE_URL` | Neon URI (`?sslmode=require`) |
 | `AUTH_SECRET` | Long random string |
 | `AUTH_TRUST_HOST` | `true` |
-| `AUTH_URL` | Your production URL, e.g. `https://CampusClean.vercel.app` |
+| `AUTH_URL` | Your production URL, e.g. `https://campusclean.vercel.app` |
+| `ADMIN_EMAIL` | Admin invite email (they set a password on first login) |
 | `BREVO_API_KEY` | Brevo API key |
 | `BREVO_FROM_EMAIL` | Verified sender |
 | `BREVO_FROM_NAME` | `CampusClean` |
@@ -39,21 +40,17 @@ npx prisma db push
 npx prisma db seed
 ```
 
-Seed creates:
+The admin invite is created from `ADMIN_EMAIL` (set that on Vercel, then sign in once or run seed). They set name, mobile, and password on first login. Optional demo seed account:
 
 | Role | Email | How to sign in |
 |---|---|---|
-| Admin | `admin@civicclear.local` | Password `admin123` on Coordinator portal |
-| Coordinator | `official@civicclear.local` | Password `official123` |
 | Student | `citizen@civicclear.local` | Password `citizen123` (email code still available) |
-
-Change admin/coordinator passwords after first login in production, or create new users and deactivate seeds.
 
 ## 4. Auth model in production
 
 - **Students:** register with email + password, verify email once with OTP, then sign in with password (OTP remains as backup).
-- **Coordinators:** created only by an **admin** at `/admin`. They sign in with email + password.
-- **Admins:** seed one admin (or promote a user in the DB). Only admins see `/admin`.
+- **Coordinators:** invited by email only by an **admin** at `/admin`. First login verifies the inbox, then they set name, mobile, and password.
+- **Admins:** one account from `ADMIN_EMAIL`. First login is the same setup flow. Only that admin sees `/admin`.
 
 ## 5. Custom domain (optional)
 
@@ -64,5 +61,5 @@ In Vercel → Domains, add your domain and point DNS as instructed. Update `AUTH
 - [ ] Cloudinary env vars set on Vercel (`CLOUDINARY_*`) so report photos upload
 - [ ] Brevo sender verified; test citizen OTP on a real inbox
 - [ ] `AUTH_URL` matches the live site
-- [ ] Admin password rotated
+- [ ] Admin first-login setup completed (password is not stored in env)
 - [ ] Privacy / Terms reviewed for your municipality

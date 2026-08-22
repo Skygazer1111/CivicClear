@@ -22,6 +22,7 @@ export default async function AdminPage() {
         phone: true,
         active: true,
         createdAt: true,
+        passwordHash: true,
       },
     }),
     prisma.user.findMany({
@@ -34,6 +35,7 @@ export default async function AdminPage() {
         phone: true,
         active: true,
         createdAt: true,
+        passwordHash: true,
       },
     }),
   ]);
@@ -54,8 +56,8 @@ export default async function AdminPage() {
       <section className="glass-panel rounded-[2rem] p-6 sm:p-8">
         <h2 className="font-display text-xl font-semibold">Add coordinator</h2>
         <p className="mt-1 text-sm text-ink-muted">
-          Coordinators cannot self-register. Share the temporary password with
-          them.
+          Coordinators cannot self-register. Invite their email; they set a
+          password and profile on first sign-in.
         </p>
         <div className="mt-5">
           <CreateOfficialForm />
@@ -65,7 +67,10 @@ export default async function AdminPage() {
       <section className="glass-panel rounded-[2rem] p-6 sm:p-8">
         <h2 className="font-display text-xl font-semibold">Coordinators</h2>
         <ManagedUserList
-          users={coordinators}
+          users={coordinators.map(({ passwordHash, ...user }) => ({
+            ...user,
+            pendingSetup: !passwordHash,
+          }))}
           emptyTitle="No coordinators yet"
           emptyDescription="Add one above to get started."
         />
@@ -87,7 +92,10 @@ export default async function AdminPage() {
           {students.length} {students.length === 1 ? "account" : "accounts"}
         </p>
         <ManagedUserList
-          users={students}
+          users={students.map(({ passwordHash, ...user }) => ({
+            ...user,
+            pendingSetup: !passwordHash,
+          }))}
           emptyTitle="No students yet"
           emptyDescription="Add one above, or wait for a student to register."
         />

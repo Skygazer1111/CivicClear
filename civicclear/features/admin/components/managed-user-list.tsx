@@ -12,6 +12,7 @@ type ManagedUser = {
   phone: string | null;
   active: boolean;
   createdAt: Date;
+  pendingSetup?: boolean;
 };
 
 export function ManagedUserList({
@@ -53,6 +54,9 @@ function ManagedUserRow({ user }: { user: ManagedUser }) {
         <p className="truncate text-ink-muted">{user.email}</p>
         {user.phone ? (
           <p className="text-xs text-ink-muted">{user.phone}</p>
+        ) : null}
+        {user.active && user.pendingSetup ? (
+          <p className="mt-1 text-xs text-accent">Pending setup</p>
         ) : null}
         {!user.active ? (
           <p className="mt-1 text-xs text-status-rejected">Removed</p>

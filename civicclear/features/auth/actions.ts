@@ -6,6 +6,7 @@ import {
   citizenEmailSchema,
   citizenOtpVerifySchema,
   registerCitizenSchema,
+  staffSetupSchema,
 } from "@/features/auth/schemas";
 import {
   createCitizenLoginProof,
@@ -17,6 +18,32 @@ import {
 import { sendCitizenOtpEmail } from "@/shared/lib/mail";
 import { prisma } from "@/shared/db/prisma";
 
+async function persistAndSendOtp(email: string) {
+  const since = new Date(Date.now() - 60 * 60 * 1000);
+  const recentCount = await prisma.loginOtp.count({
+    where: { email, createdAt: { gte: since } },
+  });
+  if (recentCount >= 8) {
+    return { error: "Too many codes requested. Try again in an hour." };
+  }
+
+  const code = generateOtpCode();
+  await prisma.loginOtp.deleteMany({ where: { email } });
+  await prisma.loginOtp.create({
+    data: {
+      email,
+      codeHash: hashOtpCode(code),
+      expiresAt: otpExpiresAt(10),
+    },
+  });
+
+  const sent = await sendCitizenOtpEmail(email, code);
+  return {
+    ok: true as const,
+    devCode: sent.mode === "dev" ? code : undefined,
+  };
+}
+
 async function issueCitizenOtp(email: string) {
   const normalized = email.toLowerCase().trim();
 
@@ -25,40 +52,20 @@ async function issueCitizenOtp(email: string) {
   });
   if (existingUser && existingUser.role !== "citizen") {
     return {
-      error: "This email belongs to a staff account. Use Coordinator sign in.",
+      error:
+        "This email belongs to a staff account. Sign in with this email to set up or use your password.",
     };
   }
   if (existingUser && !existingUser.active) {
     return { error: "This account is deactivated." };
   }
 
-  const since = new Date(Date.now() - 60 * 60 * 1000);
-  const recentCount = await prisma.loginOtp.count({
-    where: { email: normalized, createdAt: { gte: since } },
-  });
-  if (recentCount >= 8) {
-    return { error: "Too many codes requested. Try again in an hour." };
-  }
-
-  const code = generateOtpCode();
-  await prisma.loginOtp.deleteMany({ where: { email: normalized } });
-  await prisma.loginOtp.create({
-    data: {
-      email: normalized,
-      codeHash: hashOtpCode(code),
-      expiresAt: otpExpiresAt(10),
-    },
-  });
-
-  const sent = await sendCitizenOtpEmail(normalized, code);
-  const needsProfile = !existingUser;
+  const issued = await persistAndSendOtp(normalized);
+  if ("error" in issued) return issued;
 
   return {
-    ok: true as const,
-    needsProfile,
-    // Local testing without Brevo: surface the code in the UI.
-    // Also show on Vercel preview when Brevo is unset (NODE_ENV=production there).
-    devCode: sent.mode === "dev" ? code : undefined,
+    ...issued,
+    needsProfile: !existingUser,
   };
 }
 
@@ -213,7 +220,10 @@ export async function verifyCitizenOtpAction(
     return { error: "This account is deactivated." };
   }
   if (user.role !== "citizen") {
-    return { error: "Use Coordinator sign in for staff accounts." };
+    return {
+      error:
+        "This email belongs to a staff account. Sign in with this email to set up or use your password.",
+    };
   }
 
   // Only consume the OTP after the account is ready.
@@ -224,6 +234,125 @@ export async function verifyCitizenOtpAction(
     email,
     proof: createCitizenLoginProof(email),
   };
+}
+
+export async function beginStaffSetupAction(
+  _prev: unknown,
+  formData: FormData,
+) {
+  const parsed = citizenEmailSchema.safeParse({
+    email: formData.get("email"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid email" };
+  }
+
+  const email = parsed.data.email.toLowerCase().trim();
+  const { ensureAdminInvite, getAdminEmail } = await import(
+    "@/features/auth/ensure-admin"
+  );
+  const adminEmail = getAdminEmail();
+
+  try {
+    if (adminEmail && email === adminEmail) {
+      await ensureAdminInvite();
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return { notStaff: true as const };
+    if (!user.active) return { error: "This account is deactivated." };
+    if (user.role !== "admin" && user.role !== "official") {
+      return { notStaff: true as const };
+    }
+    if (user.passwordHash) {
+      return { needsPassword: true as const };
+    }
+
+    const issued = await persistAndSendOtp(email);
+    if ("error" in issued) return issued;
+
+    return {
+      ...issued,
+      role: user.role,
+    };
+  } catch (error) {
+    return {
+      error:
+        error instanceof Error
+          ? error.message
+          : "Could not start account setup.",
+    };
+  }
+}
+
+export async function completeStaffSetupAction(
+  _prev: unknown,
+  formData: FormData,
+) {
+  const parsed = staffSetupSchema.safeParse({
+    email: formData.get("email"),
+    code: formData.get("code"),
+    name: formData.get("name"),
+    phone: formData.get("phone"),
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid details" };
+  }
+
+  const email = parsed.data.email.toLowerCase().trim();
+  const code = normalizeOtpInput(parsed.data.code);
+
+  const otp = await prisma.loginOtp.findFirst({
+    where: { email },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (!otp) {
+    return { error: "No active code for this email. Request a new one." };
+  }
+  if (otp.expiresAt.getTime() < Date.now()) {
+    await prisma.loginOtp.deleteMany({ where: { email } });
+    return { error: "That code has expired. Request a new one." };
+  }
+  if (otp.attempts >= 5) {
+    return { error: "Too many incorrect attempts. Request a new code." };
+  }
+
+  const matches = otp.codeHash === hashOtpCode(code);
+  if (!matches) {
+    await prisma.loginOtp.update({
+      where: { id: otp.id },
+      data: { attempts: { increment: 1 } },
+    });
+    return {
+      error: "That code is incorrect. Check the latest email and try again.",
+    };
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user || !user.active) {
+    return { error: "Account not found." };
+  }
+  if (user.role !== "admin" && user.role !== "official") {
+    return { error: "This setup link is for staff accounts only." };
+  }
+  if (user.passwordHash) {
+    return { error: "This account already has a password. Sign in with it." };
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      name: parsed.data.name,
+      phone: parsed.data.phone,
+      passwordHash: await hash(parsed.data.password, 12),
+    },
+  });
+  await prisma.loginOtp.deleteMany({ where: { email } });
+
+  return { ok: true as const, email };
 }
 
 export { createOfficialAction } from "@/features/admin/actions";

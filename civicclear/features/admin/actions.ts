@@ -26,16 +26,18 @@ export async function createOfficialAction(
   if (!session) return { error: "Admin access required." };
 
   const parsed = createOfficialSchema.safeParse({
-    name: formData.get("name"),
     email: formData.get("email"),
-    phone: formData.get("phone") || "",
-    password: formData.get("password"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid details" };
   }
 
   const email = parsed.data.email.toLowerCase().trim();
+  const { getAdminEmail } = await import("@/features/auth/ensure-admin");
+  if (getAdminEmail() && email === getAdminEmail()) {
+    return { error: "That email is reserved for the admin account." };
+  }
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return { error: "An account with this email already exists." };
@@ -43,11 +45,11 @@ export async function createOfficialAction(
 
   await prisma.user.create({
     data: {
-      name: parsed.data.name,
+      name: "Coordinator",
       email,
-      phone: parsed.data.phone || null,
-      passwordHash: await hash(parsed.data.password, 12),
       role: "official",
+      active: true,
+      passwordHash: null,
     },
   });
 

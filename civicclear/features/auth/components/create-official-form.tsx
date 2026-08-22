@@ -21,10 +21,6 @@ export function CreateOfficialForm() {
   return (
     <form ref={formRef} action={action} className="space-y-5" noValidate>
       <div>
-        <Label htmlFor="coordinator-name">Full name</Label>
-        <Input id="coordinator-name" name="name" required autoComplete="name" />
-      </div>
-      <div>
         <Label htmlFor="coordinator-email">Email</Label>
         <Input
           id="coordinator-email"
@@ -32,40 +28,22 @@ export function CreateOfficialForm() {
           type="email"
           required
           autoComplete="email"
-        />
-      </div>
-      <div>
-        <Label htmlFor="coordinator-phone">Mobile (optional)</Label>
-        <Input
-          id="coordinator-phone"
-          name="phone"
-          type="tel"
-          inputMode="numeric"
-          placeholder="10-digit number"
-        />
-      </div>
-      <div>
-        <Label htmlFor="coordinator-password">Temporary password</Label>
-        <Input
-          id="coordinator-password"
-          name="password"
-          type="password"
-          required
-          minLength={8}
-          autoComplete="new-password"
+          placeholder="coordinator@campus.edu"
         />
         <p className="mt-1.5 text-xs text-ink-muted">
-          Share this with the coordinator. They sign in on the same login page.
+          They sign in with this email, then set their own name, mobile, and
+          password.
         </p>
       </div>
       <FormErrorBanner message={state?.error} />
       {state?.ok ? (
         <p className="rounded-2xl bg-emerald-50 px-3.5 py-3 text-sm text-status-resolved">
-          Coordinator account created.
+          Coordinator invited. Ask them to sign in with this email to finish
+          setup.
         </p>
       ) : null}
       <Button type="submit" disabled={pending} aria-busy={pending}>
-        {pending ? "Creating…" : "Add coordinator"}
+        {pending ? "Inviting…" : "Invite coordinator"}
       </Button>
     </form>
   );

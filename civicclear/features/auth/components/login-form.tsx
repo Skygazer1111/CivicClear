@@ -5,6 +5,8 @@ import Link from "next/link";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
+  beginStaffSetupAction,
+  completeStaffSetupAction,
   requestCitizenOtpAction,
   verifyCitizenOtpAction,
 } from "@/features/auth/actions";
@@ -14,14 +16,43 @@ import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { FormErrorBanner } from "@/shared/ui/field-error";
 
+type LoginMode = "password" | "otp" | "staff-setup";
+
 export function LoginForm() {
-  const [mode, setMode] = useState<"password" | "otp">("password");
+  const [mode, setMode] = useState<LoginMode>("password");
+  const [staffEmail, setStaffEmail] = useState("");
+  const [staffRole, setStaffRole] = useState<"admin" | "official">("official");
+  const [staffDevCode, setStaffDevCode] = useState<string | undefined>();
 
   if (mode === "otp") {
     return <OtpLogin onUsePassword={() => setMode("password")} />;
   }
 
-  return <PasswordLogin onUseOtp={() => setMode("otp")} />;
+  if (mode === "staff-setup") {
+    return (
+      <StaffSetupForm
+        email={staffEmail}
+        role={staffRole}
+        initialDevCode={staffDevCode}
+        onBack={() => {
+          setMode("password");
+          setStaffDevCode(undefined);
+        }}
+      />
+    );
+  }
+
+  return (
+    <PasswordLogin
+      onUseOtp={() => setMode("otp")}
+      onStaffSetup={(email, role, devCode) => {
+        setStaffEmail(email);
+        setStaffRole(role);
+        setStaffDevCode(devCode);
+        setMode("staff-setup");
+      }}
+    />
+  );
 }
 
 async function redirectAfterSignIn(
@@ -34,7 +65,17 @@ async function redirectAfterSignIn(
   router.refresh();
 }
 
-function PasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
+function PasswordLogin({
+  onUseOtp,
+  onStaffSetup,
+}: {
+  onUseOtp: () => void;
+  onStaffSetup: (
+    email: string,
+    role: "admin" | "official",
+    devCode?: string,
+  ) => void;
+}) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -45,10 +86,38 @@ function PasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
     setPending(true);
 
     const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") ?? "");
+    const email = String(formData.get("email") ?? "")
+      .toLowerCase()
+      .trim();
     const password = String(formData.get("password") ?? "");
 
     try {
+      const setupData = new FormData();
+      setupData.set("email", email);
+      const setup = await beginStaffSetupAction(undefined, setupData);
+
+      if (setup && "error" in setup && setup.error) {
+        setError(setup.error);
+        setPending(false);
+        return;
+      }
+
+      if (setup && "ok" in setup && setup.ok && "role" in setup) {
+        onStaffSetup(
+          email,
+          setup.role === "admin" ? "admin" : "official",
+          "devCode" in setup ? setup.devCode : undefined,
+        );
+        setPending(false);
+        return;
+      }
+
+      if (password.length < 8) {
+        setError("Enter your password (at least 8 characters).");
+        setPending(false);
+        return;
+      }
+
       const result = await signIn("password", {
         email,
         password,
@@ -90,9 +159,12 @@ function PasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
           name="password"
           type="password"
           autoComplete="current-password"
-          required
           minLength={8}
         />
+        <p className="mt-1.5 text-xs text-ink-muted">
+          First-time admin or coordinator? Enter your invited email and continue
+          — we will email a code so you can set your details.
+        </p>
       </div>
       <FormErrorBanner message={error} />
       <Button
@@ -102,7 +174,7 @@ function PasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
         disabled={pending}
         aria-busy={pending}
       >
-        {pending ? "Signing in…" : "Sign in"}
+        {pending ? "Signing in…" : "Continue"}
       </Button>
       <button
         type="button"
@@ -121,10 +193,200 @@ function PasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
           Create an account
         </Link>
       </p>
-      <p className="text-center text-xs text-ink-muted">
-        Coordinators sign in with the email and password from an admin. Admins
-        use their admin credentials.
+    </form>
+  );
+}
+
+function StaffSetupForm({
+  email,
+  role,
+  initialDevCode,
+  onBack,
+}: {
+  email: string;
+  role: "admin" | "official";
+  initialDevCode?: string;
+  onBack: () => void;
+}) {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+  const [devCode, setDevCode] = useState(initialDevCode);
+  const [resendIn, setResendIn] = useState(30);
+  const roleLabel = role === "admin" ? "admin" : "coordinator";
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const id = window.setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => window.clearTimeout(id);
+  }, [resendIn]);
+
+  async function resendCode() {
+    if (resendIn > 0 || pending) return;
+    setError(null);
+    setInfo(null);
+    setPending(true);
+    const formData = new FormData();
+    formData.set("email", email);
+    const setup = await beginStaffSetupAction(undefined, formData);
+    setPending(false);
+
+    if (setup && "error" in setup && setup.error) {
+      setError(setup.error);
+      return;
+    }
+    if (setup && "ok" in setup && setup.ok) {
+      setDevCode("devCode" in setup ? setup.devCode : undefined);
+      setResendIn(30);
+      setInfo("A new code was sent. Use the latest email.");
+      return;
+    }
+    setError("This account already has a password. Sign in with it.");
+  }
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setInfo(null);
+    setPending(true);
+
+    const formData = new FormData(event.currentTarget);
+    formData.set("email", email);
+
+    try {
+      const completed = await completeStaffSetupAction(undefined, formData);
+      if (completed && "error" in completed && completed.error) {
+        setError(completed.error);
+        setPending(false);
+        return;
+      }
+
+      const password = String(formData.get("password") ?? "");
+      const result = await signIn("password", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (!result || result.error) {
+        setError(
+          "Your account is ready, but sign-in failed. Try the password you just set.",
+        );
+        setPending(false);
+        return;
+      }
+
+      await redirectAfterSignIn(router, role === "admin" ? "/admin" : "/queue");
+    } catch {
+      setError("Could not finish setup. Please try again.");
+      setPending(false);
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-5" noValidate>
+      <p className="rounded-2xl bg-accent-soft/70 px-3.5 py-3 text-sm text-ink-muted">
+        We recognised this {roleLabel} email. Enter the 6-digit code sent to{" "}
+        <span className="font-semibold text-ink">{email}</span>, then set your
+        name, mobile, and password.
+        {devCode ? (
+          <>
+            {" "}
+            <span className="font-semibold text-accent">Dev code: {devCode}</span>
+          </>
+        ) : null}
       </p>
+
+      <div>
+        <Label htmlFor="code">Setup code</Label>
+        <Input
+          id="code"
+          name="code"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          placeholder="6-digit code"
+          required
+          pattern="\d{6}"
+          maxLength={6}
+        />
+      </div>
+      <div>
+        <Label htmlFor="name">Full name</Label>
+        <Input id="name" name="name" autoComplete="name" required />
+      </div>
+      <div>
+        <Label htmlFor="phone">Mobile</Label>
+        <Input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="numeric"
+          autoComplete="tel"
+          placeholder="10-digit number"
+          required
+          pattern="[0-9]{10}"
+          maxLength={10}
+        />
+      </div>
+      <div>
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={8}
+        />
+      </div>
+      <div>
+        <Label htmlFor="confirmPassword">Confirm password</Label>
+        <Input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={8}
+        />
+      </div>
+      <FormErrorBanner message={error} />
+      {info ? (
+        <p
+          role="status"
+          className="rounded-xl bg-accent-soft/80 px-3 py-2 text-sm text-accent"
+        >
+          {info}
+        </p>
+      ) : null}
+      <Button
+        type="submit"
+        className="w-full"
+        size="lg"
+        disabled={pending}
+        aria-busy={pending}
+      >
+        {pending ? "Saving…" : "Save and sign in"}
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        size="lg"
+        disabled={pending || resendIn > 0}
+        onClick={() => void resendCode()}
+      >
+        {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
+      </Button>
+      <button
+        type="button"
+        className="w-full text-center text-sm font-medium text-ink-muted hover:text-ink hover:underline disabled:opacity-50"
+        disabled={pending}
+        onClick={onBack}
+      >
+        Use a different email
+      </button>
     </form>
   );
 }

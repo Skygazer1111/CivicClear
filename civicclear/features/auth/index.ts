@@ -14,6 +14,8 @@ export {
   requestCitizenOtpAction,
   registerCitizenWithOtpAction,
   verifyCitizenOtpAction,
+  beginStaffSetupAction,
+  completeStaffSetupAction,
   logoutAction,
 } from "@/features/auth/actions";
 export {

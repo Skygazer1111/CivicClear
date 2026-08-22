@@ -7,7 +7,7 @@ Campus issue reporting for students and coordinators. Visual rules: [`docs/ui.md
 ```
 app/                 # Routes only (thin pages + layouts)
 features/
-  auth/              # Student password/OTP, coordinator password, admin creates coordinators
+  auth/              # Student + staff login; admin invites coordinators by email
   complaints/        # Student filing, campus locations, photos, labels
   official/          # Queue, analytics, export (coordinator tools)
   profile/           # Student profile
@@ -22,8 +22,8 @@ prisma/              # Schema + seed
 | Portal | How it works |
 |---|---|
 | Student | Email + password (OTP email verify on register; OTP also as backup sign-in). |
-| Coordinator | Email + password. Accounts created by an **admin** at `/admin`. |
-| Admin | Same Coordinator portal login; extra **Admin** nav to create coordinators. |
+| Coordinator | Admin invites an email at `/admin`. First login: OTP, then name, mobile, password. |
+| Admin | Only `ADMIN_EMAIL` in env. First login: OTP, then name, mobile, password. Opens `/admin`. |
 
 Without `BREVO_API_KEY`, OTP codes are printed in the server console and shown in the UI (development only).
 
@@ -48,8 +48,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Role | Email | Access |
 |---|---|---|
-| Admin | `admin@civicclear.local` | Password `admin123` → Coordinator sign in → `/admin` |
-| Coordinator | `official@civicclear.local` | Password `official123` |
+| Admin | Set `ADMIN_EMAIL` in `civicclear/.env` | First `/login` sets name, mobile, password → `/admin` |
 | Student | `citizen@civicclear.local` | Password `citizen123` (email code still available) |
 
 ## Deploy
