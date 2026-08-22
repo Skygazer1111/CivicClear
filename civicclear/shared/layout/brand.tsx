@@ -5,6 +5,9 @@ import { cn } from "@/shared/lib/utils";
 
 export const APP_NAME = "CampusClean";
 
+const glassChip =
+  "rounded-2xl border border-white/18 bg-[#061915]/45 shadow-[0_14px_40px_rgba(0,0,0,0.28)] backdrop-blur-xl";
+
 export function AppBrandMark({
   href = "/",
   showName = true,
@@ -71,19 +74,44 @@ export function PublicBrandHeader({
 }) {
   const glass = variant === "glass";
 
+  if (glass) {
+    return (
+      <header
+        className="absolute inset-x-0 top-0 z-30"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
+        <div className="flex items-start justify-between gap-3 px-3 pt-3 sm:px-5 sm:pt-4">
+          <div className={cn(glassChip, "px-2.5 py-2 sm:px-3 sm:py-2.5")}>
+            <AppBrandMark
+              href={homeHref}
+              tone="glass"
+              showName={false}
+              className="gap-0"
+            />
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            {trailing ? (
+              <div className={cn(glassChip, "px-2 py-1.5 sm:px-2.5")}>
+                {trailing}
+              </div>
+            ) : null}
+            <div className={cn(glassChip, "px-2.5 py-2 sm:px-3 sm:py-2.5")}>
+              <SrmCollegeMark className="h-8 max-w-[5.5rem] sm:h-10 sm:max-w-[7.5rem]" />
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header
-      className={cn("relative z-10", glass && "absolute inset-x-0 top-0 z-30")}
+      className="relative z-10"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      <div
-        className={cn(
-          "mx-auto flex h-14 max-w-page items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:px-6",
-          glass &&
-            "mt-3 rounded-2xl border border-white/15 bg-[#061915]/35 shadow-[0_18px_55px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:mt-4",
-        )}
-      >
-        <AppBrandMark href={homeHref} tone={glass ? "glass" : "default"} />
+      <div className="mx-auto flex h-14 max-w-page items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:px-6">
+        <AppBrandMark href={homeHref} />
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {trailing}
           <SrmCollegeMark />

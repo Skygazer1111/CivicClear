@@ -21,7 +21,12 @@ export default async function HomePage() {
         variant="glass"
         trailing={
           signedIn ? (
-            <Button asChild variant="outline" size="sm">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="border-white/25 bg-transparent text-white hover:bg-white/15"
+            >
               <Link href={signedInHome}>Dashboard</Link>
             </Button>
           ) : null
