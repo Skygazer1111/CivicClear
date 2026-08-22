@@ -373,6 +373,199 @@ body {
   }
 }
 
+/* —— Landing (CampusClean) —— */
+.landing-hero-field {
+  background:
+    radial-gradient(ellipse 90% 70% at 15% 10%, #d4f3ea 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 90% 20%, #c6f0de 0%, transparent 50%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, #cfeaf6 0%, transparent 55%),
+    linear-gradient(165deg, #f4fbf8 0%, #e8f5ef 40%, #eef6f3 100%);
+}
+
+.landing-hero-mesh {
+  background-image:
+    linear-gradient(rgba(15, 143, 120, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 143, 120, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+}
+
+.landing-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(48px);
+  will-change: transform;
+}
+
+.landing-hero-orb-a {
+  top: 8%;
+  left: 5%;
+  width: 22rem;
+  height: 22rem;
+  background: rgba(15, 143, 120, 0.22);
+  animation: landing-drift-a 18s var(--ease-out-soft) infinite;
+}
+
+.landing-hero-orb-b {
+  top: 25%;
+  right: 0%;
+  width: 26rem;
+  height: 26rem;
+  background: rgba(110, 190, 170, 0.28);
+  animation: landing-drift-b 22s var(--ease-out-soft) infinite;
+}
+
+.landing-hero-orb-c {
+  bottom: 15%;
+  left: 35%;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(207, 234, 246, 0.55);
+  animation: landing-drift-c 16s var(--ease-out-soft) infinite;
+}
+
+.landing-logo-float {
+  animation: landing-logo-breathe 4.5s var(--ease-out-soft) infinite;
+}
+
+.landing-skyline {
+  animation: landing-skyline-rise 1.4s var(--ease-out-soft) 0.2s both;
+}
+
+.landing-live-dot {
+  animation: soft-pulse 1.8s ease-in-out infinite;
+}
+
+.landing-live-row {
+  animation: landing-row-in 0.55s var(--ease-out-soft) both;
+}
+
+.landing-step {
+  position: relative;
+}
+
+.landing-step::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.5rem;
+  width: 2.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0.55;
+}
+
+.landing-marquee {
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+.landing-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1.25rem;
+  animation: landing-marquee 42s linear infinite;
+}
+
+.landing-marquee-item {
+  flex-shrink: 0;
+  padding: 0.65rem 1.15rem;
+  border: 1px solid color-mix(in oklab, var(--line) 80%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+@keyframes landing-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(36px, 24px, 0) scale(1.12);
+  }
+}
+
+@keyframes landing-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-40px, -28px, 0);
+  }
+}
+
+@keyframes landing-drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(20px, -32px, 0) scale(1.08);
+  }
+}
+
+@keyframes landing-logo-breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes landing-skyline-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 767px) {
+  .landing-hero-orb-a,
+  .landing-hero-orb-b,
+  .landing-hero-orb-c {
+    filter: blur(36px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ambient-blob-a,
   .ambient-blob-b,
@@ -384,7 +577,15 @@ body {
   .rise-in-delay-2,
   .rise-in-delay-3,
   .rise-in-delay-4,
-  .glass-panel-interactive:hover::before {
+  .glass-panel-interactive:hover::before,
+  .landing-hero-orb-a,
+  .landing-hero-orb-b,
+  .landing-hero-orb-c,
+  .landing-logo-float,
+  .landing-skyline,
+  .landing-live-dot,
+  .landing-live-row,
+  .landing-marquee-track {
     animation: none !important;
   }
 

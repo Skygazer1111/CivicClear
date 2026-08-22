@@ -8,7 +8,7 @@ import { prisma } from "@/shared/db/prisma";
 
 export default async function ProfilePage() {
   const session = await auth();
-  if (!session?.user?.id) redirect("/login?portal=citizen");
+  if (!session?.user?.id) redirect("/login");
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
@@ -20,7 +20,7 @@ export default async function ProfilePage() {
       },
     },
   });
-  if (!user) redirect("/login?portal=citizen");
+  if (!user) redirect("/login");
 
   return (
     <div className="rise-in mx-auto max-w-xl space-y-6 sm:space-y-8">

@@ -1,12 +1,14 @@
 export { auth, handlers, signIn, signOut } from "@/features/auth/auth";
 export { authConfig } from "@/features/auth/auth.config";
 export {
+  passwordLoginSchema,
   officialLoginSchema,
   citizenEmailSchema,
   citizenOtpVerifySchema,
   citizenOtpProofSchema,
   registerCitizenSchema,
   createOfficialSchema,
+  homePathForRole,
 } from "@/features/auth/schemas";
 export {
   requestCitizenOtpAction,

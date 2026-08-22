@@ -47,7 +47,7 @@ export const authConfig = {
 
       if (isCitizenArea) {
         if (!isLoggedIn) {
-          return Response.redirect(new URL("/login?portal=citizen", nextUrl));
+          return Response.redirect(new URL("/login", nextUrl));
         }
         // If role is missing, do not bounce — avoid redirect loops.
         if (role && role !== "citizen") {
@@ -58,7 +58,7 @@ export const authConfig = {
 
       if (isOfficialArea) {
         if (!isLoggedIn) {
-          return Response.redirect(new URL("/login?portal=official", nextUrl));
+          return Response.redirect(new URL("/login", nextUrl));
         }
         if (role && role !== "official" && role !== "admin") {
           return Response.redirect(new URL("/dashboard", nextUrl));

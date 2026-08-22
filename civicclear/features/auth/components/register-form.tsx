@@ -83,7 +83,7 @@ export function RegisterForm() {
           "Account ready, but sign-in failed. Try signing in with your password.",
         );
         setPending(false);
-        router.push("/login?portal=citizen");
+        router.push("/login");
         return;
       }
 
@@ -217,7 +217,7 @@ export function RegisterForm() {
       <p className="text-center text-sm text-ink-muted">
         Already registered?{" "}
         <Link
-          href="/login?portal=citizen"
+          href="/login"
           className="font-medium text-accent hover:underline"
         >
           Sign in

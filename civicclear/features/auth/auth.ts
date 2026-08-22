@@ -4,8 +4,7 @@ import { compare } from "bcryptjs";
 import { authConfig } from "@/features/auth/auth.config";
 import {
   citizenOtpProofSchema,
-  citizenPasswordLoginSchema,
-  officialLoginSchema,
+  passwordLoginSchema,
 } from "@/features/auth/schemas";
 import { verifyCitizenLoginProof } from "@/features/auth/otp";
 import { prisma } from "@/shared/db/prisma";
@@ -15,50 +14,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [
     Credentials({
-      id: "official-password",
-      name: "Official password",
+      id: "password",
+      name: "Email and password",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
-        portal: { label: "Portal", type: "text" },
       },
       async authorize(credentials) {
-        const parsed = officialLoginSchema.safeParse(credentials);
+        const parsed = passwordLoginSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: parsed.data.email.toLowerCase().trim() },
         });
         if (!user || !user.active || !user.passwordHash) return null;
-        if (user.role !== "official" && user.role !== "admin") return null;
-
-        const valid = await compare(parsed.data.password, user.passwordHash);
-        if (!valid) return null;
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
-      },
-    }),
-    Credentials({
-      id: "citizen-password",
-      name: "Citizen password",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        const parsed = citizenPasswordLoginSchema.safeParse(credentials);
-        if (!parsed.success) return null;
-
-        const user = await prisma.user.findUnique({
-          where: { email: parsed.data.email.toLowerCase().trim() },
-        });
-        if (!user || !user.active || user.role !== "citizen") return null;
-        if (!user.passwordHash) return null;
 
         const valid = await compare(parsed.data.password, user.passwordHash);
         if (!valid) return null;

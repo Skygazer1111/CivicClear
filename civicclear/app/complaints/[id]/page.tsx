@@ -22,7 +22,7 @@ export default async function ComplaintDetailPage({
   searchParams: SearchParams;
 }) {
   const session = await auth();
-  if (!session?.user?.id) redirect("/login?portal=citizen");
+  if (!session?.user?.id) redirect("/login");
 
   const { id } = await params;
   const { created } = await searchParams;

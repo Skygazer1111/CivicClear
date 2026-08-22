@@ -23,7 +23,7 @@ export default async function OfficialComplaintDetailPage({
     !session?.user?.id ||
     (session.user.role !== "official" && session.user.role !== "admin")
   ) {
-    redirect("/login?portal=official");
+    redirect("/login");
   }
 
   const { id } = await params;

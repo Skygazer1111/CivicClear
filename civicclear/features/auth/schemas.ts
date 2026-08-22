@@ -1,15 +1,18 @@
 import { z } from "zod";
 import { emptyToUndefined } from "@/features/auth/otp";
 
-export const officialLoginSchema = z.object({
+/** Universal email + password for students, coordinators, and admins. */
+export const passwordLoginSchema = z.object({
   email: z.string().email("Enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  portal: z.literal("official"),
 });
 
-export const citizenPasswordLoginSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+/** @deprecated Use passwordLoginSchema — kept for older call sites. */
+export const citizenPasswordLoginSchema = passwordLoginSchema;
+
+/** @deprecated Use passwordLoginSchema */
+export const officialLoginSchema = passwordLoginSchema.extend({
+  portal: z.string().optional(),
 });
 
 export const citizenEmailSchema = z.object({
@@ -70,3 +73,9 @@ export const createOfficialSchema = z.object({
     .or(z.literal("")),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
+
+export function homePathForRole(role?: string | null) {
+  if (role === "citizen") return "/dashboard";
+  if (role === "official" || role === "admin") return "/queue";
+  return "/";
+}

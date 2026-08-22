@@ -2,116 +2,39 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
   requestCitizenOtpAction,
   verifyCitizenOtpAction,
 } from "@/features/auth/actions";
+import { homePathForRole } from "@/features/auth/schemas";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { FormErrorBanner } from "@/shared/ui/field-error";
 
-type Portal = "citizen" | "official";
-
-export function LoginForm({ portal }: { portal: Portal }) {
-  if (portal === "official") {
-    return <OfficialPasswordLogin />;
-  }
-  return <CitizenLogin />;
-}
-
-function OfficialPasswordLogin() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
-
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
-    setPending(true);
-
-    const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") ?? "");
-    const password = String(formData.get("password") ?? "");
-
-    try {
-      const result = await signIn("official-password", {
-        email,
-        password,
-        portal: "official",
-        redirect: false,
-        callbackUrl: "/queue",
-      });
-
-      if (!result || result.error) {
-        setError("Email or password is incorrect.");
-        setPending(false);
-        return;
-      }
-
-      router.push("/queue");
-      router.refresh();
-    } catch {
-      setError("Could not sign in. Please try again.");
-      setPending(false);
-    }
-  }
-
-  return (
-    <form onSubmit={onSubmit} className="space-y-5" noValidate>
-      <div>
-        <Label htmlFor="email">Work email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          placeholder="you@department.gov"
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          minLength={8}
-        />
-      </div>
-      <FormErrorBanner message={error} />
-      <Button
-        type="submit"
-        className="w-full"
-        size="lg"
-        disabled={pending}
-        aria-busy={pending}
-      >
-        {pending ? "Signing in…" : "Sign in"}
-      </Button>
-      <p className="text-center text-sm text-ink-muted">
-        Coordinator accounts are created by an admin — they are not
-        self-registered.
-      </p>
-    </form>
-  );
-}
-
-function CitizenLogin() {
+export function LoginForm() {
   const [mode, setMode] = useState<"password" | "otp">("password");
 
   if (mode === "otp") {
-    return <CitizenOtpLogin onUsePassword={() => setMode("password")} />;
+    return <OtpLogin onUsePassword={() => setMode("password")} />;
   }
 
-  return <CitizenPasswordLogin onUseOtp={() => setMode("otp")} />;
+  return <PasswordLogin onUseOtp={() => setMode("otp")} />;
 }
 
-function CitizenPasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
+async function redirectAfterSignIn(
+  router: ReturnType<typeof useRouter>,
+  fallback: string,
+) {
+  const session = await getSession();
+  const path = homePathForRole(session?.user?.role) || fallback;
+  router.push(path);
+  router.refresh();
+}
+
+function PasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -126,23 +49,21 @@ function CitizenPasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
     const password = String(formData.get("password") ?? "");
 
     try {
-      const result = await signIn("citizen-password", {
+      const result = await signIn("password", {
         email,
         password,
         redirect: false,
-        callbackUrl: "/dashboard",
       });
 
       if (!result || result.error) {
         setError(
-          "Email or password is incorrect. If you signed up with email only, use a sign-in code once and set a password on your profile.",
+          "Email or password is incorrect. Students can create an account or use an email code once to set a password.",
         );
         setPending(false);
         return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      await redirectAfterSignIn(router, "/");
     } catch {
       setError("Could not sign in. Please try again.");
       setPending(false);
@@ -189,22 +110,26 @@ function CitizenPasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
         disabled={pending}
         onClick={onUseOtp}
       >
-        Use email code instead
+        Student? Use email code instead
       </button>
       <p className="text-center text-sm text-ink-muted">
-        New here?{" "}
+        New student?{" "}
         <Link
           href="/register"
           className="font-medium text-accent hover:underline"
         >
-          Create a student account
+          Create an account
         </Link>
+      </p>
+      <p className="text-center text-xs text-ink-muted">
+        Coordinators sign in with the email and password from an admin. Admins
+        use their admin credentials.
       </p>
     </form>
   );
 }
 
-function CitizenOtpLogin({ onUsePassword }: { onUsePassword: () => void }) {
+function OtpLogin({ onUsePassword }: { onUsePassword: () => void }) {
   const router = useRouter();
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
@@ -307,8 +232,7 @@ function CitizenOtpLogin({ onUsePassword }: { onUsePassword: () => void }) {
         return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      await redirectAfterSignIn(router, "/dashboard");
     } catch {
       setError("Could not verify the code. Please try again.");
       setPending(false);
@@ -355,12 +279,12 @@ function CitizenOtpLogin({ onUsePassword }: { onUsePassword: () => void }) {
           Sign in with password instead
         </button>
         <p className="text-center text-sm text-ink-muted">
-          New here?{" "}
+          New student?{" "}
           <Link
             href="/register"
             className="font-medium text-accent hover:underline"
           >
-            Create a student account
+            Create an account
           </Link>
         </p>
       </form>
