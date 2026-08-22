@@ -116,7 +116,13 @@ export function AppHeaderClient({
               Menu
             </Button>
           ) : null}
-          <LogoutButton />
+          <LogoutButton
+            callbackUrl={
+              isCitizen
+                ? "/login?portal=citizen"
+                : "/login?portal=official"
+            }
+          />
           <SrmCollegeMark />
         </div>
       </div>

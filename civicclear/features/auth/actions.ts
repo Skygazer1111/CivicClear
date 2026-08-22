@@ -266,5 +266,6 @@ export async function createOfficialAction(
 }
 
 export async function logoutAction() {
+  // Prefer client LogoutButton (next-auth/react). This remains for form fallbacks.
   await signOut({ redirectTo: "/" });
 }
