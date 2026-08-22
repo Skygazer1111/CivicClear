@@ -86,7 +86,7 @@ export async function buildComplaintPdf(complaintId: string) {
     }
   };
 
-  write("CivicClear campus report", 11, {
+  write("CampusClean campus report", 11, {
     color: rgb(0.35, 0.4, 0.38),
   });
   y -= 4;

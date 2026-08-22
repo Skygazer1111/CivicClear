@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/features/auth/auth";
 import { AmbientBackground } from "@/shared/layout/ambient-background";
+import { PublicBrandHeader } from "@/shared/layout/brand";
 import { SiteFooter } from "@/shared/layout/site-footer";
 import { LoginForm } from "@/features/auth/components/login-form";
 
@@ -26,22 +26,7 @@ export default async function LoginPage({
   return (
     <div className="relative flex min-h-dvh flex-col overflow-x-hidden">
       <AmbientBackground />
-
-      <header
-        className="relative z-10"
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
-      >
-        <div className="mx-auto flex h-14 max-w-page items-center px-4 sm:h-[4.25rem] sm:px-6">
-          <Link href="/" className="group flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#1bb291] to-accent text-xs font-bold text-white shadow-[0_8px_20px_rgba(15,143,120,0.35)] sm:h-9 sm:w-9 sm:rounded-2xl sm:text-sm">
-              CC
-            </span>
-            <span className="font-display text-lg font-semibold tracking-tight sm:text-xl">
-              CivicClear
-            </span>
-          </Link>
-        </div>
-      </header>
+      <PublicBrandHeader />
 
       <main className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-start px-4 py-6 sm:justify-center sm:px-6 sm:py-10">
         <div className="rise-in glass-panel rounded-[1.5rem] p-5 sm:rounded-[2rem] sm:p-9">

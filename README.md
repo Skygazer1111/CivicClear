@@ -1,4 +1,4 @@
-# CivicClear
+# CampusClean
 
 Campus issue reporting for students and coordinators. Visual rules: [`docs/ui.md`](../docs/ui.md). Deploy guide: [`docs/deploy.md`](../docs/deploy.md).
 

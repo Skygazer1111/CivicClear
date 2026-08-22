@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { LegalSection, LegalShell } from "@/shared/layout/legal-shell";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy · CivicClear",
+  title: "Privacy Policy · CampusClean",
   description:
-    "How CivicClear collects, uses, and protects personal and report data.",
+    "How CampusClean collects, uses, and protects personal and report data.",
 };
 
 export default function PrivacyPage() {
@@ -12,7 +12,7 @@ export default function PrivacyPage() {
     <LegalShell title="Privacy Policy" updated="22 August 2026">
       <LegalSection title="Who we are">
         <p>
-          CivicClear is a campus issue reporting platform that helps students
+          CampusClean is a campus issue reporting platform that helps students
           submit reports (such as waterlogging, elevators, escalators, and
           washrooms) and helps coordinators verify and resolve them. This policy
           explains what information we collect and how we use it.
@@ -20,7 +20,7 @@ export default function PrivacyPage() {
       </LegalSection>
 
       <LegalSection title="Information we collect">
-        <p>Depending on how you use CivicClear, we may collect:</p>
+        <p>Depending on how you use CampusClean, we may collect:</p>
         <ul>
           <li>
             <strong className="font-semibold text-ink">Account details</strong>{" "}
@@ -109,7 +109,7 @@ export default function PrivacyPage() {
           operate the service, meet departmental record-keeping needs, and
           handle disputes. You may request correction of inaccurate profile
           details from your profile page, or ask for account deletion by
-          contacting the department that operates your CivicClear instance.
+          contacting the department that operates your CampusClean instance.
         </p>
       </LegalSection>
 
@@ -124,7 +124,7 @@ export default function PrivacyPage() {
 
       <LegalSection title="Children">
         <p>
-          CivicClear is intended for campus community use. If you believe a
+          CampusClean is intended for campus community use. If you believe a
           minor’s data was submitted inappropriately, contact the operating
           team so it can be reviewed and removed where appropriate.
         </p>
@@ -140,9 +140,9 @@ export default function PrivacyPage() {
 
       <LegalSection title="Contact">
         <p>
-          For privacy questions about this CivicClear deployment, contact the
+          For privacy questions about this CampusClean deployment, contact the
           municipal or departmental operator that hosts your instance, or use
-          the contact channel published on your local CivicClear landing page.
+          the contact channel published on your local CampusClean landing page.
         </p>
       </LegalSection>
     </LegalShell>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { LogoutButton } from "@/features/auth/components/logout-button";
+import { AppBrandMark, SrmCollegeMark } from "@/shared/layout/brand";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 
@@ -68,14 +69,7 @@ export function AppHeaderClient({
     >
       <div className="mx-auto flex h-14 max-w-page items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:gap-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3 sm:gap-6">
-          <Link href={home} className="group flex min-w-0 items-center gap-2">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1bb291] to-accent text-xs font-bold text-white shadow-[0_8px_20px_rgba(15,143,120,0.35)] sm:h-9 sm:w-9 sm:rounded-2xl sm:text-sm">
-              CC
-            </span>
-            <span className="truncate font-display text-lg font-semibold tracking-tight text-ink sm:text-xl">
-              CivicClear
-            </span>
-          </Link>
+          <AppBrandMark href={home} />
           {isCitizen ? (
             <nav
               className="hidden items-center gap-1 text-sm md:flex"
@@ -123,6 +117,7 @@ export function AppHeaderClient({
             </Button>
           ) : null}
           <LogoutButton />
+          <SrmCollegeMark />
         </div>
       </div>
 

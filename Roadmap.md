@@ -1,4 +1,4 @@
-# CivicClear — Building Roadmap
+# CampusClean — Building Roadmap
 
 **Product:** A civic issue reporting platform. Citizens report problems (potholes, garbage, streetlights, drainage). Officials verify, assign, and resolve them. Valid reports earn points.
 
@@ -102,7 +102,7 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 ### Phase 0 — Foundations ✅ Done
 
-**Goal:** Empty app that looks like CivicClear, not a Tailwind demo.
+**Goal:** Empty app that looks like CampusClean, not a Tailwind demo.
 
 - [x] Create Next.js + TypeScript + Tailwind + shadcn-style primitives.
 - [x] Set up Prisma with `User` and `Complaint` stubs (PostgreSQL).
@@ -114,7 +114,7 @@ Each phase ends with something you can click. Do not start the next phase until 
 
 **Exit check:** You can log in as citizen or official and land on an empty dashboard that already feels finished.
 
-**How to run:** Put a Postgres `DATABASE_URL` in `civicclear/.env`, then `npm run db:setup` and `npm run dev` from the repo root. Seed logins are in `civicclear/README.md`.
+**How to run:** Put a Postgres `DATABASE_URL` in `civicclear/.env`, then `npm run db:setup` and `npm run dev` from the repo root. Seed logins are in `README.md`.
 
 ---
 

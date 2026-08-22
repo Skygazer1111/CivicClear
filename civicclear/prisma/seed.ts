@@ -21,12 +21,13 @@ async function main() {
   await prisma.user.upsert({
     where: { email: "admin@civicclear.local" },
     update: {
+      name: "CampusClean Admin",
       role: "admin",
       passwordHash: adminHash,
       active: true,
     },
     create: {
-      name: "CivicClear Admin",
+      name: "CampusClean Admin",
       email: "admin@civicclear.local",
       phone: "9876543200",
       passwordHash: adminHash,
@@ -66,7 +67,7 @@ async function main() {
     },
   });
 
-  console.log("Seeded:");
+  console.log("Seeded CampusClean:");
   console.log("  admin@civicclear.local / admin123  (creates coordinators at /admin)");
   console.log("  official@civicclear.local / official123  (coordinator)");
   console.log("  citizen@civicclear.local / citizen123  (student)");

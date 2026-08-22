@@ -1,4 +1,4 @@
-# Deploying CivicClear
+# Deploying CampusClean
 
 Recommended stack (matches the roadmap): **Vercel** (Next.js app) + **Neon** (Postgres) + **Cloudinary** (photos) + **Brevo** (citizen OTP email).
 
@@ -18,16 +18,16 @@ Set these in Project → Settings → Environment Variables (Production + Previe
 | `DATABASE_URL` | Neon URI (`?sslmode=require`) |
 | `AUTH_SECRET` | Long random string |
 | `AUTH_TRUST_HOST` | `true` |
-| `AUTH_URL` | Your production URL, e.g. `https://civicclear.vercel.app` |
+| `AUTH_URL` | Your production URL, e.g. `https://CampusClean.vercel.app` |
 | `BREVO_API_KEY` | Brevo API key |
 | `BREVO_FROM_EMAIL` | Verified sender |
-| `BREVO_FROM_NAME` | `CivicClear` |
+| `BREVO_FROM_NAME` | `CampusClean` |
 | `CLOUDINARY_CLOUD_NAME` | Recommended for photos |
 | `CLOUDINARY_API_KEY` | Must allow uploads |
 | `CLOUDINARY_API_SECRET` | |
 | `BLOB_READ_WRITE_TOKEN` | Optional Vercel Blob fallback (Storage → Blob) |
 
-**Root Directory:** set to `civicclear` if the Git repo root is the parent folder.
+**Root Directory:** set to `CampusClean` if the Git repo root is the parent folder.
 
 ## 3. Database on first deploy
 

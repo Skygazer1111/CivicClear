@@ -23,7 +23,7 @@ export default function GlobalError({
       >
         <div style={{ maxWidth: 420, textAlign: "center" }}>
           <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>
-            CivicClear hit a problem
+            CampusClean hit a problem
           </h1>
           <p style={{ color: "#5a7268", marginBottom: "1.25rem" }}>
             {error.message || "An unexpected error occurred."}

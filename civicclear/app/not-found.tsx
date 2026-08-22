@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { AmbientBackground } from "@/shared/layout/ambient-background";
+import { PublicBrandHeader } from "@/shared/layout/brand";
 import { Button } from "@/shared/ui/button";
 
 export default function NotFound() {
   return (
     <div className="relative flex min-h-full flex-col overflow-hidden">
       <AmbientBackground />
+      <PublicBrandHeader />
       <main className="relative z-10 mx-auto flex w-full max-w-lg flex-1 flex-col justify-center px-4 py-16 text-center">
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
           404
@@ -14,7 +16,7 @@ export default function NotFound() {
           Page not found
         </h1>
         <p className="mt-3 text-ink-muted">
-          That link does not match anything in CivicClear.
+          That link does not match anything in CampusClean.
         </p>
         <div className="mt-8 flex justify-center gap-3">
           <Button asChild>

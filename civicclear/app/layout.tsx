@@ -14,12 +14,12 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "CivicClear",
+  title: "CampusClean",
   description:
     "Campus issue reporting for students and coordinators — report, verify, resolve, reward",
   appleWebApp: {
     capable: true,
-    title: "CivicClear",
+    title: "CampusClean",
     statusBarStyle: "default",
   },
   formatDetection: {

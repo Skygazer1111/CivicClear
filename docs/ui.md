@@ -1,4 +1,4 @@
-# CivicClear UI
+# CampusClean UI
 
 Luminous lagoon daylight — soft aurora, frosted panels, smooth motion. Not dark, not sterile, not neon purple.
 

@@ -12,8 +12,8 @@ type SendEmailInput = {
 export async function sendEmail(input: SendEmailInput) {
   const apiKey = process.env.BREVO_API_KEY?.trim();
   const fromEmail =
-    process.env.BREVO_FROM_EMAIL?.trim() || "noreply@civicclear.local";
-  const fromName = process.env.BREVO_FROM_NAME?.trim() || "CivicClear";
+    process.env.BREVO_FROM_EMAIL?.trim() || "noreply@campusclean.local";
+  const fromName = process.env.BREVO_FROM_NAME?.trim() || "CampusClean";
 
   if (!apiKey) {
     if (process.env.NODE_ENV === "production") {
@@ -53,11 +53,11 @@ export async function sendEmail(input: SendEmailInput) {
 }
 
 export async function sendCitizenOtpEmail(email: string, code: string) {
-  const subject = "Your CivicClear sign-in code";
-  const text = `Your CivicClear code is ${code}. It expires in 10 minutes. If you did not request this, ignore this email.`;
+  const subject = "Your CampusClean sign-in code";
+  const text = `Your CampusClean code is ${code}. It expires in 10 minutes. If you did not request this, ignore this email.`;
   const html = `
     <div style="font-family: Georgia, serif; max-width: 480px; margin: 0 auto; color: #10241f;">
-      <p style="font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: #0f8f78;">CivicClear</p>
+      <p style="font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: #0f8f78;">CampusClean</p>
       <h1 style="font-size: 24px; margin: 12px 0;">Your sign-in code</h1>
       <p style="font-size: 15px; color: #4d675e;">Use this one-time code to sign in. It expires in 10 minutes.</p>
       <p style="font-size: 32px; letter-spacing: 0.28em; font-weight: 700; margin: 24px 0;">${code}</p>

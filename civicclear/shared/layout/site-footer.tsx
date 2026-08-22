@@ -10,7 +10,7 @@ export function SiteFooter({ className }: { className?: string }) {
       <div className="mx-auto flex max-w-page flex-col gap-3 px-4 py-5 text-sm text-ink-muted sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-7">
         <p className="tracking-tight">
           © {YEAR}{" "}
-          <span className="font-semibold text-ink">CivicClear</span>. All rights
+          <span className="font-semibold text-ink">CampusClean</span>. All rights
           reserved.
         </p>
         <nav

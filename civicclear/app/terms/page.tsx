@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { LegalSection, LegalShell } from "@/shared/layout/legal-shell";
 
 export const metadata: Metadata = {
-  title: "Terms of Service · CivicClear",
+  title: "Terms of Service · CampusClean",
   description:
-    "Terms for using CivicClear to report and resolve campus issues.",
+    "Terms for using CampusClean to report and resolve campus issues.",
 };
 
 export default function TermsPage() {
@@ -12,7 +12,7 @@ export default function TermsPage() {
     <LegalShell title="Terms of Service" updated="22 August 2026">
       <LegalSection title="Agreement">
         <p>
-          These Terms of Service (“Terms”) govern your use of CivicClear, a
+          These Terms of Service (“Terms”) govern your use of CampusClean, a
           platform for reporting campus issues and helping coordinators verify
           and resolve them. By creating an account or using the service, you
           agree to these Terms and our Privacy Policy.
@@ -21,7 +21,7 @@ export default function TermsPage() {
 
       <LegalSection title="The service">
         <p>
-          CivicClear lets students file reports with descriptions, photos, and a
+          CampusClean lets students file reports with descriptions, photos, and a
           campus location, and lets authorized coordinators triage, update
           status, view analytics, and export records. Reward points may be
           granted when a coordinator verifies a report, and a smaller bonus may
@@ -79,7 +79,7 @@ export default function TermsPage() {
 
       <LegalSection title="Your content">
         <p>
-          You retain ownership of content you submit. You grant the CivicClear
+          You retain ownership of content you submit. You grant the CampusClean
           operator a license to store, display, process, and export that content
           as needed to investigate and resolve reports and to run campus
           workflows (including analytics, CSV, and PDF files).
@@ -88,7 +88,7 @@ export default function TermsPage() {
 
       <LegalSection title="No emergency service">
         <p>
-          CivicClear is not a substitute for emergency services. If someone is
+          CampusClean is not a substitute for emergency services. If someone is
           in immediate danger or you need urgent help, contact local emergency
           numbers first. Response times for campus reports depend on staff
           capacity and are not guaranteed.
@@ -123,7 +123,7 @@ export default function TermsPage() {
       <LegalSection title="Contact">
         <p>
           Questions about these Terms should go to the team that operates your
-          CivicClear instance.
+          CampusClean instance.
         </p>
       </LegalSection>
     </LegalShell>
