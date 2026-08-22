@@ -8,9 +8,11 @@ export async function AppHeader() {
   const home =
     role === "citizen"
       ? "/dashboard"
-      : role === "official" || role === "admin"
-        ? "/queue"
-        : "/";
+      : role === "admin"
+        ? "/admin"
+        : role === "official"
+          ? "/queue"
+          : "/";
 
   if (!session?.user) {
     return (

@@ -58,7 +58,7 @@ export function AppHeaderClient({
 }) {
   const [open, setOpen] = useState(false);
   const isCitizen = role === "citizen";
-  const isOfficial = role === "official" || role === "admin";
+  const isOfficial = role === "official";
   const isAdmin = role === "admin";
   const displayRole = roleLabel(role);
 
@@ -87,7 +87,14 @@ export function AppHeaderClient({
             >
               <NavItem href="/queue">Queue</NavItem>
               <NavItem href="/analytics">Analytics</NavItem>
-              {isAdmin ? <NavItem href="/admin">Admin</NavItem> : null}
+            </nav>
+          ) : null}
+          {isAdmin ? (
+            <nav
+              className="hidden items-center gap-1 text-sm sm:flex"
+              aria-label="Admin"
+            >
+              <NavItem href="/admin">Accounts</NavItem>
             </nav>
           ) : null}
         </div>
@@ -103,7 +110,7 @@ export function AppHeaderClient({
               ) : null}
             </div>
           ) : null}
-          {isOfficial ? (
+          {isOfficial || isAdmin ? (
             <Button
               type="button"
               variant="ghost"
@@ -121,31 +128,35 @@ export function AppHeaderClient({
         </div>
       </div>
 
-      {open && isOfficial ? (
+      {open && (isOfficial || isAdmin) ? (
         <nav
           id="mobile-nav"
           className="border-t border-line/50 bg-white/70 px-4 py-3 backdrop-blur-xl sm:hidden"
           aria-label="Mobile"
         >
           <ul className="flex flex-col gap-1">
-            <li>
-              <NavItem
-                href="/queue"
-                className="block min-h-11 px-3 py-3"
-                onClick={() => setOpen(false)}
-              >
-                Queue
-              </NavItem>
-            </li>
-            <li>
-              <NavItem
-                href="/analytics"
-                className="block min-h-11 px-3 py-3"
-                onClick={() => setOpen(false)}
-              >
-                Analytics
-              </NavItem>
-            </li>
+            {isOfficial ? (
+              <>
+                <li>
+                  <NavItem
+                    href="/queue"
+                    className="block min-h-11 px-3 py-3"
+                    onClick={() => setOpen(false)}
+                  >
+                    Queue
+                  </NavItem>
+                </li>
+                <li>
+                  <NavItem
+                    href="/analytics"
+                    className="block min-h-11 px-3 py-3"
+                    onClick={() => setOpen(false)}
+                  >
+                    Analytics
+                  </NavItem>
+                </li>
+              </>
+            ) : null}
             {isAdmin ? (
               <li>
                 <NavItem
@@ -153,7 +164,7 @@ export function AppHeaderClient({
                   className="block min-h-11 px-3 py-3"
                   onClick={() => setOpen(false)}
                 >
-                  Admin
+                  Accounts
                 </NavItem>
               </li>
             ) : null}

@@ -3,7 +3,6 @@
 import { hash } from "bcryptjs";
 import { auth, signOut } from "@/features/auth/auth";
 import {
-  createOfficialSchema,
   citizenEmailSchema,
   citizenOtpVerifySchema,
   registerCitizenSchema,
@@ -227,43 +226,7 @@ export async function verifyCitizenOtpAction(
   };
 }
 
-export async function createOfficialAction(
-  _prev: { error?: string; ok?: boolean } | undefined,
-  formData: FormData,
-) {
-  const session = await auth();
-  if (!session?.user?.id || session.user.role !== "admin") {
-    return { error: "Admin access required." };
-  }
-
-  const parsed = createOfficialSchema.safeParse({
-    name: formData.get("name"),
-    email: formData.get("email"),
-    phone: formData.get("phone") || "",
-    password: formData.get("password"),
-  });
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid details" };
-  }
-
-  const email = parsed.data.email.toLowerCase().trim();
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    return { error: "An account with this email already exists." };
-  }
-
-  await prisma.user.create({
-    data: {
-      name: parsed.data.name,
-      email,
-      phone: parsed.data.phone || null,
-      passwordHash: await hash(parsed.data.password, 12),
-      role: "official",
-    },
-  });
-
-  return { ok: true as const };
-}
+export { createOfficialAction } from "@/features/admin/actions";
 
 export async function logoutAction() {
   // Prefer client LogoutButton (next-auth/react). This remains for form fallbacks.

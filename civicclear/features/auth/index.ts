@@ -14,9 +14,13 @@ export {
   requestCitizenOtpAction,
   registerCitizenWithOtpAction,
   verifyCitizenOtpAction,
-  createOfficialAction,
   logoutAction,
 } from "@/features/auth/actions";
+export {
+  createOfficialAction,
+  createStudentAction,
+  setManagedUserActiveAction,
+} from "@/features/admin/actions";
 export { LoginForm } from "@/features/auth/components/login-form";
 export { RegisterForm } from "@/features/auth/components/register-form";
 export { LogoutButton } from "@/features/auth/components/logout-button";

@@ -9,7 +9,11 @@ export default async function HomePage() {
   const session = await auth();
   const signedIn = Boolean(session?.user);
   const signedInHome =
-    session?.user?.role === "citizen" ? "/dashboard" : "/queue";
+    session?.user?.role === "citizen"
+      ? "/dashboard"
+      : session?.user?.role === "admin"
+        ? "/admin"
+        : "/queue";
 
   return (
     <div className="relative flex min-h-dvh flex-col overflow-x-hidden bg-canvas">

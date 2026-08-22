@@ -1,15 +1,15 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { createOfficialAction } from "@/features/admin/actions";
+import { createStudentAction } from "@/features/admin/actions";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { FormErrorBanner } from "@/shared/ui/field-error";
 
-export function CreateOfficialForm() {
+export function CreateStudentForm() {
   const [state, action, pending] = useActionState(
-    createOfficialAction,
+    createStudentAction,
     undefined,
   );
   const formRef = useRef<HTMLFormElement>(null);
@@ -21,13 +21,13 @@ export function CreateOfficialForm() {
   return (
     <form ref={formRef} action={action} className="space-y-5" noValidate>
       <div>
-        <Label htmlFor="coordinator-name">Full name</Label>
-        <Input id="coordinator-name" name="name" required autoComplete="name" />
+        <Label htmlFor="student-name">Full name</Label>
+        <Input id="student-name" name="name" required autoComplete="name" />
       </div>
       <div>
-        <Label htmlFor="coordinator-email">Email</Label>
+        <Label htmlFor="student-email">Email</Label>
         <Input
-          id="coordinator-email"
+          id="student-email"
           name="email"
           type="email"
           required
@@ -35,19 +35,22 @@ export function CreateOfficialForm() {
         />
       </div>
       <div>
-        <Label htmlFor="coordinator-phone">Mobile (optional)</Label>
+        <Label htmlFor="student-phone">Mobile</Label>
         <Input
-          id="coordinator-phone"
+          id="student-phone"
           name="phone"
           type="tel"
           inputMode="numeric"
           placeholder="10-digit number"
+          required
+          pattern="[0-9]{10}"
+          maxLength={10}
         />
       </div>
       <div>
-        <Label htmlFor="coordinator-password">Temporary password</Label>
+        <Label htmlFor="student-password">Temporary password</Label>
         <Input
-          id="coordinator-password"
+          id="student-password"
           name="password"
           type="password"
           required
@@ -55,17 +58,17 @@ export function CreateOfficialForm() {
           autoComplete="new-password"
         />
         <p className="mt-1.5 text-xs text-ink-muted">
-          Share this with the coordinator. They sign in on the same login page.
+          Share this with the student. They can change it later from Profile.
         </p>
       </div>
       <FormErrorBanner message={state?.error} />
       {state?.ok ? (
         <p className="rounded-2xl bg-emerald-50 px-3.5 py-3 text-sm text-status-resolved">
-          Coordinator account created.
+          Student account created.
         </p>
       ) : null}
       <Button type="submit" disabled={pending} aria-busy={pending}>
-        {pending ? "Creating…" : "Add coordinator"}
+        {pending ? "Creating…" : "Add student"}
       </Button>
     </form>
   );

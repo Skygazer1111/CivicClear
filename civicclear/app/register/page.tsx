@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/features/auth/auth";
+import { homePathForRole } from "@/features/auth/schemas";
 import { AmbientBackground } from "@/shared/layout/ambient-background";
 import { PublicBrandHeader } from "@/shared/layout/brand";
 import { SiteFooter } from "@/shared/layout/site-footer";
@@ -8,7 +9,7 @@ import { RegisterForm } from "@/features/auth/components/register-form";
 export default async function RegisterPage() {
   const session = await auth();
   if (session?.user) {
-    redirect(session.user.role === "citizen" ? "/dashboard" : "/queue");
+    redirect(homePathForRole(session.user.role));
   }
 
   return (

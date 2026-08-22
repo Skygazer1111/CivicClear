@@ -74,8 +74,23 @@ export const createOfficialSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
+export const createStudentSchema = z.object({
+  name: z.string().min(2, "Enter the student’s full name").max(80),
+  email: z.string().email("Enter a valid email"),
+  phone: z
+    .string()
+    .regex(/^[0-9]{10}$/, "Enter a 10-digit mobile number"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+export const setManagedUserActiveSchema = z.object({
+  userId: z.string().min(1),
+  active: z.enum(["true", "false"]),
+});
+
 export function homePathForRole(role?: string | null) {
   if (role === "citizen") return "/dashboard";
-  if (role === "official" || role === "admin") return "/queue";
+  if (role === "official") return "/queue";
+  if (role === "admin") return "/admin";
   return "/";
 }

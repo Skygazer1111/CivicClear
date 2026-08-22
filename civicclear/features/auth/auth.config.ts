@@ -42,8 +42,8 @@ export const authConfig = {
         path.startsWith("/complaints");
       const isOfficialArea =
         path.startsWith("/queue") ||
-        path.startsWith("/analytics") ||
-        path.startsWith("/admin");
+        path.startsWith("/analytics");
+      const isAdminArea = path.startsWith("/admin");
 
       if (isCitizenArea) {
         if (!isLoggedIn) {
@@ -51,7 +51,21 @@ export const authConfig = {
         }
         // If role is missing, do not bounce — avoid redirect loops.
         if (role && role !== "citizen") {
-          return Response.redirect(new URL("/queue", nextUrl));
+          return Response.redirect(
+            new URL(role === "admin" ? "/admin" : "/queue", nextUrl),
+          );
+        }
+        return true;
+      }
+
+      if (isAdminArea) {
+        if (!isLoggedIn) {
+          return Response.redirect(new URL("/login", nextUrl));
+        }
+        if (role && role !== "admin") {
+          return Response.redirect(
+            new URL(role === "citizen" ? "/dashboard" : "/queue", nextUrl),
+          );
         }
         return true;
       }
@@ -60,11 +74,11 @@ export const authConfig = {
         if (!isLoggedIn) {
           return Response.redirect(new URL("/login", nextUrl));
         }
-        if (role && role !== "official" && role !== "admin") {
-          return Response.redirect(new URL("/dashboard", nextUrl));
+        if (role === "admin") {
+          return Response.redirect(new URL("/admin", nextUrl));
         }
-        if (path.startsWith("/admin") && role && role !== "admin") {
-          return Response.redirect(new URL("/queue", nextUrl));
+        if (role && role !== "official") {
+          return Response.redirect(new URL("/dashboard", nextUrl));
         }
         return true;
       }
