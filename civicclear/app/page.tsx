@@ -46,13 +46,13 @@ export default async function HomePage() {
           CivicClear
         </h1>
         <p className="rise-in-delay-2 mt-4 max-w-xl text-base leading-relaxed text-ink-muted sm:mt-6 sm:text-xl">
-          A calmer way for citizens and officials to clear civic issues —
-          potholes, garbage, lights, drainage — without the noise.
+          Students report campus issues — waterlogging, elevators, escalators,
+          washrooms — and coordinators verify and resolve them.
         </p>
 
         <div className="rise-in-delay-3 mt-8 flex flex-col gap-3 sm:mt-11 sm:flex-row">
           <Button asChild size="lg" className="w-full sm:min-w-48 sm:w-auto">
-            <Link href="/login?portal=citizen">Citizen sign in</Link>
+            <Link href="/login?portal=citizen">Student sign in</Link>
           </Button>
           <Button
             asChild
@@ -60,13 +60,16 @@ export default async function HomePage() {
             size="lg"
             className="w-full sm:min-w-48 sm:w-auto"
           >
-            <Link href="/login?portal=official">Official sign in</Link>
+            <Link href="/login?portal=official">Coordinator sign in</Link>
           </Button>
         </div>
 
         <div className="rise-in-delay-4 mt-10 grid gap-3 sm:mt-14 sm:grid-cols-3">
           {[
-            { label: "File fast", copy: "Photo + pin in under two minutes." },
+            {
+              label: "File fast",
+              copy: "Pick a campus location, add a photo, submit.",
+            },
             {
               label: "Track clearly",
               copy: "Status timeline without the clutter.",

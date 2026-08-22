@@ -16,7 +16,13 @@ export type FilterSearchParams = {
 
 function asType(value?: string): ComplaintType | "all" | undefined {
   if (!value || value === "all") return value as "all" | undefined;
-  const allowed = ["pothole", "garbage", "streetlight", "drainage", "other"];
+  const allowed = [
+    "waterlogging",
+    "elevator",
+    "escalator",
+    "washroom",
+    "other",
+  ];
   return allowed.includes(value) ? (value as ComplaintType) : "all";
 }
 

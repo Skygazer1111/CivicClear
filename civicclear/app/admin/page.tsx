@@ -30,13 +30,13 @@ export default async function AdminPage() {
           Staff accounts
         </h1>
         <p className="mt-2 text-ink-muted">
-          Officials cannot self-register. Create their accounts here and share
+          Coordinators cannot self-register. Create their accounts here and share
           the temporary password.
         </p>
       </div>
 
       <section className="glass-panel rounded-[2rem] p-6 sm:p-8">
-        <h2 className="font-display text-xl font-semibold">Add official</h2>
+        <h2 className="font-display text-xl font-semibold">Add coordinator</h2>
         <div className="mt-5">
           <CreateOfficialForm />
         </div>
@@ -55,7 +55,9 @@ export default async function AdminPage() {
                 <p className="text-ink-muted">{user.email}</p>
               </div>
               <p className="capitalize text-ink-muted">
-                {user.role}
+                {user.role === "official"
+                  ? "coordinator"
+                  : user.role}
                 {!user.active ? " · inactive" : ""}
               </p>
             </li>

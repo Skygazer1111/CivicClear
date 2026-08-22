@@ -4,7 +4,6 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/features/auth/auth";
 import { prisma } from "@/shared/db/prisma";
 import { AutoRefresh } from "@/shared/layout/auto-refresh";
-import { ComplaintMapPin } from "@/features/complaints/components/complaint-map-pin-dynamic";
 import { StatusBadge } from "@/features/complaints/components/status-badge";
 import { Button } from "@/shared/ui/button";
 import {
@@ -89,15 +88,9 @@ export default async function ComplaintDetailPage({
 
         {complaint.addressText ? (
           <p className="mt-4 text-sm text-ink-muted">
-            <span className="font-semibold text-ink">Location:</span>{" "}
+            <span className="font-semibold text-ink">Campus location:</span>{" "}
             {complaint.addressText}
           </p>
-        ) : null}
-
-        {complaint.lat != null && complaint.lng != null ? (
-          <div className="mt-5">
-            <ComplaintMapPin lat={complaint.lat} lng={complaint.lng} />
-          </div>
         ) : null}
 
         {complaint.photos.length > 0 ? (

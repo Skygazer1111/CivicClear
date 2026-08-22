@@ -67,9 +67,9 @@ async function main() {
   });
 
   console.log("Seeded:");
-  console.log("  admin@civicclear.local / admin123  (creates officials at /admin)");
-  console.log("  official@civicclear.local / official123");
-  console.log("  citizen@civicclear.local / citizen123");
+  console.log("  admin@civicclear.local / admin123  (creates coordinators at /admin)");
+  console.log("  official@civicclear.local / official123  (coordinator)");
+  console.log("  citizen@civicclear.local / citizen123  (student)");
 }
 
 main()

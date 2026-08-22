@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/features/auth/auth";
 import { prisma } from "@/shared/db/prisma";
-import { ComplaintMapPin } from "@/features/complaints/components/complaint-map-pin-dynamic";
 import { OfficialComplaintActions } from "@/features/official/components/complaint-actions";
 import { StatusBadge } from "@/features/complaints/components/status-badge";
 import {
@@ -66,7 +65,7 @@ export default async function OfficialComplaintDetailPage({
               {complaint.createdAt.toLocaleString()}
             </p>
             <p className="mt-1 text-sm text-ink-muted">
-              Citizen: {complaint.citizen.name}
+              Student: {complaint.citizen.name}
               {complaint.citizen.phone ? ` · ${complaint.citizen.phone}` : ""}
             </p>
           </div>
@@ -87,15 +86,9 @@ export default async function OfficialComplaintDetailPage({
 
         {complaint.addressText ? (
           <p className="mt-4 text-sm text-ink-muted">
-            <span className="font-semibold text-ink">Location:</span>{" "}
+            <span className="font-semibold text-ink">Campus location:</span>{" "}
             {complaint.addressText}
           </p>
-        ) : null}
-
-        {complaint.lat != null && complaint.lng != null ? (
-          <div className="mt-5">
-            <ComplaintMapPin lat={complaint.lat} lng={complaint.lng} />
-          </div>
         ) : null}
 
         {complaint.photos.length > 0 ? (

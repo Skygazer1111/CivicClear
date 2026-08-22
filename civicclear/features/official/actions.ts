@@ -26,7 +26,7 @@ export async function updateComplaintStatusAction(
   formData: FormData,
 ) {
   const session = await requireOfficial();
-  if (!session) return { error: "Official access required." };
+  if (!session) return { error: "Coordinator access required." };
 
   const parsed = updateComplaintStatusSchema.safeParse({
     complaintId: formData.get("complaintId"),
@@ -90,7 +90,6 @@ export async function updateComplaintStatusAction(
   });
 
   revalidatePath("/queue");
-  revalidatePath("/map");
   revalidatePath(`/queue/${complaint.id}`);
   revalidatePath(`/complaints/${complaint.id}`);
   revalidatePath("/dashboard");
@@ -103,7 +102,7 @@ export async function updateComplaintPriorityAction(
   formData: FormData,
 ) {
   const session = await requireOfficial();
-  if (!session) return { error: "Official access required." };
+  if (!session) return { error: "Coordinator access required." };
 
   const parsed = updateComplaintPrioritySchema.safeParse({
     complaintId: formData.get("complaintId"),
@@ -129,7 +128,6 @@ export async function updateComplaintPriorityAction(
   });
 
   revalidatePath("/queue");
-  revalidatePath("/map");
   revalidatePath(`/queue/${complaint.id}`);
   return { ok: true };
 }

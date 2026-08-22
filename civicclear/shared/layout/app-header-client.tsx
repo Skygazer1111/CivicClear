@@ -9,6 +9,13 @@ import { cn } from "@/shared/lib/utils";
 
 type Role = "citizen" | "official" | "admin" | undefined;
 
+function roleLabel(role: Role) {
+  if (role === "citizen") return "student";
+  if (role === "official") return "coordinator";
+  if (role === "admin") return "admin";
+  return null;
+}
+
 function NavItem({
   href,
   children,
@@ -52,6 +59,7 @@ export function AppHeaderClient({
   const isCitizen = role === "citizen";
   const isOfficial = role === "official" || role === "admin";
   const isAdmin = role === "admin";
+  const displayRole = roleLabel(role);
 
   return (
     <header
@@ -71,7 +79,7 @@ export function AppHeaderClient({
           {isCitizen ? (
             <nav
               className="hidden items-center gap-1 text-sm md:flex"
-              aria-label="Citizen"
+              aria-label="Student"
             >
               <NavItem href="/dashboard">Dashboard</NavItem>
               <NavItem href="/complaints/new">Report</NavItem>
@@ -81,10 +89,9 @@ export function AppHeaderClient({
           {isOfficial ? (
             <nav
               className="hidden items-center gap-1 text-sm sm:flex"
-              aria-label="Official"
+              aria-label="Coordinator"
             >
               <NavItem href="/queue">Queue</NavItem>
-              <NavItem href="/map">Map</NavItem>
               <NavItem href="/analytics">Analytics</NavItem>
               {isAdmin ? <NavItem href="/admin">Admin</NavItem> : null}
             </nav>
@@ -95,12 +102,13 @@ export function AppHeaderClient({
           {name ? (
             <div className="hidden rounded-full border border-white/70 bg-white/55 px-3.5 py-1.5 text-sm shadow-sm sm:block">
               <span className="font-semibold text-ink">{name}</span>
-              {role ? (
-                <span className="ml-1.5 capitalize text-ink-muted">· {role}</span>
+              {displayRole ? (
+                <span className="ml-1.5 capitalize text-ink-muted">
+                  · {displayRole}
+                </span>
               ) : null}
             </div>
           ) : null}
-          {/* Citizens use bottom tabs on mobile — skip hamburger clutter. */}
           {isOfficial ? (
             <Button
               type="button"
@@ -132,15 +140,6 @@ export function AppHeaderClient({
                 onClick={() => setOpen(false)}
               >
                 Queue
-              </NavItem>
-            </li>
-            <li>
-              <NavItem
-                href="/map"
-                className="block min-h-11 px-3 py-3"
-                onClick={() => setOpen(false)}
-              >
-                Map
               </NavItem>
             </li>
             <li>

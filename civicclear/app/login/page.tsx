@@ -46,7 +46,7 @@ export default async function LoginPage({
       <main className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-start px-4 py-6 sm:justify-center sm:px-6 sm:py-10">
         <div className="rise-in glass-panel rounded-[1.5rem] p-5 sm:rounded-[2rem] sm:p-9">
           <p className="page-kicker">
-            {portal === "citizen" ? "Citizen portal" : "Official portal"}
+            {portal === "citizen" ? "Student portal" : "Coordinator portal"}
           </p>
           <h1 className="mt-3 font-display text-[1.85rem] font-semibold tracking-tight sm:text-4xl">
             Welcome back
@@ -54,7 +54,7 @@ export default async function LoginPage({
           <p className="mt-2 text-sm leading-relaxed text-ink-muted">
             {portal === "citizen"
               ? "Sign in with your email and password. You can still use an email code if needed."
-              : "Department access. Accounts are created by an admin."}
+              : "Campus staff access. Accounts are created by an admin."}
           </p>
           <div className="soft-divider my-7" />
           <LoginForm portal={portal} />

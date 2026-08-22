@@ -4,27 +4,27 @@ import { LegalSection, LegalShell } from "@/shared/layout/legal-shell";
 export const metadata: Metadata = {
   title: "Terms of Service · CivicClear",
   description:
-    "Terms for using CivicClear to report and resolve civic issues.",
+    "Terms for using CivicClear to report and resolve campus issues.",
 };
 
 export default function TermsPage() {
   return (
-    <LegalShell title="Terms of Service" updated="21 August 2026">
+    <LegalShell title="Terms of Service" updated="22 August 2026">
       <LegalSection title="Agreement">
         <p>
           These Terms of Service (“Terms”) govern your use of CivicClear, a
-          platform for reporting civic issues and helping officials verify and
-          resolve them. By creating an account or using the service, you agree
-          to these Terms and our Privacy Policy.
+          platform for reporting campus issues and helping coordinators verify
+          and resolve them. By creating an account or using the service, you
+          agree to these Terms and our Privacy Policy.
         </p>
       </LegalSection>
 
       <LegalSection title="The service">
         <p>
-          CivicClear lets citizens file reports with descriptions, photos, and
-          location details, and lets authorized officials triage, update
-          status, view maps and analytics, and export records. Reward points may
-          be granted when an official verifies a report, and a smaller bonus may
+          CivicClear lets students file reports with descriptions, photos, and a
+          campus location, and lets authorized coordinators triage, update
+          status, view analytics, and export records. Reward points may be
+          granted when a coordinator verifies a report, and a smaller bonus may
           apply when it is resolved. Points have no cash value unless a local
           program separately says otherwise.
         </p>
@@ -33,12 +33,12 @@ export default function TermsPage() {
       <LegalSection title="Accounts and roles">
         <ul>
           <li>
-            Citizens may register for their own accounts and must provide
+            Students may register for their own accounts and must provide
             accurate information.
           </li>
           <li>
-            Official and admin accounts are created by the operating department;
-            they are not self-registered in the citizen flow.
+            Coordinator and admin accounts are created by an admin; they are not
+            self-registered in the student flow.
           </li>
           <li>
             You are responsible for keeping your login credentials confidential
@@ -52,11 +52,11 @@ export default function TermsPage() {
         <ul>
           <li>
             Submit false, duplicate, harassing, or malicious reports, or content
-            unrelated to genuine civic issues.
+            unrelated to genuine campus issues.
           </li>
           <li>
             Upload unlawful, obscene, or irrelevant images, or photos of people
-            without a legitimate civic purpose.
+            without a legitimate campus purpose.
           </li>
           <li>
             Attempt to bypass rate limits, security controls, or role
@@ -67,13 +67,13 @@ export default function TermsPage() {
             data without authorization.
           </li>
           <li>
-            Misrepresent your identity or your authority as an official.
+            Misrepresent your identity or your authority as a coordinator.
           </li>
         </ul>
         <p>
-          Officials may reject invalid reports. Rejected reports do not earn
-          points. We (or the operating department) may suspend accounts that
-          abuse the system.
+          Coordinators may reject invalid reports. Rejected reports do not earn
+          points. We (or the operating team) may suspend accounts that abuse the
+          system.
         </p>
       </LegalSection>
 
@@ -81,8 +81,8 @@ export default function TermsPage() {
         <p>
           You retain ownership of content you submit. You grant the CivicClear
           operator a license to store, display, process, and export that content
-          as needed to investigate and resolve reports and to run departmental
-          workflows (including maps, analytics, CSV, and PDF files).
+          as needed to investigate and resolve reports and to run campus
+          workflows (including analytics, CSV, and PDF files).
         </p>
       </LegalSection>
 
@@ -90,7 +90,7 @@ export default function TermsPage() {
         <p>
           CivicClear is not a substitute for emergency services. If someone is
           in immediate danger or you need urgent help, contact local emergency
-          numbers first. Response times for civic reports depend on departmental
+          numbers first. Response times for campus reports depend on staff
           capacity and are not guaranteed.
         </p>
       </LegalSection>
@@ -98,47 +98,32 @@ export default function TermsPage() {
       <LegalSection title="Disclaimer">
         <p>
           The service is provided “as is.” To the fullest extent permitted by
-          law, CivicClear and its operators disclaim warranties of
-          uninterrupted availability, perfect accuracy of maps or third-party
-          hosting, or fitness for a particular purpose. Points and status
-          updates do not create a contractual obligation for any specific
-          municipal outcome.
+          law, the operator disclaims warranties of merchantability, fitness for
+          a particular purpose, and non-infringement. Campus resolution outcomes
+          remain the responsibility of the operating team.
         </p>
       </LegalSection>
 
       <LegalSection title="Limitation of liability">
         <p>
-          To the fullest extent permitted by law, CivicClear and its operators
-          are not liable for indirect, incidental, or consequential damages
-          arising from use of the service, delayed resolution of reports, or
-          reliance on points balances. Nothing in these Terms excludes liability
-          that cannot be excluded under applicable law.
+          To the fullest extent permitted by law, the operator is not liable for
+          indirect, incidental, special, consequential, or punitive damages, or
+          for loss of data, points, or goodwill arising from use of the service.
         </p>
       </LegalSection>
 
-      <LegalSection title="Changes and termination">
+      <LegalSection title="Changes">
         <p>
-          We may update these Terms as the product evolves. The “Last updated”
-          date will change when we do. Continued use after changes means you
-          accept the updated Terms. You may stop using CivicClear at any time.
-          The operator may restrict access for violations of these Terms or for
-          operational/legal reasons.
-        </p>
-      </LegalSection>
-
-      <LegalSection title="Governing law">
-        <p>
-          These Terms are intended for use with a locally operated CivicClear
-          deployment. Disputes are handled under the laws and forums that apply
-          to the municipal or departmental operator hosting your instance,
-          unless a separate written agreement says otherwise.
+          We may update these Terms. Continued use after changes means you
+          accept the revised Terms. Material changes will be reflected by the
+          “Updated” date on this page.
         </p>
       </LegalSection>
 
       <LegalSection title="Contact">
         <p>
-          Questions about these Terms should go to the department that operates
-          your CivicClear instance.
+          Questions about these Terms should go to the team that operates your
+          CivicClear instance.
         </p>
       </LegalSection>
     </LegalShell>

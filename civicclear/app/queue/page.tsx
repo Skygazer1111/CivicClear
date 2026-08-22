@@ -36,9 +36,9 @@ export default async function OfficialQueuePage({
     <div className="rise-in space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="page-kicker">Official</p>
+          <p className="page-kicker">Coordinator</p>
           <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
-            Complaint queue
+            Report queue
           </h1>
           <p className="mt-2 text-ink-muted">
             Signed in as {session?.user?.name}. Oldest unverified reports appear
@@ -46,9 +46,6 @@ export default async function OfficialQueuePage({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button asChild variant="outline">
-            <Link href="/map">Map view</Link>
-          </Button>
           <Button asChild variant="outline">
             <Link href="/analytics">Analytics</Link>
           </Button>
@@ -67,8 +64,8 @@ export default async function OfficialQueuePage({
       {complaints.length === 0 ? (
         <div className="glass-panel rounded-[1.5rem]">
           <EmptyState
-            title="No complaints match these filters"
-            description="Clear filters or wait for new citizen reports."
+            title="No reports match these filters"
+            description="Clear filters or wait for new student reports."
           />
         </div>
       ) : (

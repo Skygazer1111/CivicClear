@@ -1,16 +1,16 @@
 # CivicClear
 
-Next.js app for civic issue reporting. Visual rules: [`docs/ui.md`](../docs/ui.md). Deploy guide: [`docs/deploy.md`](../docs/deploy.md).
+Campus issue reporting for students and coordinators. Visual rules: [`docs/ui.md`](../docs/ui.md). Deploy guide: [`docs/deploy.md`](../docs/deploy.md).
 
 ## Architecture
 
 ```
 app/                 # Routes only (thin pages + layouts)
 features/
-  auth/              # OTP citizen login, official password, admin create-official
-  complaints/        # Citizen filing, photos, labels
-  official/          # Queue, map, analytics, export
-  profile/           # Citizen profile
+  auth/              # Student password/OTP, coordinator password, admin creates coordinators
+  complaints/        # Student filing, campus locations, photos, labels
+  official/          # Queue, analytics, export (coordinator tools)
+  profile/           # Student profile
   rewards/           # Points ledger
 shared/
   ui/ layout/ db/ lib/
@@ -21,9 +21,9 @@ prisma/              # Schema + seed
 
 | Portal | How it works |
 |---|---|
-| Citizen | Email a 6-digit OTP (Brevo). No password. |
-| Official | Email + password. Accounts created by an **admin** at `/admin`. |
-| Admin | Same Official portal login; extra **Admin** nav to create officials. |
+| Student | Email + password (OTP email verify on register; OTP also as backup sign-in). |
+| Coordinator | Email + password. Accounts created by an **admin** at `/admin`. |
+| Admin | Same Coordinator portal login; extra **Admin** nav to create coordinators. |
 
 Without `BREVO_API_KEY`, OTP codes are printed in the server console and shown in the UI (development only).
 
@@ -48,9 +48,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Role | Email | Access |
 |---|---|---|
-| Admin | `admin@civicclear.local` | Password `admin123` → Official sign in → `/admin` |
-| Official | `official@civicclear.local` | Password `official123` |
-| Citizen | `citizen@civicclear.local` | Password `citizen123` (email code still available) |
+| Admin | `admin@civicclear.local` | Password `admin123` → Coordinator sign in → `/admin` |
+| Coordinator | `official@civicclear.local` | Password `official123` |
+| Student | `citizen@civicclear.local` | Password `citizen123` (email code still available) |
 
 ## Deploy
 

@@ -30,7 +30,7 @@ export default async function OfficialAnalyticsPage({
     <div className="rise-in space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="page-kicker">Official</p>
+          <p className="page-kicker">Coordinator</p>
           <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">
             Analytics
           </h1>

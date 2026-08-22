@@ -21,8 +21,4 @@ export {
 export { getOfficialAnalytics, formatHours } from "@/features/official/analytics";
 export { QueueFilters as QueueFiltersForm } from "@/features/official/components/queue-filters";
 export { OfficialComplaintActions } from "@/features/official/components/complaint-actions";
-export {
-  OfficialComplaintsMap,
-  type MapComplaint,
-} from "@/features/official/components/complaints-map-dynamic";
 export { AnalyticsCharts } from "@/features/official/components/analytics-charts";

@@ -15,7 +15,7 @@ export async function createComplaintAction(
 ) {
   const session = await auth();
   if (!session?.user?.id || session.user.role !== "citizen") {
-    return { error: "You must be signed in as a citizen." };
+    return { error: "You must be signed in as a student." };
   }
 
   try {
@@ -26,15 +26,10 @@ export async function createComplaintAction(
     };
   }
 
-  const latRaw = String(formData.get("lat") ?? "").trim();
-  const lngRaw = String(formData.get("lng") ?? "").trim();
-
   const parsed = createComplaintSchema.safeParse({
     type: formData.get("type"),
     title: formData.get("title"),
     description: formData.get("description"),
-    lat: latRaw ? Number(latRaw) : null,
-    lng: lngRaw ? Number(lngRaw) : null,
     addressText: formData.get("addressText"),
   });
 
@@ -64,8 +59,8 @@ export async function createComplaintAction(
       type: parsed.data.type,
       title: parsed.data.title,
       description: parsed.data.description,
-      lat: parsed.data.lat ?? null,
-      lng: parsed.data.lng ?? null,
+      lat: null,
+      lng: null,
       addressText: parsed.data.addressText,
       status: "submitted",
       photos: {
@@ -80,7 +75,7 @@ export async function createComplaintAction(
           actorId: session.user.id,
           fromStatus: null,
           toStatus: "submitted",
-          note: "Complaint submitted",
+          note: "Report submitted",
         },
       },
     },
@@ -88,6 +83,5 @@ export async function createComplaintAction(
 
   revalidatePath("/dashboard");
   revalidatePath("/queue");
-  revalidatePath("/map");
   redirect(`/complaints/${complaint.id}?created=1`);
 }

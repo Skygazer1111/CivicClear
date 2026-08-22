@@ -42,7 +42,6 @@ export const authConfig = {
         path.startsWith("/complaints");
       const isOfficialArea =
         path.startsWith("/queue") ||
-        path.startsWith("/map") ||
         path.startsWith("/analytics") ||
         path.startsWith("/admin");
 

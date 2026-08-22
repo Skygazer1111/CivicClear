@@ -26,7 +26,7 @@ async function issueCitizenOtp(email: string) {
   });
   if (existingUser && existingUser.role !== "citizen") {
     return {
-      error: "This email belongs to a staff account. Use Official sign in.",
+      error: "This email belongs to a staff account. Use Coordinator sign in.",
     };
   }
   if (existingUser && !existingUser.active) {
@@ -214,7 +214,7 @@ export async function verifyCitizenOtpAction(
     return { error: "This account is deactivated." };
   }
   if (user.role !== "citizen") {
-    return { error: "Use Official sign in for staff accounts." };
+    return { error: "Use Coordinator sign in for staff accounts." };
   }
 
   // Only consume the OTP after the account is ready.

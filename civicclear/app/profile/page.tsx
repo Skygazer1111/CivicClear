@@ -31,7 +31,7 @@ export default async function ProfilePage() {
         >
           ← Back to dashboard
         </Link>
-        <p className="page-kicker md:mt-5">Citizen</p>
+        <p className="page-kicker md:mt-5">Student</p>
         <h1 className="mt-2 font-display text-[2rem] font-semibold tracking-tight sm:text-4xl">
           Profile
         </h1>

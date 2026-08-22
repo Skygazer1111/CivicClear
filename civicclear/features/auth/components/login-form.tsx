@@ -94,7 +94,8 @@ function OfficialPasswordLogin() {
         {pending ? "Signing in…" : "Sign in"}
       </Button>
       <p className="text-center text-sm text-ink-muted">
-        Official accounts are created by an admin — they are not self-registered.
+        Coordinator accounts are created by an admin — they are not
+        self-registered.
       </p>
     </form>
   );
@@ -196,7 +197,7 @@ function CitizenPasswordLogin({ onUseOtp }: { onUseOtp: () => void }) {
           href="/register"
           className="font-medium text-accent hover:underline"
         >
-          Create a citizen account
+          Create a student account
         </Link>
       </p>
     </form>
@@ -359,7 +360,7 @@ function CitizenOtpLogin({ onUsePassword }: { onUsePassword: () => void }) {
             href="/register"
             className="font-medium text-accent hover:underline"
           >
-            Create a citizen account
+            Create a student account
           </Link>
         </p>
       </form>

@@ -14,11 +14,16 @@ enum Role {
 }
 
 enum ComplaintType {
+  waterlogging
+  elevator
+  escalator
+  washroom
+  other
+  /// @deprecated civic types — kept briefly for DB migration
   pothole
   garbage
   streetlight
   drainage
-  other
 }
 
 enum ComplaintStatus {
@@ -41,7 +46,7 @@ model User {
   name         String
   email        String   @unique
   phone        String?
-  /// Officials/admins use passwords. Citizens sign in with email OTP.
+  /// Coordinators/admins use passwords. Students may use password or email OTP.
   passwordHash String?
   aadhaarHash  String?
   points       Int      @default(0)

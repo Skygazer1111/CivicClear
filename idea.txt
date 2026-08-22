@@ -1,0 +1,27 @@
+so let this be the same idea 
+but there is a change in the use case 
+so i want this to be a student login anad a coordinator login 
+where the coordinator login would be added by the admin account 
+and the tsudents can login and report issues like waterlogging or elevator issue or escalator issue and other issues likewashroom issuestu
+stuff like that and report it in the website 
+and the coordinator can view and verify the issue and update once the issue is resolved 
+so change the whole idea to like this 
+so as of now remove the location things 
+and keep a dropdown for these locations 
+TP1 (Tech Park 1)
+TP2(Tech Park 2)
+UB ( University Building)
+Architecture block
+MBA block
+Biotech block
+Java Canteen
+Vendhar Square 
+
+
+keep these locations in a drop down instead of getting the location 
+then
+the user can select and add an image and submit a report 
+and the points syteme is the same 
+only this idea is chaging here 
+dont change anything else
+keep the ui also the same 

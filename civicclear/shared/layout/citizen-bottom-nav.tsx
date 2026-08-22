@@ -20,7 +20,7 @@ export function CitizenBottomNav() {
 
   return (
     <nav
-      aria-label="Citizen mobile"
+      aria-label="Student mobile"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-white/70 bg-white/90 px-2 pt-1 shadow-[0_-12px_40px_rgba(16,56,46,0.1)] backdrop-blur-xl md:hidden"
       style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
     >

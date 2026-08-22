@@ -1,11 +1,24 @@
 import type { ComplaintStatus, ComplaintType } from "@prisma/client";
 
+/** Types shown in report form + coordinator filters. */
+export const ACTIVE_COMPLAINT_TYPES = [
+  "waterlogging",
+  "elevator",
+  "escalator",
+  "washroom",
+  "other",
+] as const satisfies readonly ComplaintType[];
+
 export const COMPLAINT_TYPE_LABELS: Record<ComplaintType, string> = {
-  pothole: "Pothole",
-  garbage: "Garbage",
-  streetlight: "Streetlight",
-  drainage: "Drainage",
+  waterlogging: "Waterlogging",
+  elevator: "Elevator",
+  escalator: "Escalator",
+  washroom: "Washroom",
   other: "Other",
+  pothole: "Other",
+  garbage: "Other",
+  streetlight: "Other",
+  drainage: "Other",
 };
 
 export const COMPLAINT_STATUS_LABELS: Record<ComplaintStatus, string> = {

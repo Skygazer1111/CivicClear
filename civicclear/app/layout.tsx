@@ -16,7 +16,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "CivicClear",
   description:
-    "Connecting citizens with government for faster civic issue resolution",
+    "Campus issue reporting for students and coordinators — report, verify, resolve, reward",
   appleWebApp: {
     capable: true,
     title: "CivicClear",

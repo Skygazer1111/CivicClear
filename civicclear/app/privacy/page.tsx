@@ -9,12 +9,12 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalShell title="Privacy Policy" updated="21 August 2026">
+    <LegalShell title="Privacy Policy" updated="22 August 2026">
       <LegalSection title="Who we are">
         <p>
-          CivicClear is a civic issue reporting platform that helps citizens
-          submit reports (such as potholes, garbage, streetlights, and
-          drainage) and helps officials verify and resolve them. This policy
+          CivicClear is a campus issue reporting platform that helps students
+          submit reports (such as waterlogging, elevators, escalators, and
+          washrooms) and helps coordinators verify and resolve them. This policy
           explains what information we collect and how we use it.
         </p>
       </LegalSection>
@@ -35,9 +35,9 @@ export default function PrivacyPage() {
             never the raw number.
           </li>
           <li>
-            <strong className="font-semibold text-ink">Complaint content</strong>{" "}
-            — titles, descriptions, issue type, photos, map location or
-            address text, and status history.
+            <strong className="font-semibold text-ink">Report content</strong>{" "}
+            — titles, descriptions, issue type, photos, campus location, and
+            status history.
           </li>
           <li>
             <strong className="font-semibold text-ink">Reward activity</strong>{" "}
@@ -57,43 +57,43 @@ export default function PrivacyPage() {
         <ul>
           <li>To create and manage your account.</li>
           <li>
-            To investigate, assign, and resolve civic reports you submit.
+            To investigate, assign, and resolve campus reports you submit.
           </li>
           <li>
-            To show officials maps, queues, analytics, and export files needed
-            for department work.
+            To show coordinators queues, analytics, and export files needed for
+            campus operations.
           </li>
           <li>
-            To award points when an official verifies (and optionally resolves)
+            To award points when a coordinator verifies (and optionally resolves)
             a valid report.
           </li>
           <li>To protect the service against spam and abuse.</li>
         </ul>
         <p>
-          We do not sell personal data. We do not use complaint photos or
+          We do not sell personal data. We do not use report photos or campus
           location for advertising.
         </p>
       </LegalSection>
 
-      <LegalSection title="Photos and location">
+      <LegalSection title="Photos and campus location">
         <p>
-          Photos and location pins you attach to a report are used only to
-          investigate that civic issue. Officials can see them while handling
-          the complaint. Public marketing pages do not list your personal
-          reports or contact details.
+          Photos and campus locations you attach to a report are used only to
+          investigate that issue. Coordinators can see them while handling the
+          report. Public marketing pages do not list your personal reports or
+          contact details.
         </p>
       </LegalSection>
 
       <LegalSection title="Who can see your data">
         <ul>
           <li>
-            <strong className="font-semibold text-ink">Citizens</strong> see
+            <strong className="font-semibold text-ink">Students</strong> see
             their own reports, profile, and points history.
           </li>
           <li>
-            <strong className="font-semibold text-ink">Officials</strong> see
-            complaint details needed for triage and resolution, including
-            photos, location, and limited citizen contact fields on the report.
+            <strong className="font-semibold text-ink">Coordinators</strong> see
+            report details needed for triage and resolution, including photos,
+            campus location, and limited student contact fields on the report.
           </li>
           <li>
             <strong className="font-semibold text-ink">Service providers</strong>{" "}
@@ -124,9 +124,9 @@ export default function PrivacyPage() {
 
       <LegalSection title="Children">
         <p>
-          CivicClear is intended for adults using civic services. If you
-          believe a minor’s data was submitted, contact the operating
-          department so it can be reviewed and removed where appropriate.
+          CivicClear is intended for campus community use. If you believe a
+          minor’s data was submitted inappropriately, contact the operating
+          team so it can be reviewed and removed where appropriate.
         </p>
       </LegalSection>
 

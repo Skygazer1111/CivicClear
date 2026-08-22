@@ -11,7 +11,6 @@ export const config = {
     "/profile/:path*",
     "/complaints/:path*",
     "/queue/:path*",
-    "/map/:path*",
     "/analytics/:path*",
     "/admin/:path*",
   ],

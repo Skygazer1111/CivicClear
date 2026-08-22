@@ -86,7 +86,7 @@ export async function buildComplaintPdf(complaintId: string) {
     }
   };
 
-  write("CivicClear complaint file", 11, {
+  write("CivicClear campus report", 11, {
     color: rgb(0.35, 0.4, 0.38),
   });
   y -= 4;
@@ -99,14 +99,13 @@ export async function buildComplaintPdf(complaintId: string) {
   );
   write(`Filed: ${complaint.createdAt.toISOString()}`, 10);
   write(
-    `Citizen: ${complaint.citizen.name} <${complaint.citizen.email}>${
+    `Student: ${complaint.citizen.name} <${complaint.citizen.email}>${
       complaint.citizen.phone ? ` · ${complaint.citizen.phone}` : ""
     }`,
     10,
   );
-  if (complaint.addressText) write(`Location: ${complaint.addressText}`, 10);
-  if (complaint.lat != null && complaint.lng != null) {
-    write(`Coordinates: ${complaint.lat}, ${complaint.lng}`, 10);
+  if (complaint.addressText) {
+    write(`Campus location: ${complaint.addressText}`, 10);
   }
   y -= 8;
   write("Description", 12, { bold: true });

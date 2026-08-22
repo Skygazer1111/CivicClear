@@ -10,12 +10,13 @@ export default function NewComplaintPage() {
       >
         ← Back to dashboard
       </Link>
-      <p className="page-kicker md:mt-5">Citizen</p>
+      <p className="page-kicker md:mt-5">Student</p>
       <h1 className="mt-2 font-display text-[2rem] font-semibold tracking-tight sm:text-4xl">
         Report an issue
       </h1>
       <p className="mt-2 text-sm text-ink-muted sm:text-base">
-        Add a photo and location so officials can find and fix it faster.
+        Pick a campus location and add a photo so coordinators can verify and
+        resolve it faster.
       </p>
 
       <div className="glass-panel mt-6 rounded-[1.5rem] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-8">

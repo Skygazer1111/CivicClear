@@ -55,18 +55,18 @@ export function CreateOfficialForm() {
           autoComplete="new-password"
         />
         <p className="mt-1.5 text-xs text-ink-muted">
-          Share this securely with the official. They sign in on the Official
-          portal.
+          Share this securely with the coordinator. They sign in on the
+          Coordinator portal.
         </p>
       </div>
       <FormErrorBanner message={state?.error} />
       {state?.ok ? (
         <p className="rounded-2xl bg-emerald-50 px-3.5 py-3 text-sm text-status-resolved">
-          Official account created.
+          Coordinator account created.
         </p>
       ) : null}
       <Button type="submit" disabled={pending} aria-busy={pending}>
-        {pending ? "Creating…" : "Create official account"}
+        {pending ? "Creating…" : "Create coordinator account"}
       </Button>
     </form>
   );

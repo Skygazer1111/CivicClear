@@ -31,12 +31,12 @@ export default async function CitizenDashboardPage() {
     <div className="rise-in">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="page-kicker">Citizen</p>
+          <p className="page-kicker">Student</p>
           <h1 className="mt-2 font-display text-[2rem] font-semibold tracking-tight sm:text-4xl">
             Dashboard
           </h1>
           <p className="mt-2 text-sm text-ink-muted sm:text-base">
-            Welcome, {session?.user?.name}. Track and file civic reports here.
+            Welcome, {session?.user?.name}. Track and file campus reports here.
           </p>
           <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/55 px-3 py-1.5 text-sm shadow-sm backdrop-blur-sm">
             <span className="text-ink-muted">Points</span>
@@ -69,7 +69,7 @@ export default async function CitizenDashboardPage() {
         {complaints.length === 0 ? (
           <EmptyState
             title="No reports yet"
-            description="File a civic issue with a photo and location."
+            description="File a campus issue with a photo and location."
             actionHref="/complaints/new"
             actionLabel="Report an issue"
           />

@@ -2,13 +2,13 @@
 
 import { useActionState, useId } from "react";
 import { createComplaintAction } from "@/features/complaints/actions";
-import { LocationPicker } from "@/features/complaints/components/location-picker-dynamic";
+import { CAMPUS_LOCATIONS } from "@/features/complaints/campus-locations";
 import { PhotoPicker } from "@/features/complaints/components/photo-picker";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { FormErrorBanner } from "@/shared/ui/field-error";
-import { COMPLAINT_TYPE_LABELS } from "@/features/complaints/labels";
+import { COMPLAINT_TYPE_LABELS, ACTIVE_COMPLAINT_TYPES } from "@/features/complaints/labels";
 
 export function ComplaintForm() {
   const formErrorId = useId();
@@ -31,11 +31,11 @@ export function ComplaintForm() {
           name="type"
           required
           className="field"
-          defaultValue="pothole"
+          defaultValue="waterlogging"
         >
-          {Object.entries(COMPLAINT_TYPE_LABELS).map(([value, label]) => (
+          {ACTIVE_COMPLAINT_TYPES.map((value) => (
             <option key={value} value={value}>
-              {label}
+              {COMPLAINT_TYPE_LABELS[value]}
             </option>
           ))}
         </select>
@@ -46,7 +46,7 @@ export function ComplaintForm() {
         <Input
           id="title"
           name="title"
-          placeholder="e.g. Deep pothole near the bus stop"
+          placeholder="e.g. Elevator stuck on floor 3"
           required
           maxLength={100}
           autoComplete="off"
@@ -61,13 +61,26 @@ export function ComplaintForm() {
           required
           rows={5}
           maxLength={2000}
-          placeholder="What is wrong, how long it has been there, and any nearby landmark."
+          placeholder="What is wrong, how long it has been there, and any nearby landmark inside the building."
           className="field h-auto min-h-[8rem] py-3"
         />
       </div>
 
+      <div>
+        <Label htmlFor="addressText">Campus location</Label>
+        <select id="addressText" name="addressText" required className="field" defaultValue="">
+          <option value="" disabled>
+            Select a location
+          </option>
+          {CAMPUS_LOCATIONS.map((location) => (
+            <option key={location} value={location}>
+              {location}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <PhotoPicker />
-      <LocationPicker />
 
       <div id={formErrorId}>
         <FormErrorBanner message={state?.error} />

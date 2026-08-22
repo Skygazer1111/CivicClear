@@ -1,6 +1,6 @@
 import Link from "next/link";
-import type { ComplaintStatus, ComplaintType, Priority } from "@prisma/client";
-import { COMPLAINT_STATUS_LABELS, COMPLAINT_TYPE_LABELS } from "@/features/complaints/labels";
+import type { ComplaintStatus, Priority } from "@prisma/client";
+import { COMPLAINT_STATUS_LABELS, COMPLAINT_TYPE_LABELS, ACTIVE_COMPLAINT_TYPES } from "@/features/complaints/labels";
 import { PRIORITY_LABELS } from "@/features/official/workflow";
 import { Button } from "@/shared/ui/button";
 
@@ -48,13 +48,11 @@ export function QueueFilters({
           className="field"
         >
           <option value="all">All</option>
-          {(Object.keys(COMPLAINT_TYPE_LABELS) as ComplaintType[]).map(
-            (value) => (
-              <option key={value} value={value}>
-                {COMPLAINT_TYPE_LABELS[value]}
-              </option>
-            ),
-          )}
+          {ACTIVE_COMPLAINT_TYPES.map((value) => (
+            <option key={value} value={value}>
+              {COMPLAINT_TYPE_LABELS[value]}
+            </option>
+          ))}
         </select>
       </label>
 
