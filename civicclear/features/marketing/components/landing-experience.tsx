@@ -2,55 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { APP_NAME } from "@/shared/layout/brand";
 import { Button } from "@/shared/ui/button";
 import { CAMPUS_LOCATIONS } from "@/features/complaints/campus-locations";
-
-const LIVE_EVENTS = [
-  {
-    place: "TP1",
-    issue: "Lift stuck near the third floor",
-    status: "Verified",
-    tone: "pending" as const,
-  },
-  {
-    place: "University Building",
-    issue: "Washroom needs attention",
-    status: "Coordinator on it",
-    tone: "progress" as const,
-  },
-  {
-    place: "Java Canteen",
-    issue: "Waterlogging after rain",
-    status: "Cleared",
-    tone: "resolved" as const,
-  },
-  {
-    place: "Architecture block",
-    issue: "Escalator not moving",
-    status: "Submitted",
-    tone: "pending" as const,
-  },
-  {
-    place: "Vendhar Square",
-    issue: "Pathway blocked",
-    status: "Cleared",
-    tone: "resolved" as const,
-  },
-  {
-    place: "MBA block",
-    issue: "Washroom refill needed",
-    status: "Verified",
-    tone: "pending" as const,
-  },
-];
-
-const toneClass = {
-  pending: "text-amber-200",
-  progress: "text-sky-200",
-  resolved: "text-emerald-200",
-};
 
 const STUDENT_STEPS = [
   {
@@ -74,6 +28,12 @@ const HERO_STATS = [
   ["10", "campus spots"],
   ["60s", "to report"],
   ["+15", "clean points"],
+];
+
+const REPORT_PREVIEW = [
+  ["Location", "Java Canteen"],
+  ["Issue type", "Waterlogging"],
+  ["Proof", "Photo attached"],
 ];
 
 const ISSUE_CHIPS = [
@@ -108,26 +68,6 @@ type Props = {
 };
 
 export function LandingExperience({ signedIn, signedInHome }: Props) {
-  const [liveIndex, setLiveIndex] = useState(0);
-
-  useEffect(() => {
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
-
-    const id = window.setInterval(() => {
-      setLiveIndex((i) => (i + 1) % LIVE_EVENTS.length);
-    }, 2600);
-    return () => window.clearInterval(id);
-  }, []);
-
-  const visible = [
-    LIVE_EVENTS[liveIndex],
-    LIVE_EVENTS[(liveIndex + 1) % LIVE_EVENTS.length],
-    LIVE_EVENTS[(liveIndex + 2) % LIVE_EVENTS.length],
-  ];
-
   return (
     <>
       <section className="landing-campus-hero relative min-h-[calc(100dvh-3.5rem)] overflow-hidden bg-ink text-white sm:min-h-[calc(100dvh-4.25rem)]">
@@ -208,14 +148,14 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
 
           <div className="rise-in-delay-2 relative mx-auto w-full max-w-md lg:ml-auto">
             <div aria-hidden className="landing-phone-glow absolute -inset-10 rounded-full bg-emerald-300/25 blur-3xl" />
-            <div className="landing-phone-card relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/13 p-4 shadow-[0_30px_90px_rgba(0,0,0,0.38)] backdrop-blur-2xl sm:p-5">
+            <div className="landing-phone-card relative overflow-hidden rounded-[2rem] border border-white/25 bg-[#061915]/90 p-4 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-100">
-                    Live campus pulse
+                    Student report preview
                   </p>
                   <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
-                    Reports right now
+                    Post it before class
                   </h2>
                 </div>
                 <Image
@@ -227,37 +167,60 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
                 />
               </div>
 
-              <ul className="mt-5 space-y-3" aria-live="polite">
-                {visible.map((event, i) => (
-                  <li
-                    key={`${event.place}-${event.status}-${liveIndex}-${i}`}
-                    className="landing-live-card rounded-2xl border border-white/13 bg-black/22 p-4"
-                    style={{ animationDelay: `${i * 80}ms` }}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="font-semibold text-white">{event.place}</p>
-                        <p className="mt-1 text-sm leading-snug text-white/66">
-                          {event.issue}
-                        </p>
-                      </div>
-                      <p
-                        className={`shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold ${toneClass[event.tone]}`}
-                      >
-                        {event.status}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-5 rounded-[1.5rem] bg-white p-4 text-ink shadow-[0_18px_45px_rgba(0,0,0,0.22)]">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">
+                      New issue
+                    </p>
+                    <p className="mt-1 font-display text-2xl font-semibold tracking-tight">
+                      Rainwater near the entrance
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold text-accent-hover">
+                    60 sec
+                  </span>
+                </div>
 
-              <div className="mt-4 rounded-2xl bg-emerald-300 px-4 py-3 text-ink shadow-lg shadow-emerald-900/20">
-                <p className="text-xs font-bold uppercase tracking-[0.16em]">
-                  Student streak
-                </p>
-                <p className="mt-1 font-display text-2xl font-semibold">
-                  12 clean actions this week
-                </p>
+                <div className="mt-4 space-y-2">
+                  {REPORT_PREVIEW.map(([label, value]) => (
+                    <div
+                      key={label}
+                      className="flex items-center justify-between gap-4 rounded-2xl bg-[#eef6f3] px-3.5 py-3"
+                    >
+                      <span className="text-xs font-bold uppercase tracking-[0.12em] text-ink-muted">
+                        {label}
+                      </span>
+                      <span className="text-sm font-semibold text-ink">
+                        {value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-dashed border-accent/35 bg-accent-soft/70 p-3">
+                  <p className="text-sm font-semibold text-ink">
+                    Coordinator gets a clean queue item with place, type, photo,
+                    and status.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                {[
+                  ["No GPS", "Pick campus block"],
+                  ["Proof first", "Photo makes it clear"],
+                ].map(([title, copy]) => (
+                  <div
+                    key={title}
+                    className="rounded-2xl border border-white/12 bg-white/10 p-3"
+                  >
+                    <p className="text-sm font-semibold text-white">{title}</p>
+                    <p className="mt-1 text-xs leading-snug text-white/70">
+                      {copy}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
