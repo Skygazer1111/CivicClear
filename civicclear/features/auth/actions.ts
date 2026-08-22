@@ -1,7 +1,7 @@
 "use server";
 
 import { hash } from "bcryptjs";
-import { auth, signOut } from "@/features/auth/auth";
+import { signOut } from "@/features/auth/auth";
 import {
   citizenEmailSchema,
   citizenOtpVerifySchema,
@@ -354,8 +354,6 @@ export async function completeStaffSetupAction(
 
   return { ok: true as const, email };
 }
-
-export { createOfficialAction } from "@/features/admin/actions";
 
 export async function logoutAction() {
   // Prefer client LogoutButton (next-auth/react). This remains for form fallbacks.
