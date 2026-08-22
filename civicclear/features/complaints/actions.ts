@@ -8,6 +8,7 @@ import { assertComplaintRateLimit } from "@/features/complaints/rate-limit";
 import { createComplaintSchema } from "@/features/complaints/schemas";
 import { uploadComplaintPhotos } from "@/features/complaints/uploads";
 import { prisma } from "@/shared/db/prisma";
+import type { ComplaintType } from "@prisma/client";
 
 export async function createComplaintAction(
   _prev: { error?: string } | undefined,
@@ -56,7 +57,7 @@ export async function createComplaintAction(
     data: {
       publicRef,
       citizenId: session.user.id,
-      type: parsed.data.type,
+      type: parsed.data.type as ComplaintType,
       title: parsed.data.title,
       description: parsed.data.description,
       lat: null,

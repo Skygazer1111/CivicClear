@@ -1,24 +1,39 @@
 import type { ComplaintStatus, ComplaintType } from "@prisma/client";
+import { complaintTypeSchema } from "@/features/complaints/schemas";
 
 /** Types shown in report form + coordinator filters. */
-export const ACTIVE_COMPLAINT_TYPES = [
-  "waterlogging",
-  "elevator",
-  "escalator",
-  "washroom",
-  "other",
-] as const satisfies readonly ComplaintType[];
+export const ACTIVE_COMPLAINT_TYPES = complaintTypeSchema.options;
 
-export const COMPLAINT_TYPE_LABELS: Record<ComplaintType, string> = {
-  waterlogging: "Waterlogging",
-  elevator: "Elevator",
-  escalator: "Escalator",
-  washroom: "Washroom",
-  other: "Other",
+export type ActiveComplaintType = (typeof ACTIVE_COMPLAINT_TYPES)[number];
+
+export const ACTIVE_COMPLAINT_TYPE_LABELS: Record<ActiveComplaintType, string> =
+  {
+    waterlogging: "Waterlogging",
+    elevator: "Elevator",
+    escalator: "Escalator",
+    washroom: "Washroom",
+    other: "Other",
+  };
+
+const LEGACY_TYPE_LABELS: Record<string, string> = {
   pothole: "Other",
   garbage: "Other",
   streetlight: "Other",
   drainage: "Other",
+};
+
+/** Safe label lookup for any stored complaint type (active or legacy). */
+export function complaintTypeLabel(type: ComplaintType | string): string {
+  if (type in ACTIVE_COMPLAINT_TYPE_LABELS) {
+    return ACTIVE_COMPLAINT_TYPE_LABELS[type as ActiveComplaintType];
+  }
+  return LEGACY_TYPE_LABELS[type] ?? "Other";
+}
+
+/** @deprecated Prefer complaintTypeLabel() — kept for existing call sites. */
+export const COMPLAINT_TYPE_LABELS: Record<string, string> = {
+  ...ACTIVE_COMPLAINT_TYPE_LABELS,
+  ...LEGACY_TYPE_LABELS,
 };
 
 export const COMPLAINT_STATUS_LABELS: Record<ComplaintStatus, string> = {
