@@ -30,12 +30,6 @@ const HERO_STATS = [
   ["+15", "clean points"],
 ];
 
-const REPORT_PREVIEW = [
-  ["Location", "Java Canteen"],
-  ["Issue type", "Waterlogging"],
-  ["Proof", "Photo attached"],
-];
-
 const ISSUE_CHIPS = [
   "Waterlogging",
   "Elevator",
@@ -83,23 +77,23 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
         <div aria-hidden className="landing-hero-grain absolute inset-0 opacity-[0.18]" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-canvas to-transparent" />
 
-        <div className="relative z-10 mx-auto grid min-h-[calc(100dvh-3.5rem)] w-full max-w-page items-center gap-10 px-4 py-12 sm:min-h-[calc(100dvh-4.25rem)] sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-16">
-          <div className="max-w-3xl">
-            <div className="rise-in inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-50 shadow-2xl shadow-black/20 backdrop-blur-md">
+        <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-3.5rem)] w-full max-w-page items-center justify-center px-4 py-14 text-center sm:min-h-[calc(100dvh-4.25rem)] sm:px-6 sm:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="rise-in inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#061915]/70 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-emerald-50 shadow-2xl shadow-black/20 backdrop-blur-md sm:text-xs sm:tracking-[0.18em]">
               <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(110,255,205,0.9)]" />
               SRM campus, cleaned by students
             </div>
 
-            <h1 className="rise-in-delay-1 mt-5 max-w-4xl font-display text-[3.15rem] font-semibold leading-[0.9] tracking-tight text-white drop-shadow-2xl sm:text-7xl lg:text-8xl">
+            <h1 className="rise-in-delay-1 mx-auto mt-5 max-w-4xl font-display text-[2.75rem] font-semibold leading-[0.92] tracking-tight text-white drop-shadow-2xl sm:text-7xl lg:text-8xl">
               Make campus problems impossible to ignore.
             </h1>
-            <p className="rise-in-delay-2 mt-5 max-w-2xl text-base leading-relaxed text-white/78 sm:text-xl">
+            <p className="rise-in-delay-2 mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/82 drop-shadow-lg sm:text-xl">
               {APP_NAME} turns quick student reports into a live campus cleanup
               feed. Snap the issue, choose the SRM block, and track it until a
               coordinator clears it.
             </p>
 
-            <div className="rise-in-delay-3 mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="rise-in-delay-3 mx-auto mt-8 flex max-w-md flex-col justify-center gap-3 sm:max-w-none sm:flex-row sm:items-center">
               {signedIn && signedInHome ? (
                 <Button
                   asChild
@@ -121,7 +115,7 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
                     asChild
                     variant="outline"
                     size="lg"
-                    className="w-full border-white/35 bg-white/10 text-white hover:bg-white/20 sm:min-w-44 sm:w-auto"
+                    className="w-full border-white/35 bg-[#061915]/45 text-white hover:bg-white/20 sm:min-w-44 sm:w-auto"
                   >
                     <Link href="/login">Sign in</Link>
                   </Button>
@@ -129,99 +123,20 @@ export function LandingExperience({ signedIn, signedInHome }: Props) {
               )}
             </div>
 
-            <div className="rise-in-delay-4 mt-9 grid max-w-xl grid-cols-3 gap-2 sm:gap-3">
+            <div className="rise-in-delay-4 mx-auto mt-9 grid max-w-sm grid-cols-3 gap-2 sm:max-w-xl sm:gap-3">
               {HERO_STATS.map(([value, label]) => (
                 <div
                   key={label}
-                  className="rounded-2xl border border-white/15 bg-white/10 px-3 py-3 backdrop-blur-md sm:px-4"
+                  className="rounded-2xl border border-white/18 bg-[#061915]/58 px-2.5 py-3 backdrop-blur-md sm:px-4 sm:py-4"
                 >
                   <p className="font-display text-2xl font-semibold leading-none text-white sm:text-3xl">
                     {value}
                   </p>
-                  <p className="mt-1 text-[0.7rem] font-medium uppercase tracking-[0.14em] text-white/62">
+                  <p className="mt-1 text-[0.62rem] font-medium uppercase leading-tight tracking-[0.12em] text-white/70 sm:text-[0.7rem] sm:tracking-[0.14em]">
                     {label}
                   </p>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className="rise-in-delay-2 relative mx-auto w-full max-w-md lg:ml-auto">
-            <div aria-hidden className="landing-phone-glow absolute -inset-10 rounded-full bg-emerald-300/25 blur-3xl" />
-            <div className="landing-phone-card relative overflow-hidden rounded-[2rem] border border-white/25 bg-[#061915]/90 p-4 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-100">
-                    Student report preview
-                  </p>
-                  <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
-                    Post it before class
-                  </h2>
-                </div>
-                <Image
-                  src="/brand/campusclean-logo.png"
-                  alt=""
-                  width={44}
-                  height={44}
-                  className="rounded-2xl shadow-lg shadow-black/20"
-                />
-              </div>
-
-              <div className="mt-5 rounded-[1.5rem] bg-white p-4 text-ink shadow-[0_18px_45px_rgba(0,0,0,0.22)]">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">
-                      New issue
-                    </p>
-                    <p className="mt-1 font-display text-2xl font-semibold tracking-tight">
-                      Rainwater near the entrance
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold text-accent-hover">
-                    60 sec
-                  </span>
-                </div>
-
-                <div className="mt-4 space-y-2">
-                  {REPORT_PREVIEW.map(([label, value]) => (
-                    <div
-                      key={label}
-                      className="flex items-center justify-between gap-4 rounded-2xl bg-[#eef6f3] px-3.5 py-3"
-                    >
-                      <span className="text-xs font-bold uppercase tracking-[0.12em] text-ink-muted">
-                        {label}
-                      </span>
-                      <span className="text-sm font-semibold text-ink">
-                        {value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 rounded-2xl border border-dashed border-accent/35 bg-accent-soft/70 p-3">
-                  <p className="text-sm font-semibold text-ink">
-                    Coordinator gets a clean queue item with place, type, photo,
-                    and status.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                {[
-                  ["No GPS", "Pick campus block"],
-                  ["Proof first", "Photo makes it clear"],
-                ].map(([title, copy]) => (
-                  <div
-                    key={title}
-                    className="rounded-2xl border border-white/12 bg-white/10 p-3"
-                  >
-                    <p className="text-sm font-semibold text-white">{title}</p>
-                    <p className="mt-1 text-xs leading-snug text-white/70">
-                      {copy}
-                    </p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
